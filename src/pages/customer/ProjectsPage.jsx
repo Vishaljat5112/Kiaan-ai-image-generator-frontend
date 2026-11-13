@@ -23,11 +23,11 @@ const COLOR_CLASSES = {
 }
 
 const COLOR_BADGE = {
-  violet: 'bg-violet-50 text-violet-700 border-violet-200',
-  cyan: 'bg-cyan-50 text-cyan-700 border-cyan-200',
-  amber: 'bg-amber-50 text-amber-700 border-amber-200',
-  emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  rose: 'bg-rose-50 text-rose-700 border-rose-200'
+  violet: 'bg-cyan-950/70 text-cyan-300 border-cyan-800/60',
+  cyan: 'bg-cyan-950/70 text-cyan-300 border-cyan-800/60',
+  amber: 'bg-amber-950/70 text-amber-300 border-amber-800/60',
+  emerald: 'bg-emerald-950/70 text-emerald-300 border-emerald-800/60',
+  rose: 'bg-rose-950/70 text-rose-300 border-rose-800/60'
 }
 
 export function ProjectsPage() {
@@ -151,7 +151,7 @@ export function ProjectsPage() {
 
       <Panel className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <SearchField value={query} onChange={setQuery} placeholder="Search projects by name, client, description�" className="flex-1 max-w-md" />
+          <SearchField value={query} onChange={setQuery} placeholder="Search projects by name, client, description…" className="flex-1 max-w-md" />
           <div className="flex items-center gap-2">
             <LightSelect
               label="Status"
@@ -192,7 +192,7 @@ export function ProjectsPage() {
             return (
               <div
                 key={p.id}
-                className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden hover:border-violet-300 hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl border border-neutral-800/90 shadow-sm overflow-hidden hover:border-cyan-500/40 hover:shadow-[0_0_20px_rgba(6,182,212,0.1)] transition-all flex flex-col justify-between text-white"
               >
                 <div className="p-5">
                   <div className="flex items-start justify-between gap-2 mb-3">
@@ -200,41 +200,41 @@ export function ProjectsPage() {
                       <span className={cn('w-2 h-2 rounded-full', COLOR_CLASSES[p.color] || COLOR_CLASSES.violet)} />
                       {p.client}
                     </span>
-                    <span className="text-[11px] font-semibold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[11px] font-semibold text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded-full">
                       {p.status}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-neutral-900 group-hover:text-violet-600 transition-colors line-clamp-1">
+                  <h3 className="text-base font-bold text-white hover:text-cyan-400 transition-colors line-clamp-1">
                     {p.name}
                   </h3>
-                  <p className="text-xs text-neutral-500 mt-1 line-clamp-2 min-h-[32px]">
+                  <p className="text-xs text-neutral-400 mt-1 line-clamp-2 min-h-[32px]">
                     {p.description || 'No description provided.'}
                   </p>
 
                   {/* Asset thumbnail strip */}
-                  <div className="mt-4 pt-4 border-t border-neutral-100">
-                    <div className="flex items-center justify-between text-xs text-neutral-500 mb-2">
+                  <div className="mt-4 pt-4 border-t border-neutral-800/80">
+                    <div className="flex items-center justify-between text-xs text-neutral-400 mb-2">
                       <span>Assets in project</span>
-                      <span className="font-semibold text-neutral-800">{assets.length} items</span>
+                      <span className="font-semibold text-neutral-200">{assets.length} items</span>
                     </div>
                     {assets.length > 0 ? (
                       <div className="grid grid-cols-4 gap-1.5 h-14">
                         {assets.slice(0, 4).map((a) => (
-                          <div key={a.id} className="rounded-lg overflow-hidden border border-neutral-200 bg-neutral-100">
+                          <div key={a.id} className="rounded-lg overflow-hidden border border-neutral-700 bg-neutral-900">
                             <MediaThumb type={a.type} src={a.src} poster={a.poster} alt={a.title} />
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="h-14 rounded-lg border border-dashed border-neutral-200 bg-neutral-50 flex items-center justify-center text-[11px] text-neutral-400">
+                      <div className="h-14 rounded-lg border border-dashed border-neutral-800 bg-[#080B14] flex items-center justify-center text-[11px] text-neutral-400">
                         No assets assigned yet
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="px-5 py-3 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between">
+                <div className="px-5 py-3 bg-[#080B14] border-t border-neutral-800/80 flex items-center justify-between">
                   <span className="text-[11px] text-neutral-400">
                     Updated {formatDate(p.updatedAt)}
                   </span>
@@ -243,7 +243,7 @@ export function ProjectsPage() {
                       type="button"
                       onClick={() => openEdit(p)}
                       aria-label="Edit project"
-                      className="p-1.5 rounded-lg text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200/60 transition-colors"
+                      className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
@@ -251,18 +251,17 @@ export function ProjectsPage() {
                       type="button"
                       onClick={() => setDeleteProject(p)}
                       aria-label="Delete project"
-                      className="p-1.5 rounded-lg text-neutral-500 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                      className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <button
+                      type="button"
                       onClick={() => setViewProject(p)}
-                      className="text-xs py-1 px-2.5 ml-1 text-neutral-700 border-neutral-300"
+                      className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 ml-1 cursor-pointer"
                     >
                       View
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -272,7 +271,7 @@ export function ProjectsPage() {
       ) : (
         <Panel className="p-0 overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-50 text-[11px] uppercase tracking-wide text-neutral-500">
+            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
               <tr>
                 <th className="text-left font-semibold px-4 py-3">Project</th>
                 <th className="text-left font-semibold px-4 py-3 hidden md:table-cell">Client</th>
@@ -282,38 +281,54 @@ export function ProjectsPage() {
                 <th className="text-right font-semibold px-4 py-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-neutral-800">
               {filtered.map((p) => {
                 const count = getAssetsForProject(p.id).length
                 return (
-                  <tr key={p.id} className="hover:bg-neutral-50/70">
+                  <tr key={p.id} className="hover:bg-neutral-800/40 transition-colors">
                     <td className="px-4 py-3">
                       <div>
                         <button
                           type="button"
                           onClick={() => setViewProject(p)}
-                          className="font-bold text-xs text-neutral-900 hover:text-violet-600 text-left"
+                          className="font-bold text-xs text-white hover:text-cyan-400 text-left cursor-pointer"
                         >
                           {p.name}
                         </button>
-                        <p className="text-[11px] text-neutral-500 line-clamp-1">{p.description}</p>
+                        <p className="text-[11px] text-neutral-400 line-clamp-1">{p.description}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-neutral-700 hidden md:table-cell">{p.client}</td>
+                    <td className="px-4 py-3 text-xs text-neutral-300 hidden md:table-cell">{p.client}</td>
                     <td className="px-4 py-3">
-                      <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-full">
+                      <span className="text-[11px] font-semibold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
                         {p.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-neutral-700 hidden sm:table-cell">{count} items</td>
-                    <td className="px-4 py-3 text-xs text-neutral-500 hidden lg:table-cell">{formatDate(p.updatedAt)}</td>
+                    <td className="px-4 py-3 text-xs text-neutral-300 hidden sm:table-cell">{count} items</td>
+                    <td className="px-4 py-3 text-xs text-neutral-400 hidden lg:table-cell">{formatDate(p.updatedAt)}</td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => setViewProject(p)} className="text-xs py-1">View</Button>
-                        <button type="button" onClick={() => openEdit(p)} aria-label="Edit" className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setViewProject(p)}
+                          className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded hover:bg-neutral-800 cursor-pointer"
+                        >
+                          View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openEdit(p)}
+                          aria-label="Edit project"
+                          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 cursor-pointer"
+                        >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
-                        <button type="button" onClick={() => setDeleteProject(p)} aria-label="Delete" className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50">
+                        <button
+                          type="button"
+                          onClick={() => setDeleteProject(p)}
+                          aria-label="Delete project"
+                          className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-950/30 cursor-pointer"
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -327,7 +342,7 @@ export function ProjectsPage() {
       )}
 
       {/* Create Modal */}
-      <Modal theme="light" isOpen={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Create New Project" description="Projects organize your visual assets by client, campaign, or concept.">
+      <Modal theme="dark" isOpen={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Create New Project" description="Organize visual assets into campaigns, client work, or creative experiments.">
         <form onSubmit={handleCreate} className="space-y-4">
           <div>
             <FieldLabel htmlFor="project-name">Project Name *</FieldLabel>
@@ -337,7 +352,7 @@ export function ProjectsPage() {
               required
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
-              placeholder="e.g. Q4 Brand Identity Campaign"
+              placeholder="e.g. Autumn Brand Launch"
               className={lightInputClass}
             />
           </div>
@@ -348,7 +363,7 @@ export function ProjectsPage() {
               rows={3}
               value={formDesc}
               onChange={(e) => setFormDesc(e.target.value)}
-              placeholder="Brief summary of creative objectives and style direction�"
+              placeholder="Brief summary of creative objectives and style direction…"
               className={lightInputClass}
             />
           </div>
@@ -372,9 +387,9 @@ export function ProjectsPage() {
                 onChange={(e) => setFormStatus(e.target.value)}
                 className={lightInputClass}
               >
-                <option value="Active">Active</option>
-                <option value="In Review">In Review</option>
-                <option value="Archived">Archived</option>
+                <option value="Active" className="bg-neutral-900 text-white">Active</option>
+                <option value="In Review" className="bg-neutral-900 text-white">In Review</option>
+                <option value="Archived" className="bg-neutral-900 text-white">Archived</option>
               </select>
             </div>
           </div>
@@ -387,17 +402,17 @@ export function ProjectsPage() {
                   type="button"
                   onClick={() => setFormColor(c)}
                   className={cn(
-                    'w-7 h-7 rounded-full transition-all border-2',
+                    'w-7 h-7 rounded-full transition-all border-2 cursor-pointer',
                     COLOR_CLASSES[c],
-                    formColor === c ? 'ring-2 ring-offset-2 ring-violet-500 scale-110' : 'opacity-80'
+                    formColor === c ? 'ring-2 ring-offset-2 ring-cyan-500 scale-110' : 'opacity-80'
                   )}
                   aria-label={c}
                 />
               ))}
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-3 border-t border-neutral-200">
-            <Button variant="outline" size="sm" type="button" onClick={() => setCreateModalOpen(false)} className="text-neutral-700 border-neutral-300">
+          <div className="flex justify-end gap-2 pt-3 border-t border-neutral-800">
+            <Button variant="outline" size="sm" type="button" onClick={() => setCreateModalOpen(false)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
               Cancel
             </Button>
             <Button variant="gradient" size="sm" type="submit">
@@ -408,7 +423,7 @@ export function ProjectsPage() {
       </Modal>
 
       {/* Edit Modal */}
-      <Modal theme="light" isOpen={!!editProject} onClose={() => setEditProject(null)} title="Edit Project" description="Update project metadata and settings.">
+      <Modal theme="dark" isOpen={!!editProject} onClose={() => setEditProject(null)} title="Edit Project" description="Update project metadata and settings.">
         <form onSubmit={handleEdit} className="space-y-4">
           <div>
             <FieldLabel htmlFor="edit-name">Project Name *</FieldLabel>
@@ -450,9 +465,9 @@ export function ProjectsPage() {
                 onChange={(e) => setFormStatus(e.target.value)}
                 className={lightInputClass}
               >
-                <option value="Active">Active</option>
-                <option value="In Review">In Review</option>
-                <option value="Archived">Archived</option>
+                <option value="Active" className="bg-neutral-900 text-white">Active</option>
+                <option value="In Review" className="bg-neutral-900 text-white">In Review</option>
+                <option value="Archived" className="bg-neutral-900 text-white">Archived</option>
               </select>
             </div>
           </div>
@@ -465,20 +480,20 @@ export function ProjectsPage() {
                   type="button"
                   onClick={() => setFormColor(c)}
                   className={cn(
-                    'w-7 h-7 rounded-full transition-all border-2',
+                    'w-7 h-7 rounded-full transition-all border-2 cursor-pointer',
                     COLOR_CLASSES[c],
-                    formColor === c ? 'ring-2 ring-offset-2 ring-violet-500 scale-110' : 'opacity-80'
+                    formColor === c ? 'ring-2 ring-offset-2 ring-cyan-500 scale-110' : 'opacity-80'
                   )}
                   aria-label={c}
                 />
               ))}
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-3 border-t border-neutral-200">
-            <Button variant="outline" size="sm" type="button" onClick={() => setEditProject(null)} className="text-neutral-700 border-neutral-300">
+          <div className="flex justify-end gap-2 pt-3 border-t border-neutral-800">
+            <Button variant="outline" size="sm" type="button" onClick={() => setEditProject(null)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
               Cancel
             </Button>
-            <Button variant="primary" size="sm" type="submit">
+            <Button variant="gradient" size="sm" type="submit">
               Save Changes
             </Button>
           </div>
@@ -486,38 +501,38 @@ export function ProjectsPage() {
       </Modal>
 
       {/* View Project Details Modal */}
-      <Modal theme="light" isOpen={!!viewProject} onClose={() => setViewProject(null)} title={viewProject?.name} description={viewProject?.client + ' � ' + viewProject?.status} className="max-w-2xl">
+      <Modal theme="dark" isOpen={!!viewProject} onClose={() => setViewProject(null)} title={viewProject?.name} description={viewProject?.client + ' • ' + viewProject?.status} className="max-w-2xl">
         {viewProject && (
-          <div className="space-y-4">
-            <p className="text-xs text-neutral-600">{viewProject.description || 'No description.'}</p>
-            <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 flex items-center justify-between text-xs text-neutral-600">
+          <div className="space-y-4 text-white">
+            <p className="text-xs text-neutral-300">{viewProject.description || 'No description.'}</p>
+            <div className="p-3 bg-[#080B14] rounded-xl border border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
               <span>Created {formatDate(viewProject.createdAt)}</span>
               <span>Updated {formatDate(viewProject.updatedAt)}</span>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">
                 Project Visual Assets ({getAssetsForProject(viewProject.id).length})
               </h4>
               {getAssetsForProject(viewProject.id).length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {getAssetsForProject(viewProject.id).map((a) => (
-                    <div key={a.id} className="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100">
+                    <div key={a.id} className="rounded-xl overflow-hidden border border-neutral-700 bg-neutral-900">
                       <div className="aspect-square">
                         <MediaThumb type={a.type} src={a.src} poster={a.poster} alt={a.title} />
                       </div>
                       <div className="p-2">
-                        <p className="text-xs font-bold text-neutral-900 truncate">{a.title}</p>
-                        <p className="text-[10px] text-neutral-500">{a.tool}</p>
+                        <p className="text-xs font-bold text-white truncate">{a.title}</p>
+                        <p className="text-[10px] text-neutral-400">{a.tool}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="p-8 text-center rounded-xl border border-dashed border-neutral-200 bg-neutral-50/50">
-                  <p className="text-xs text-neutral-500">No assets currently assigned to this project.</p>
+                <div className="p-8 text-center rounded-xl border border-dashed border-neutral-800 bg-[#080B14]">
+                  <p className="text-xs text-neutral-400">No assets currently assigned to this project.</p>
                   <Link to="/dashboard/image-generator">
-                    <Button variant="outline" size="sm" className="mt-3 text-xs">
+                    <Button variant="outline" size="sm" className="mt-3 text-xs text-neutral-300 border-neutral-700 hover:bg-neutral-800">
                       Create Assets
                     </Button>
                   </Link>
@@ -525,11 +540,11 @@ export function ProjectsPage() {
               )}
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-neutral-200">
-              <Button variant="outline" size="sm" onClick={() => setViewProject(null)} className="text-neutral-700 border-neutral-300">
+            <div className="flex justify-end gap-2 pt-3 border-t border-neutral-800">
+              <Button variant="outline" size="sm" onClick={() => setViewProject(null)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
                 Close
               </Button>
-              <Button variant="primary" size="sm" onClick={() => { openEdit(viewProject); setViewProject(null); }}>
+              <Button variant="gradient" size="sm" onClick={() => { openEdit(viewProject); setViewProject(null); }}>
                 Edit Details
               </Button>
             </div>
@@ -538,14 +553,14 @@ export function ProjectsPage() {
       </Modal>
 
       {/* Delete Confirmation Modal */}
-      <Modal theme="light" isOpen={!!deleteProject} onClose={() => setDeleteProject(null)} title="Delete Project?" description="Demo only � this removes the project from the current browser session.">
+      <Modal theme="dark" isOpen={!!deleteProject} onClose={() => setDeleteProject(null)} title="Delete Project?" description="Demo only — this removes the project from the current browser session.">
         {deleteProject && (
-          <div className="space-y-4">
-            <p className="text-sm text-neutral-700">
+          <div className="space-y-4 text-white">
+            <p className="text-sm text-neutral-300">
               Are you sure you want to delete "<strong>{deleteProject.name}</strong>"? Visual assets in this project will not be destroyed.
             </p>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setDeleteProject(null)} className="text-neutral-700 border-neutral-300">
+              <Button variant="outline" size="sm" onClick={() => setDeleteProject(null)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
                 Cancel
               </Button>
               <Button variant="danger" size="sm" leftIcon={Trash2} onClick={handleDelete}>

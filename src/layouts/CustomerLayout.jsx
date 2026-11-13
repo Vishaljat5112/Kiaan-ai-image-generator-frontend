@@ -78,7 +78,7 @@ export function CustomerLayout() {
   }
 
   return (
-    <div className="min-h-screen flex bg-neutral-950 text-neutral-100">
+    <div className="min-h-screen flex bg-[#06080F] text-neutral-100">
       {/* Mobile Drawer Overlay */}
       {mobileDrawerOpen && (
         <div
@@ -90,13 +90,13 @@ export function CustomerLayout() {
       {/* Sidebar Navigation */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-neutral-800 bg-neutral-950/95 backdrop-blur-md transition-all duration-300',
+          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-neutral-800/90 bg-[#0A0E17]/95 backdrop-blur-md transition-all duration-300',
           sidebarCollapsed ? 'w-20' : 'w-64',
           mobileDrawerOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-neutral-800 shrink-0">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-neutral-800/90 shrink-0">
           {!sidebarCollapsed ? (
             <Logo to="/dashboard" badgeText="Studio" />
           ) : (
@@ -108,7 +108,7 @@ export function CustomerLayout() {
           {/* Desktop Collapse Toggle */}
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="hidden lg:flex p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 transition-colors"
+            className="hidden lg:flex p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 transition-colors cursor-pointer"
             title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -117,7 +117,7 @@ export function CustomerLayout() {
           {/* Mobile Close Button */}
           <button
             onClick={() => setMobileDrawerOpen(false)}
-            className="lg:hidden p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900"
+            className="lg:hidden p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -143,13 +143,13 @@ export function CustomerLayout() {
                     className={cn(
                       'flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all group select-none',
                       active
-                        ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/30'
+                        ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.12)]'
                         : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/60',
                       sidebarCollapsed && 'justify-center px-2'
                     )}
                     title={sidebarCollapsed ? item.label : undefined}
                   >
-                    <Icon className={cn('w-4 h-4 shrink-0', active ? 'text-indigo-400' : 'text-neutral-400 group-hover:text-neutral-200')} />
+                    <Icon className={cn('w-4 h-4 shrink-0 transition-colors', active ? 'text-cyan-400' : 'text-neutral-400 group-hover:text-neutral-200')} />
                     {!sidebarCollapsed && (
                       <span className="flex-1 truncate">{item.label}</span>
                     )}
@@ -166,16 +166,16 @@ export function CustomerLayout() {
         </div>
 
         {/* Sidebar Bottom Section (Account & Logout) */}
-        <div className="p-3 border-t border-neutral-800 shrink-0 space-y-2">
+        <div className="p-3 border-t border-neutral-800/90 shrink-0 space-y-2">
           {/* Credit Overview */}
           {!sidebarCollapsed ? (
-            <div className="p-3 rounded-xl bg-neutral-900/60 border border-neutral-800 text-xs">
+            <div className="p-3 rounded-xl bg-[#0D111C] border border-neutral-800 text-xs">
               <div className="flex items-center justify-between text-neutral-300 font-medium mb-1">
                 <span>Credit Balance</span>
-                <span className="text-neutral-200 font-semibold">{user?.creditBalance ?? 0} cr</span>
+                <span className="text-white font-semibold">{user?.creditBalance ?? 0} cr</span>
               </div>
               <Link to="/dashboard/credits">
-                <Button variant="secondary" size="sm" className="w-full text-xs py-1 mt-1.5" leftIcon={Plus}>
+                <Button variant="secondary" size="sm" className="w-full text-xs py-1 mt-1.5 border-neutral-700 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white hover:border-cyan-500/40" leftIcon={Plus}>
                   Add Credits
                 </Button>
               </Link>
@@ -183,7 +183,7 @@ export function CustomerLayout() {
           ) : (
             <div className="flex justify-center">
               <Link to="/dashboard/credits" title="Add Credits">
-                <div className="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-neutral-700 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-[#0D111C] border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-cyan-500/40 transition-colors">
                   <Coins className="w-4 h-4" />
                 </div>
               </Link>
@@ -199,7 +199,7 @@ export function CustomerLayout() {
             )}
             title="Switch to Admin Portal"
           >
-            <Shield className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            <Shield className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             {!sidebarCollapsed && <span>Admin Portal Switch</span>}
           </Link>
 
@@ -207,7 +207,7 @@ export function CustomerLayout() {
           <button
             onClick={handleLogout}
             className={cn(
-              'w-full flex items-center gap-2 p-2 rounded-lg text-xs text-rose-400/90 hover:text-rose-300 hover:bg-rose-950/20 transition-colors font-medium',
+              'w-full flex items-center gap-2 p-2 rounded-lg text-xs text-rose-400/90 hover:text-rose-300 hover:bg-rose-950/20 transition-colors font-medium cursor-pointer',
               sidebarCollapsed && 'justify-center'
             )}
             title="Log Out"
@@ -226,11 +226,11 @@ export function CustomerLayout() {
         )}
       >
         {/* Top Header */}
-        <header className="sticky top-0 z-30 h-16 border-b border-neutral-800/80 bg-neutral-950/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
+        <header className="sticky top-0 z-30 h-16 border-b border-neutral-800/80 bg-[#06080F]/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileDrawerOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900"
+              className="lg:hidden p-2 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 cursor-pointer"
               aria-label="Open sidebar"
             >
               <Menu className="w-5 h-5" />
@@ -245,7 +245,7 @@ export function CustomerLayout() {
 
           <div className="flex items-center gap-3">
             <Link to="/dashboard/credits" className="hidden sm:flex">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 text-xs hover:border-neutral-700 transition-colors">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D111C] border border-neutral-800 text-xs hover:border-cyan-500/40 transition-colors">
                 <Coins className="w-3.5 h-3.5 text-cyan-400" />
                 <span className="text-neutral-400">Balance:</span>
                 <span className="text-white font-semibold">{user?.creditBalance ?? 0} cr</span>

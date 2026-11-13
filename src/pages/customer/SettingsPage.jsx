@@ -87,20 +87,20 @@ export function SettingsPage() {
       <Panel>
         <PanelTitle icon={User}>Personal Profile</PanelTitle>
         <form onSubmit={handleSaveProfile} className="space-y-5">
-          <div className="flex flex-col sm:flex-row items-center gap-5 pb-5 border-b border-neutral-100">
+          <div className="flex flex-col sm:flex-row items-center gap-5 pb-5 border-b border-neutral-800">
             <div className="relative group">
               <img
                 src={avatar}
                 alt="Avatar"
-                className="w-20 h-20 rounded-full object-cover border-2 border-neutral-200"
+                className="w-20 h-20 rounded-full object-cover border-2 border-neutral-700"
               />
               <button
                 type="button"
                 onClick={() => avatarInputRef.current?.click()}
-                className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
+                className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
                 aria-label="Upload photo"
               >
-                <Camera className="w-5 h-5" />
+                <Camera className="w-5 h-5 text-cyan-400" />
               </button>
               <input
                 ref={avatarInputRef}
@@ -111,14 +111,14 @@ export function SettingsPage() {
               />
             </div>
             <div className="text-center sm:text-left space-y-1">
-              <h3 className="text-sm font-bold text-neutral-900">{fullName}</h3>
-              <p className="text-xs text-neutral-500">{email} � {user?.tier || 'Creator Tier'}</p>
+              <h3 className="text-sm font-bold text-white">{fullName}</h3>
+              <p className="text-xs text-neutral-400">{email} • {user?.tier || 'Creator Tier'}</p>
               <Button
                 variant="outline"
                 size="sm"
                 type="button"
                 onClick={() => avatarInputRef.current?.click()}
-                className="text-xs py-1 text-neutral-700 border-neutral-300"
+                className="text-xs py-1 text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
               >
                 Change Avatar
               </Button>
@@ -179,7 +179,7 @@ export function SettingsPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={currPassword}
                 onChange={(e) => setCurrPassword(e.target.value)}
-                placeholder="������������"
+                placeholder="••••••••••••"
                 className={lightInputClass}
               />
             </div>
@@ -210,7 +210,7 @@ export function SettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-xs text-neutral-500 hover:text-neutral-800 flex items-center gap-1.5"
+                className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5"
               >
                 {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                 {showPassword ? 'Hide password text' : 'Show password text'}
@@ -226,7 +226,7 @@ export function SettingsPage() {
       {/* Notifications & Studio Preferences */}
       <Panel>
         <PanelTitle icon={Bell}>Notification Preferences</PanelTitle>
-        <div className="divide-y divide-neutral-100">
+        <div className="divide-y divide-neutral-800">
           <Toggle
             label="Inference Completion Alerts"
             description="Send an email or desktop ping when a long-running 3D DiT video job finishes."
