@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Sparkles, Layers } from 'lucide-react'
+
+const SLIDE_DURATION = 3500
 
 export function AuthImageCarousel({ compact = false, className = '' }) {
   const [activeSlide, setActiveSlide] = useState(0)
-  const timerRef = useRef(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   // 4 Reordered Visual Themes:
-  // 1. Position 1: Fantasy ("Every Idea Starts Here") - Former Image 4
-  // 2. Position 2: Fashion ("Create Without Limits") - Former Image 1
-  // 3. Position 3: Sci-Fi Art ("Imagine New Worlds") - Former Image 2
-  // 4. Position 4: Commercial ("Bring Products to Life") - Former Image 3
+  // 1. Position 1: Fantasy ("Every Idea Starts Here")
+  // 2. Position 2: Fashion ("Create Without Limits")
+  // 3. Position 3: Sci-Fi Art ("Imagine New Worlds")
+  // 4. Position 4: Commercial ("Bring Products to Life")
   const slides = [
     {
       id: 'fantasy',
@@ -49,53 +52,65 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
     }
   ]
 
-  // Auto-advance every 3.5 seconds (3500ms), pausing when page is hidden
+  // Detect user preference for reduced motion
   useEffect(() => {
-    // Check user preference for reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion) return
-
-    const startTimer = () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-      timerRef.current = setInterval(() => {
-        setActiveSlide((prev) => (prev + 1) % slides.length)
-      }, 3500)
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+      setPrefersReducedMotion(mediaQuery.matches)
+      const handler = (e) => setPrefersReducedMotion(e.matches)
+      mediaQuery.addEventListener('change', handler)
+      return () => mediaQuery.removeEventListener('change', handler)
     }
+  }, [])
 
+  // Pause when browser tab/window is hidden
+  useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
-        if (timerRef.current) clearInterval(timerRef.current)
-      } else {
-        startTimer()
-      }
+      setIsPaused(document.visibilityState === 'hidden')
     }
-
-    startTimer()
     document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [])
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
+  // Fallback timer when reduced motion is preferred
+  useEffect(() => {
+    if (!prefersReducedMotion || isPaused) return
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length)
+    }, SLIDE_DURATION)
+    return () => clearInterval(timer)
+  }, [prefersReducedMotion, isPaused, slides.length])
+
+  // When animation finishes, automatically change to the next slide
+  const handleAnimationEnd = (index) => {
+    if (index === activeSlide && !isPaused) {
+      setActiveSlide((prev) => (prev + 1) % slides.length)
     }
-  }, [slides.length])
+  }
 
-  // Handle manual slide selection
+  // Handle manual tab selection
   const selectSlide = (index) => {
     setActiveSlide(index)
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = setInterval(() => {
-        setActiveSlide((prev) => (prev + 1) % slides.length)
-      }, 3500)
-    }
   }
 
   return (
     <div
-      className={`relative w-full h-full overflow-hidden bg-neutral-950 flex flex-col justify-end select-none group ${
-        compact ? 'min-h-[460px] md:min-h-full rounded-2xl md:rounded-none md:rounded-l-3xl' : 'min-h-[580px] lg:min-h-[720px] rounded-[32px] shadow-2xl border border-neutral-200/50'
+      className={`relative w-full h-full overflow-hidden bg-[#06080F] flex flex-col justify-end select-none group ${
+        compact ? 'min-h-[460px] md:min-h-full rounded-2xl md:rounded-none md:rounded-l-3xl' : 'min-h-[580px] lg:min-h-[720px] rounded-[32px] shadow-2xl border border-neutral-800/80'
       } ${className}`}
     >
+      {/* Scoped CSS Keyframe for smooth left-to-right filling video progress bar */}
+      <style>{`
+        @keyframes carouselProgressFill {
+          0% {
+            width: 0%;
+          }
+          100% {
+            width: 100%;
+          }
+        }
+      `}</style>
+
       {/* 4 Preloaded Images with Smooth Crossfade */}
       <div className="absolute inset-0 overflow-hidden">
         {slides.map((slide, index) => {
@@ -118,19 +133,20 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
         })}
       </div>
 
-      {/* Dark Vignette Overlay for Crisp Readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/10 z-20 pointer-events-none" />
+      {/* Dark Obsidian & Cyan Atmospheric Vignette */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/60 to-transparent z-20 pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none z-20" />
 
       {/* Bottom Content Overlay */}
       <div className={`relative z-30 space-y-3 text-white ${compact ? 'p-5 sm:p-6' : 'p-6 sm:p-8 lg:p-10 space-y-5'}`}>
         {/* Pills / Badges */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-md border border-white/20 text-white shadow-xs">
-            <Sparkles className="w-3 h-3 text-violet-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/80 backdrop-blur-md border border-cyan-500/40 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+            <Sparkles className="w-3 h-3 text-cyan-400" />
             <span>{slides[activeSlide].tag}</span>
           </span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-neutral-300 bg-black/40 backdrop-blur-md border border-white/10">
-            <Layers className="w-2.5 h-2.5 text-cyan-400" />
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-neutral-300 bg-black/60 backdrop-blur-md border border-white/10">
+            <Layers className="w-2.5 h-2.5 text-pink-400" />
             <span>{slides[activeSlide].badge}</span>
           </span>
         </div>
@@ -145,11 +161,13 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
           </p>
         </div>
 
-        {/* 4 Interactive Progress Indicators */}
+        {/* 4 Interactive Video-Style Progress Indicators */}
         <div className="pt-1 space-y-1.5">
           <div className="grid grid-cols-4 gap-1.5">
             {slides.map((slide, index) => {
               const isActive = activeSlide === index
+              const isPast = index < activeSlide
+
               return (
                 <button
                   key={slide.id}
@@ -158,18 +176,39 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
                   className="group/bar py-1.5 flex flex-col gap-1 text-left focus:outline-none cursor-pointer"
                   aria-label={`Switch to slide ${index + 1}: ${slide.title}`}
                 >
-                  {/* Progress Bar Line */}
-                  <div className="h-1 w-full rounded-full bg-white/25 overflow-hidden transition-colors group-hover/bar:bg-white/40">
-                    <div
-                      className={`h-full bg-white transition-all duration-300 ${
-                        isActive ? 'w-full shadow-xs' : 'w-0'
-                      }`}
-                    />
+                  {/* Progress Bar Line Track */}
+                  <div className="h-1 w-full rounded-full bg-neutral-800/90 overflow-hidden transition-colors group-hover/bar:bg-neutral-700">
+                    {isActive ? (
+                      /* Active Slide: Live Left-to-Right Video Fill */
+                      <div
+                        key={`bar-${activeSlide}`}
+                        onAnimationEnd={() => handleAnimationEnd(index)}
+                        className="h-full bg-gradient-to-r from-cyan-400 to-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.8)]"
+                        style={{
+                          animation: prefersReducedMotion
+                            ? 'none'
+                            : `carouselProgressFill ${SLIDE_DURATION}ms linear forwards`,
+                          animationPlayState: isPaused ? 'paused' : 'running',
+                          width: prefersReducedMotion ? '100%' : undefined
+                        }}
+                      />
+                    ) : isPast ? (
+                      /* Completed Slide: Solid cyan filled */
+                      <div className="h-full w-full bg-cyan-500/70" />
+                    ) : (
+                      /* Upcoming Slide: Empty track */
+                      <div className="h-full w-0" />
+                    )}
                   </div>
+
                   {/* Slide Label */}
                   <span
-                    className={`text-[9px] font-bold uppercase tracking-wider transition-colors truncate hidden sm:block ${
-                      isActive ? 'text-white' : 'text-neutral-400 group-hover/bar:text-neutral-200'
+                    className={`text-[9px] font-bold uppercase tracking-wider transition-all truncate hidden sm:block ${
+                      isActive
+                        ? 'text-cyan-400 drop-shadow-[0_0_6px_rgba(6,182,212,0.6)] font-extrabold'
+                        : isPast
+                          ? 'text-neutral-300 font-medium'
+                          : 'text-neutral-500 group-hover/bar:text-neutral-300'
                     }`}
                   >
                     {slide.label}

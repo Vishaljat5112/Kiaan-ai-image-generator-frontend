@@ -245,23 +245,22 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
       {/* Centered Premium Modal Card (Constrained to ~85-90vh, fits 1366x768 without scrolling) */}
       <div
         ref={modalRef}
-        className="relative w-full max-w-[980px] bg-white rounded-3xl shadow-2xl shadow-neutral-950/40 border border-neutral-200/90 overflow-hidden flex flex-col md:flex-row max-h-[88vh] animate-in zoom-in-95 fade-in duration-200 z-10"
+        className="relative w-full max-w-[980px] bg-[#0B0F19] rounded-3xl shadow-2xl shadow-[0_0_50px_rgba(6,182,212,0.2)] border border-cyan-500/50 ring-1 ring-cyan-400/30 overflow-hidden flex flex-col md:flex-row max-h-[88vh] animate-in zoom-in-95 fade-in duration-200 z-10 text-white"
       >
         {/* LEFT COLUMN: ~45% Cinematic Gallery (Hidden on mobile/tablet) */}
-        <div className="hidden md:flex md:w-[45%] bg-neutral-950 relative overflow-hidden select-none">
+        <div className="hidden md:flex md:w-[45%] bg-neutral-950 relative overflow-hidden select-none border-r border-neutral-800/80">
           <AuthImageCarousel compact={true} />
         </div>
 
         {/* RIGHT COLUMN: ~55% Compact Authentication Form Area */}
-        <div className="w-full md:w-[55%] flex flex-col justify-between p-5 sm:p-6 lg:p-7 overflow-y-auto bg-white">
+        <div className="w-full md:w-[55%] flex flex-col justify-between p-5 sm:p-6 lg:p-7 overflow-y-auto bg-[#0B0F19] text-white">
           {/* Header Row: Logo & Close Button */}
           <div className="flex items-center justify-between pb-3">
-            <Logo to="/" theme="light" size="sm" showBadge={false} />
-
+            <Logo to="/" theme="dark" size="sm" showBadge={false} />
             <button
               type="button"
               onClick={handleClose}
-              className="w-8 h-8 rounded-full border border-neutral-200 hover:border-neutral-300 bg-neutral-50 hover:bg-neutral-100 text-neutral-500 hover:text-neutral-900 flex items-center justify-center transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-full border border-neutral-800 hover:border-cyan-500/50 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               title="Close modal"
               aria-label="Close modal"
             >
@@ -273,12 +272,12 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
           <div className="space-y-4 my-auto">
             {/* Title & Short Subtitle */}
             <div className="space-y-0.5">
-              <h2 id="auth-modal-title" className="text-xl sm:text-2xl font-extrabold text-neutral-950 tracking-tight leading-tight">
+              <h2 id="auth-modal-title" className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-tight">
                 {mode === 'login' && (role === 'admin' ? 'Admin Portal Sign In' : 'Welcome to Kiaan Studio')}
                 {mode === 'signup' && 'Create Your Account'}
                 {mode === 'forgot-password' && 'Reset Password'}
               </h2>
-              <p className="text-xs text-neutral-500 leading-normal">
+              <p className="text-xs text-neutral-400 leading-normal">
                 {mode === 'login' && (role === 'admin' ? 'Authorized access for GPU allocation & model oversight' : 'Sign in to access your creative workstation & projects')}
                 {mode === 'signup' && 'Initialize your creative workspace with 250 evaluation credits'}
                 {mode === 'forgot-password' && 'Enter your registered email to receive simulated recovery instructions'}
@@ -287,8 +286,8 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
 
             {/* Temporary Feedback Banner */}
             {feedback && (
-              <div className="p-2.5 rounded-xl bg-violet-50 border border-violet-200 text-xs text-violet-800 flex items-center gap-2 animate-in fade-in duration-150">
-                <CheckCircle2 className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+              <div className="p-2.5 rounded-xl bg-cyan-950/60 border border-cyan-800/80 text-xs text-cyan-300 flex items-center gap-2 animate-in fade-in duration-150">
+                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                 <span>{feedback}</span>
               </div>
             )}
@@ -299,17 +298,17 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
             {mode === 'login' && (
               <div className="space-y-3.5">
                 {/* Segmented Role Switcher: Customer vs Admin */}
-                <div className="p-1 rounded-xl bg-neutral-100 border border-neutral-200/80 grid grid-cols-2 gap-1 select-none">
+                <div className="p-1 rounded-xl bg-neutral-900/90 border border-neutral-800 grid grid-cols-2 gap-1 select-none">
                   <button
                     type="button"
                     onClick={() => handleRoleSwitch('customer')}
                     className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       role === 'customer'
-                        ? 'bg-white text-neutral-950 shadow-2xs'
-                        : 'text-neutral-500 hover:text-neutral-900'
+                        ? 'bg-neutral-800 text-white shadow-2xs border border-cyan-500/40'
+                        : 'text-neutral-400 hover:text-neutral-200'
                     }`}
                   >
-                    <User className="w-3 h-3 text-violet-600" />
+                    <User className="w-3 h-3 text-cyan-400" />
                     <span>User Login</span>
                   </button>
 
@@ -318,11 +317,11 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     onClick={() => handleRoleSwitch('admin')}
                     className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       role === 'admin'
-                        ? 'bg-white text-neutral-950 shadow-2xs'
-                        : 'text-neutral-500 hover:text-neutral-900'
+                        ? 'bg-neutral-800 text-white shadow-2xs border border-pink-500/40'
+                        : 'text-neutral-400 hover:text-neutral-200'
                     }`}
                   >
-                    <Shield className="w-3 h-3 text-amber-500" />
+                    <Shield className="w-3 h-3 text-pink-400" />
                     <span>Admin Login</span>
                   </button>
                 </div>
@@ -332,7 +331,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                   <Input
                     label={role === 'admin' ? 'Administrator Email' : 'Email Address'}
                     type="email"
-                    theme="light"
+                    theme="dark"
                     leftIcon={Mail}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -344,7 +343,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <Input
                       label="Password"
                       type={showPassword ? 'text' : 'password'}
-                      theme="light"
+                      theme="dark"
                       leftIcon={Lock}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -354,7 +353,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-8 text-neutral-400 hover:text-neutral-700 cursor-pointer"
+                      className="absolute right-3 top-8 text-neutral-400 hover:text-white cursor-pointer"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -365,7 +364,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <Input
                       label="Hardware Security PIN (Mock)"
                       type="text"
-                      theme="light"
+                      theme="dark"
                       leftIcon={Key}
                       value={securityPin}
                       onChange={(e) => setSecurityPin(e.target.value)}
@@ -375,20 +374,20 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     />
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-neutral-600 pt-0.5">
+                  <div className="flex items-center justify-between text-xs text-neutral-400 pt-0.5">
                     <label className="flex items-center gap-1.5 cursor-pointer select-none">
                       <input
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="w-3.5 h-3.5 rounded border-neutral-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                        className="w-3.5 h-3.5 rounded border-neutral-700 bg-neutral-900 text-pink-500 focus:ring-cyan-500 cursor-pointer"
                       />
                       <span>Remember session</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => switchMode('forgot-password')}
-                      className="font-semibold text-violet-700 hover:text-violet-800 transition-colors cursor-pointer"
+                      className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                     >
                       Forgot password?
                     </button>
@@ -397,7 +396,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm bg-neutral-950 hover:bg-neutral-800 disabled:bg-neutral-400 text-white shadow-sm transition-all flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 disabled:from-neutral-700 disabled:to-neutral-800 text-white shadow-lg shadow-pink-500/25 transition-all flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                   >
                     <span>
                       {isSubmitting
@@ -414,12 +413,12 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                 <DemoAccess compact={true} />
 
                 {/* Switch to Signup */}
-                <div className="pt-2 text-center text-xs text-neutral-500">
+                <div className="pt-2 text-center text-xs text-neutral-400">
                   Don&apos;t have an account?{' '}
                   <button
                     type="button"
                     onClick={() => switchMode('signup')}
-                    className="font-bold text-violet-700 hover:text-violet-800 transition-colors cursor-pointer"
+                    className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                   >
                     Sign Up &rarr;
                   </button>
@@ -434,14 +433,14 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
               <div className="space-y-3">
                 {/* Demo Preview Badge & Auto-fill Action */}
                 <div className="flex items-center justify-between text-xs">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 font-semibold text-[10px] border border-violet-200/60">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-400 font-semibold text-[10px] border border-cyan-800/60">
                     <Sparkles className="w-3 h-3" />
                     <span>Demo Preview</span>
                   </span>
                   <button
                     type="button"
                     onClick={handleQuickDemoFill}
-                    className="text-violet-700 hover:text-violet-800 font-bold underline text-xs cursor-pointer inline-flex items-center gap-1"
+                    className="text-cyan-400 hover:text-cyan-300 font-bold underline text-xs cursor-pointer inline-flex items-center gap-1"
                   >
                     Auto-Fill Demo Info
                   </button>
@@ -452,7 +451,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                   <Input
                     label="Full Name"
                     type="text"
-                    theme="light"
+                    theme="dark"
                     placeholder="Jane Doe"
                     leftIcon={User}
                     value={fullName}
@@ -467,7 +466,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                   <Input
                     label="Email Address"
                     type="email"
-                    theme="light"
+                    theme="dark"
                     placeholder="jane@studio.com"
                     leftIcon={Mail}
                     value={email}
@@ -483,7 +482,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <Input
                       label="Password"
                       type="password"
-                      theme="light"
+                      theme="dark"
                       placeholder="Min 8 chars"
                       leftIcon={Lock}
                       value={password}
@@ -498,7 +497,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <Input
                       label="Confirm Password"
                       type="password"
-                      theme="light"
+                      theme="dark"
                       placeholder="Repeat password"
                       leftIcon={Lock}
                       value={confirmPassword}
@@ -521,29 +520,29 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                           setAgreedTerms(e.target.checked)
                           if (errors.terms) setErrors({ ...errors, terms: null })
                         }}
-                        className="w-3.5 h-3.5 mt-0.5 rounded border-neutral-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                        className="w-3.5 h-3.5 mt-0.5 rounded border-neutral-700 bg-neutral-900 text-pink-500 focus:ring-cyan-500 cursor-pointer"
                       />
-                      <span className="text-[11px] text-neutral-600 leading-snug">
+                      <span className="text-[11px] text-neutral-400 leading-snug">
                         I agree to the{' '}
-                        <Link to="/terms" onClick={handleClose} className="font-semibold text-violet-700 hover:underline">
+                        <Link to="/terms" onClick={handleClose} className="font-semibold text-cyan-400 hover:underline">
                           Terms
                         </Link>{' '}
                         and{' '}
-                        <Link to="/privacy" onClick={handleClose} className="font-semibold text-violet-700 hover:underline">
+                        <Link to="/privacy" onClick={handleClose} className="font-semibold text-cyan-400 hover:underline">
                           Privacy Policy
                         </Link>
                         .
                       </span>
                     </label>
                     {errors.terms && (
-                      <p className="text-[10px] text-rose-600 font-medium pl-5">{errors.terms}</p>
+                      <p className="text-[10px] text-rose-400 font-medium pl-5">{errors.terms}</p>
                     )}
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm bg-neutral-950 hover:bg-neutral-800 disabled:bg-neutral-400 text-white shadow-sm transition-all flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 disabled:from-neutral-700 disabled:to-neutral-800 text-white shadow-lg shadow-pink-500/25 transition-all flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                   >
                     <span>{isSubmitting ? 'Creating Studio Account...' : 'Create Studio Account'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -554,12 +553,12 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                 <DemoAccess compact={true} />
 
                 {/* Switch to Login */}
-                <div className="pt-2 text-center text-xs text-neutral-500">
+                <div className="pt-2 text-center text-xs text-neutral-400">
                   Already have an account?{' '}
                   <button
                     type="button"
                     onClick={() => switchMode('login')}
-                    className="font-bold text-violet-700 hover:text-violet-800 transition-colors cursor-pointer"
+                    className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                   >
                     Sign In &rarr;
                   </button>
@@ -573,23 +572,23 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
             {mode === 'forgot-password' && (
               <div className="space-y-3.5">
                 {mockResetToken ? (
-                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-3 text-center">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+                  <div className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-800/60 space-y-3 text-center">
+                    <CheckCircle2 className="w-8 h-8 text-cyan-400 mx-auto" />
                     <div className="space-y-0.5">
-                      <h4 className="text-sm font-bold text-emerald-950">Instructions Dispatched</h4>
-                      <p className="text-xs text-emerald-800">
-                        Simulated recovery token generated for <strong className="text-emerald-950">{email}</strong>:
+                      <h4 className="text-sm font-bold text-white">Instructions Dispatched</h4>
+                      <p className="text-xs text-neutral-300">
+                        Simulated recovery token generated for <strong className="text-cyan-300">{email}</strong>:
                       </p>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-white border border-emerald-300 text-center font-mono font-bold text-violet-700 text-xs select-all">
+                    <div className="p-2.5 rounded-xl bg-neutral-900 border border-cyan-500/40 text-center font-mono font-bold text-cyan-400 text-xs select-all">
                       {mockResetToken}
                     </div>
 
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
-                      className="w-full py-2 px-3 rounded-xl bg-neutral-950 text-white font-semibold text-xs hover:bg-neutral-800 transition-colors cursor-pointer"
+                      className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold text-xs shadow-md transition-colors cursor-pointer"
                     >
                       Return to Sign In
                     </button>
@@ -599,7 +598,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <Input
                       label="Account Email Address"
                       type="email"
-                      theme="light"
+                      theme="dark"
                       placeholder="artist@studio.com"
                       leftIcon={Mail}
                       value={email}
@@ -614,7 +613,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm bg-neutral-950 hover:bg-neutral-800 disabled:bg-neutral-400 text-white shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 disabled:from-neutral-700 disabled:to-neutral-800 text-white shadow-lg shadow-pink-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>{isSubmitting ? 'Dispatching...' : 'Dispatch Reset Link'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -626,12 +625,12 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                 <DemoAccess compact={true} />
 
                 {/* Back to Login */}
-                <div className="pt-2 text-center text-xs text-neutral-500">
+                <div className="pt-2 text-center text-xs text-neutral-400">
                   Remembered your password?{' '}
                   <button
                     type="button"
                     onClick={() => switchMode('login')}
-                    className="font-bold text-violet-700 hover:text-violet-800 transition-colors cursor-pointer"
+                    className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                   >
                     Back to Sign In &rarr;
                   </button>
@@ -641,7 +640,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
           </div>
 
           {/* Bottom Micro Footer */}
-          <div className="pt-4 text-center text-[10px] text-neutral-400 select-none">
+          <div className="pt-4 text-center text-[10px] text-neutral-500 select-none">
             &copy; 2026 Kiaan Studio &bull; Creative Workstation &bull; Evaluation Preview
           </div>
         </div>
