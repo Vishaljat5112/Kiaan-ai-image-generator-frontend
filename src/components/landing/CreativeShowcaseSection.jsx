@@ -85,17 +85,17 @@ export function CreativeShowcaseSection() {
         <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
         {/* Marquee Track */}
-        <div className="animate-marquee gap-5 sm:gap-6 px-4">
+        <div className="animate-marquee gap-5 sm:gap-6 px-4 py-4">
           {loopItems.map((item, index) => (
             <div
               key={`${item.id}-${index}`}
-              className="w-56 sm:w-68 h-[380px] sm:h-[430px] rounded-2xl overflow-hidden shrink-0 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 group/card relative select-none bg-neutral-100 border border-neutral-200/60"
+              className="w-56 sm:w-68 h-[380px] sm:h-[430px] rounded-2xl overflow-hidden shrink-0 shadow-md hover:shadow-xl transition-shadow duration-300 group/card relative select-none bg-neutral-100 border border-neutral-200/60"
             >
               <img
                 src={item.image}
                 alt={item.title}
                 loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                className="w-full h-full object-cover"
               />
 
               {/* Bottom Gradient Label Overlay */}

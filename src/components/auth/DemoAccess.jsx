@@ -9,7 +9,7 @@ export function DemoAccess({ onSelect, compact = false }) {
   const [feedback, setFeedback] = useState(null)
 
   const handleCustomerDemo = () => {
-    setFeedback('Customer Demo active. Entering Studio...')
+    setFeedback('User Demo active. Entering Studio...')
     loginAsMockUser('creator', {
       fullName: 'Jane Doe (Demo)',
       email: 'creator.demo@kiaan.studio',
@@ -63,7 +63,7 @@ export function DemoAccess({ onSelect, compact = false }) {
             className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border border-neutral-200 hover:border-violet-300 bg-white hover:bg-violet-50/60 text-neutral-800 text-xs font-bold shadow-2xs transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
           >
             <User className="w-3.5 h-3.5 text-violet-600" />
-            <span>Customer Demo &rarr;</span>
+            <span>User Demo &rarr;</span>
           </button>
 
           <button
@@ -105,7 +105,7 @@ export function DemoAccess({ onSelect, compact = false }) {
           className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-white hover:bg-violet-50/80 border border-neutral-300 hover:border-violet-300 text-neutral-900 text-xs font-bold shadow-2xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
         >
           <User className="w-3.5 h-3.5 text-violet-600" />
-          <span>Customer Demo &rarr;</span>
+          <span>User Demo &rarr;</span>
         </button>
 
         <button
@@ -119,7 +119,7 @@ export function DemoAccess({ onSelect, compact = false }) {
       </div>
 
       <p className="text-[11px] text-neutral-500 text-center leading-relaxed">
-        Bypasses manual credentials: <strong>Customer Demo</strong> loads <code>/dashboard</code>;{' '}
+        Bypasses manual credentials: <strong>User Demo</strong> loads <code>/dashboard</code>;{' '}
         <strong>Admin Demo</strong> loads <code>/admin</code>.
       </p>
     </div>

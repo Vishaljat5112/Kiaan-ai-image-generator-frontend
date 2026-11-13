@@ -310,7 +310,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     }`}
                   >
                     <User className="w-3 h-3 text-violet-600" />
-                    <span>Customer Login</span>
+                    <span>User Login</span>
                   </button>
 
                   <button

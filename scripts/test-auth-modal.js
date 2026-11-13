@@ -47,7 +47,7 @@ assert(authModalContent.includes("e.key === 'Tab'"), 'Keyboard focus trap implem
 assert(authModalContent.includes('<AuthImageCarousel compact={true} />') || authModalContent.includes('AuthImageCarousel'), 'Reuses 4-image carousel in compact mode')
 
 // Requirement 5: Right Panel - Login
-assert(authModalContent.includes('Customer Login') && authModalContent.includes('Admin Login'), 'Customer and Admin login role switcher present')
+assert(authModalContent.includes('User Login') && authModalContent.includes('Admin Login'), 'User and Admin login role switcher present')
 assert(authModalContent.includes('showPassword'), 'Show/hide password toggle present')
 assert(authModalContent.includes('switchMode(\'forgot-password\')'), 'Forgot password link transitions mode inside modal')
 assert(authModalContent.includes('DemoAccess'), 'Instant Demo Access integrated')
@@ -70,7 +70,7 @@ assert(!authModalContent.includes('Enterprise SSO'), 'Enterprise SSO button remo
 // Requirement 9: Demo Access Persistence
 const demoAccessPath = path.join(root, 'src/components/auth/DemoAccess.jsx')
 const demoAccessContent = fs.readFileSync(demoAccessPath, 'utf8')
-assert(demoAccessContent.includes('/dashboard'), 'Customer Demo routes to /dashboard')
+assert(demoAccessContent.includes('/dashboard'), 'User Demo routes to /dashboard')
 assert(demoAccessContent.includes('/admin'), 'Admin Demo routes to /admin')
 
 // Requirement 10: Routing Behavior in AppRoutes
