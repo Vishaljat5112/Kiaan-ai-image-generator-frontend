@@ -4,10 +4,10 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 
 export function CinematicCtaSection() {
   return (
-    <section className="py-16 sm:py-24 bg-white">
+    <section className="py-16 sm:py-24 bg-[#06080F]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Full-width banner container inside max-w-7xl */}
-        <div className="relative rounded-[32px] sm:rounded-[44px] overflow-hidden bg-neutral-950 aspect-[16/9] sm:aspect-[21/9] flex items-center justify-center p-6 sm:p-12 shadow-2xl border border-neutral-200/80 group">
+        <div className="relative rounded-[32px] sm:rounded-[44px] overflow-hidden bg-neutral-950 aspect-[16/9] sm:aspect-[21/9] flex items-center justify-center p-6 sm:p-12 shadow-2xl border border-neutral-800 group">
           {/* Cinematic Background Image */}
           <img
             src="/images/landing/cta-cinematic-banner.jpg"
@@ -22,7 +22,7 @@ export function CinematicCtaSection() {
           {/* Centered Content */}
           <div className="relative z-10 max-w-2xl text-center space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-white mx-auto shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
               <span>Kiaan Studio Creative Workstation</span>
             </div>
 
@@ -38,10 +38,10 @@ export function CinematicCtaSection() {
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-semibold text-base bg-white text-neutral-950 hover:bg-neutral-100 shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-xl shadow-pink-500/30 transition-all hover:scale-105 active:scale-95"
               >
                 <span>Start Free Trial</span>
-                <ArrowRight className="w-4 h-4 text-neutral-950" />
+                <ArrowRight className="w-4 h-4 text-white" />
               </Link>
             </div>
 

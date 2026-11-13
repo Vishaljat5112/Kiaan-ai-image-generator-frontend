@@ -14,6 +14,7 @@ export function PublicLayout() {
   const timeoutRef = useRef(null)
   const location = useLocation()
   const { user } = useAuth()
+  const isLandingPage = location.pathname === '/'
 
   // 5 Public Mega Menu Categories
   const navCategories = [
@@ -67,9 +68,9 @@ export function PublicLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-violet-100 selection:text-violet-900">
+    <div className={isLandingPage ? "min-h-screen flex flex-col bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200" : "min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-violet-100 selection:text-violet-900"}>
       {/* Platform Preview Developer Bar */}
-      <div className="bg-neutral-50 border-b border-neutral-200/80 px-4 py-1.5 text-center text-xs text-neutral-600 flex items-center justify-center gap-2">
+      <div className={isLandingPage ? "bg-[#0A0E17] border-b border-neutral-800 px-4 py-1.5 text-center text-xs text-neutral-400 flex items-center justify-center gap-2" : "bg-neutral-50 border-b border-neutral-200/80 px-4 py-1.5 text-center text-xs text-neutral-600 flex items-center justify-center gap-2"}>
         <Sparkles className="w-3.5 h-3.5 text-violet-600 shrink-0" />
         <span>
           <strong>Kiaan Studio Preview:</strong> Explore the workstation via{' '}
@@ -79,15 +80,15 @@ export function PublicLayout() {
       </div>
 
       {/* Main Responsive Sticky Navbar (Screenshot 1 & Mega Menu Architecture) */}
-      <header className="sticky top-0 z-50 w-full border-b border-neutral-100 bg-white/95 backdrop-blur-md">
+      <header className={isLandingPage ? "sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#06080F]/90 backdrop-blur-md" : "sticky top-0 z-50 w-full border-b border-neutral-100 bg-white/95 backdrop-blur-md"}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Brand Logo */}
-          <Logo to="/" theme="light" size="md" showBadge={false} />
+          <Logo to="/" theme={isLandingPage ? "dark" : "light"} size="md" showBadge={false} />
 
           {/* Desktop Navigation Triggers with Mega Menu Hover/Click */}
           <nav
             className="hidden md:flex items-center gap-1 lg:gap-1.5"
-            onMouseLeave={handleTriggerLeave}
+
           >
             {navCategories.map((cat) => {
               const isOpen = activeMenu === cat.id
@@ -95,16 +96,16 @@ export function PublicLayout() {
                 <div
                   key={cat.id}
                   className="relative py-2"
-                  onMouseEnter={() => handleTriggerEnter(cat.id)}
+
                 >
                   <button
                     type="button"
                     onClick={() => setActiveMenu(isOpen ? null : cat.id)}
                     className={cn(
-                      'px-3.5 py-2 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer select-none',
+                      'px-3.5 py-2 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5 focus:outline-none cursor-pointer select-none',
                       isOpen
-                        ? 'text-neutral-950 font-bold bg-neutral-100/90 shadow-2xs'
-                        : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50'
+                        ? (isLandingPage ? 'text-white font-bold bg-neutral-900 border border-cyan-500/60 shadow-lg shadow-cyan-500/20' : 'text-neutral-950 font-bold bg-neutral-100/90 shadow-2xs')
+                        : (isLandingPage ? 'text-neutral-300' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50')
                     )}
                     aria-haspopup="true"
                     aria-expanded={isOpen}
@@ -113,7 +114,7 @@ export function PublicLayout() {
                     <ChevronDown
                       className={cn(
                         'w-3.5 h-3.5 text-neutral-400 transition-transform duration-200',
-                        isOpen && 'rotate-180 text-violet-600'
+                        isOpen && (isLandingPage ? 'rotate-180 text-cyan-400' : 'rotate-180 text-violet-600')
                       )}
                     />
                   </button>
@@ -132,21 +133,21 @@ export function PublicLayout() {
                 >
                   Open Studio
                 </Link>
-                <ProfileMenu variant="customer" theme="light" />
+                <ProfileMenu variant="customer" theme={isLandingPage ? "dark" : "light"} />
               </div>
             ) : (
               <div className="flex items-center gap-3">
                 <Link
                   to="/login"
                   state={{ background: location }}
-                  className="px-3.5 py-2 text-sm font-semibold text-neutral-700 hover:text-neutral-950 transition-colors"
+                  className={isLandingPage ? "px-3.5 py-2 text-sm font-semibold text-neutral-300 hover:text-white transition-colors" : "px-3.5 py-2 text-sm font-semibold text-neutral-700 hover:text-neutral-950 transition-colors"}
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
                   state={{ background: location }}
-                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-semibold bg-neutral-950 text-white hover:bg-neutral-800 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className={isLandingPage ? "inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]" : "inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-semibold bg-neutral-950 text-white hover:bg-neutral-800 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"}
                 >
                   Try it free
                 </Link>
@@ -156,10 +157,10 @@ export function PublicLayout() {
 
           {/* Mobile Menu Hamburger */}
           <div className="md:hidden flex items-center gap-2">
-            {user && <ProfileMenu variant="customer" theme="light" />}
+            {user && <ProfileMenu variant="customer" theme={isLandingPage ? "dark" : "light"} />}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 transition-colors"
+              className={isLandingPage ? "p-2 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors" : "p-2 rounded-xl text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 transition-colors"}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -169,15 +170,16 @@ export function PublicLayout() {
 
         {/* Desktop Mega Menu Dropdown Panel */}
         <DesktopMegaMenu
+          theme={isLandingPage ? 'dark' : 'light'}
           activeMenu={activeMenu}
           onClose={handleCloseMenu}
-          onMouseEnter={handlePanelEnter}
-          onMouseLeave={handlePanelLeave}
+
+
         />
 
         {/* Mobile Navigation Drawer with Accordion Mega Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-neutral-200 bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
+          <div className={isLandingPage ? "md:hidden border-b border-neutral-800 bg-[#0B0F19] px-4 pt-3 pb-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto text-white" : "md:hidden border-b border-neutral-200 bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto"}>
             {/* Mobile Accordion */}
             <MobileMegaMenuAccordion onItemClick={() => setMobileMenuOpen(false)} />
 

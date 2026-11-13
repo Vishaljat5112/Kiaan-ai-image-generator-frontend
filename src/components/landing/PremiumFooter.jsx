@@ -47,9 +47,9 @@ export function PremiumFooter() {
   ]
 
   return (
-    <footer className="relative bg-neutral-950 text-neutral-300 pt-16 sm:pt-20 pb-12 overflow-hidden border-t border-neutral-900">
+    <footer className="relative bg-[#06080F] text-neutral-300 pt-16 sm:pt-20 pb-12 overflow-hidden border-t border-neutral-900">
       {/* Subtle Purple Glow Gradient near bottom */}
-      <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-violet-950/30 via-indigo-950/10 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-pink-950/20 via-cyan-950/10 to-transparent pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         {/* Top: Brand Info + Multi-Column Links Grid (Screenshot 9) */}
@@ -90,7 +90,7 @@ export function PremiumFooter() {
 
         {/* Oversized Brand Typography (Screenshot 9) */}
         <div className="pt-10 border-t border-neutral-900/80 overflow-hidden select-none">
-          <div className="text-center font-black tracking-tighter text-neutral-900/90 text-5xl sm:text-7xl md:text-9xl lg:text-[145px] leading-none uppercase transition-colors hover:text-neutral-850">
+          <div className="text-center font-black tracking-tighter text-white/[0.05] hover:text-cyan-400 hover:drop-shadow-[0_0_45px_rgba(6,182,212,0.65)] text-5xl sm:text-7xl md:text-9xl lg:text-[145px] leading-none uppercase transition-all duration-500 cursor-pointer select-none">
             Kiaan Studio
           </div>
         </div>
@@ -101,7 +101,7 @@ export function PremiumFooter() {
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="hover:text-neutral-300 transition-colors">Privacy</Link>
             <Link to="/terms" className="hover:text-neutral-300 transition-colors">Terms</Link>
-            <Link to="/dashboard" className="text-violet-400 hover:text-violet-300 font-medium">Customer Studio</Link>
+            <Link to="/dashboard" className="text-cyan-400 hover:text-cyan-300 font-medium">Customer Studio</Link>
             <Link to="/admin" className="text-amber-400 hover:text-amber-300 font-medium">Admin Portal</Link>
           </div>
         </div>

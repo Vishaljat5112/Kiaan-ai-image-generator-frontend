@@ -93,30 +93,30 @@ export function PricingSection() {
   ]
 
   return (
-    <section className="py-16 sm:py-24 bg-white border-t border-neutral-100 scroll-mt-24" id="pricing">
+    <section className="py-16 sm:py-24 bg-[#06080F] border-t border-neutral-800/80 scroll-mt-24" id="pricing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading & Subheading */}
         <div className="max-w-3xl mx-auto text-center space-y-4 mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 border border-violet-200/60 text-xs font-semibold text-violet-700">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider text-cyan-400">
             <span>Flexible Self-Hosted Tiers</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-neutral-950 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
             Choose Your Creative Plan
           </h2>
-          <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
+          <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
             Explore flexible plans designed for different creative needs. Pricing and credit quotas
             represent platform tier fixtures for self-hosted evaluation.
           </p>
 
           {/* Billing Cycle Selector (Screenshot 7) */}
-          <div className="pt-2 inline-flex items-center p-1 rounded-full bg-neutral-100 border border-neutral-200/80">
+          <div className="pt-2 inline-flex items-center p-1 rounded-full bg-neutral-900 border border-neutral-800">
             <button
               type="button"
               onClick={() => setBillingCycle('monthly')}
               className={`px-5 py-2 rounded-full text-xs font-semibold transition-all ${
                 billingCycle === 'monthly'
-                  ? 'bg-neutral-950 text-white shadow-xs'
-                  : 'text-neutral-600 hover:text-neutral-950'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md font-bold'
+                  : 'text-neutral-400 hover:text-white'
               }`}
             >
               Monthly
@@ -126,8 +126,8 @@ export function PricingSection() {
               onClick={() => setBillingCycle('quarterly')}
               className={`px-5 py-2 rounded-full text-xs font-semibold transition-all ${
                 billingCycle === 'quarterly'
-                  ? 'bg-neutral-950 text-white shadow-xs'
-                  : 'text-neutral-600 hover:text-neutral-950'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md font-bold'
+                  : 'text-neutral-400 hover:text-white'
               }`}
             >
               Quarterly
@@ -137,8 +137,8 @@ export function PricingSection() {
               onClick={() => setBillingCycle('yearly')}
               className={`px-5 py-2 rounded-full text-xs font-semibold transition-all ${
                 billingCycle === 'yearly'
-                  ? 'bg-neutral-950 text-white shadow-xs'
-                  : 'text-neutral-600 hover:text-neutral-950'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md font-bold'
+                  : 'text-neutral-400 hover:text-white'
               }`}
             >
               Yearly
@@ -157,16 +157,16 @@ export function PricingSection() {
                 key={plan.id}
                 className={`rounded-[28px] p-6 flex flex-col justify-between transition-all duration-300 relative ${
                   isFeatured
-                    ? 'bg-neutral-950 text-white ring-2 ring-violet-500 shadow-2xl shadow-violet-500/10 lg:-translate-y-2'
+                    ? 'bg-[#0D111C] text-white ring-2 ring-pink-500 shadow-2xl shadow-pink-500/20 lg:-translate-y-2'
                     : isDark
-                    ? 'bg-neutral-900 text-white border border-neutral-800 shadow-lg'
-                    : 'bg-white text-neutral-900 border border-neutral-200/90 shadow-sm hover:shadow-md'
+                    ? 'bg-[#0B0F19]/90 text-white border border-neutral-800 shadow-lg hover:border-cyan-500/40'
+                    : 'bg-[#0B0F19]/90 text-white border border-neutral-800 shadow-lg hover:border-cyan-500/40'
                 }`}
               >
                 {/* Top Badge for Featured or Enterprise */}
                 {plan.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="px-3 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-violet-600 text-white shadow-sm border border-violet-400/40">
+                    <span className="px-3 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md border border-pink-400/40 font-mono">
                       {plan.badge}
                     </span>
                   </div>
@@ -209,9 +209,9 @@ export function PricingSection() {
                       {plan.features.map((feat) => (
                         <li key={feat} className="flex items-start gap-2">
                           <Check className={`w-4 h-4 shrink-0 mt-0.5 ${
-                            isFeatured ? 'text-violet-400' : 'text-emerald-500'
+                            isFeatured ? 'text-pink-400' : 'text-cyan-400'
                           }`} />
-                          <span className={isDark ? 'text-neutral-300' : 'text-neutral-700'}>
+                          <span className="text-neutral-300">
                             {feat}
                           </span>
                         </li>
@@ -226,10 +226,10 @@ export function PricingSection() {
                     to={plan.ctaTo}
                     className={`w-full py-3 px-4 rounded-xl font-semibold text-xs text-center transition-all flex items-center justify-center gap-1.5 ${
                       isFeatured
-                        ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-md hover:scale-[1.02] active:scale-[0.98]'
+                        ? 'bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold shadow-lg shadow-pink-500/25 hover:scale-[1.02] active:scale-[0.98]'
                         : isDark
-                        ? 'bg-white hover:bg-neutral-100 text-neutral-950 shadow-sm'
-                        : 'bg-neutral-950 hover:bg-neutral-800 text-white shadow-sm'
+                        ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white border border-neutral-700 shadow-sm'
+                        : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white border border-neutral-700 shadow-sm'
                     }`}
                   >
                     <span>{plan.ctaText}</span>

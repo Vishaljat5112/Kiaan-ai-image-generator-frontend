@@ -27,10 +27,10 @@ export function HowItWorksSection() {
   ]
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white scroll-mt-24">
+    <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#06080F] scroll-mt-24">
       {/* Section Title */}
       <div className="mb-12">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-neutral-950 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
           How To Make AI Images Instantly
         </h2>
       </div>
@@ -47,8 +47,8 @@ export function HowItWorksSection() {
                   onClick={() => setActiveStep(item.step)}
                   className={`cursor-pointer rounded-2xl p-4 sm:p-5 transition-all duration-300 border ${
                     isActive
-                      ? 'bg-violet-100/70 border-violet-200/90 shadow-xs'
-                      : 'bg-transparent border-transparent hover:bg-neutral-50 hover:border-neutral-200/60'
+                      ? 'bg-cyan-950/40 border-cyan-500/50 shadow-lg shadow-cyan-500/10'
+                      : 'bg-transparent border-transparent hover:bg-neutral-900/40 hover:border-neutral-800'
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -56,18 +56,18 @@ export function HowItWorksSection() {
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${
                         isActive
-                          ? 'bg-violet-600 text-white shadow-xs'
-                          : 'bg-neutral-100 text-neutral-500'
+                          ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-xs'
+                          : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
                       }`}
                     >
                       {item.step}
                     </div>
 
                     <div className="space-y-1.5">
-                      <h3 className="text-base sm:text-lg font-bold text-neutral-950 leading-tight">
+                      <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
                         {item.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -81,7 +81,7 @@ export function HowItWorksSection() {
           <div className="pt-4">
             <Link
               to="/dashboard/image-generator"
-              className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-semibold text-sm bg-violet-600 hover:bg-violet-700 text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Get Started Now
             </Link>
@@ -90,7 +90,7 @@ export function HowItWorksSection() {
 
         {/* Right Column: Dynamic Preview Container Updating with Selected Step */}
         <div className="lg:col-span-7">
-          <div className="relative rounded-[32px] overflow-hidden bg-neutral-900 border border-neutral-200/80 shadow-2xl aspect-[4/3] group">
+          <div className="relative rounded-[32px] overflow-hidden bg-neutral-900 border border-neutral-800 shadow-2xl aspect-[4/3] group">
             {/* Step 1 Visual: Prompt & Reference Input */}
             {activeStep === 1 && (
               <div className="w-full h-full relative flex flex-col justify-end p-6 sm:p-8 animate-fadeIn">
@@ -102,20 +102,20 @@ export function HowItWorksSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
                 {/* Floating Mockup UI (Screenshot 4 Prompt Composer Representation) */}
-                <div className="relative z-10 bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-2xl border border-white/40 text-neutral-900 max-w-xl mx-auto w-full space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-violet-700">
+                <div className="relative z-10 bg-[#0D111C]/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-2xl border border-neutral-800 text-white max-w-xl mx-auto w-full space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400">
                     <Wand2 className="w-4 h-4" />
                     <span>Step 1 &bull; Text &amp; Reference Input</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-800 font-mono">
+                  <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800 text-sm text-neutral-200 font-mono">
                     &quot;Celestial astronaut helmet, fiery orange nebula reflections, hyperrealistic 8k render&quot;
                   </div>
                   <div className="flex items-center justify-between text-xs text-neutral-500 pt-1">
-                    <span className="flex items-center gap-1.5 font-medium text-neutral-700">
-                      <ImageIcon className="w-3.5 h-3.5 text-violet-600" />
+                    <span className="flex items-center gap-1.5 font-medium text-neutral-300">
+                      <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
                       Optional reference image attached
                     </span>
-                    <span className="font-semibold text-neutral-800">Ready to configure &rarr;</span>
+                    <span className="font-semibold text-white">Ready to configure &rarr;</span>
                   </div>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export function HowItWorksSection() {
 
                 <div className="relative z-10 bg-neutral-950/95 backdrop-blur-md rounded-2xl p-5 shadow-2xl border border-neutral-800 text-white max-w-lg mx-auto w-full space-y-4">
                   <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-violet-400">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400">
                       <Sliders className="w-4 h-4" />
                       <span>Step 2 &bull; Style &amp; Engine Customization</span>
                     </div>
@@ -148,7 +148,7 @@ export function HowItWorksSection() {
                           key={style}
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             i === 0
-                              ? 'bg-violet-600 text-white shadow-xs'
+                              ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-xs'
                               : 'bg-neutral-800 text-neutral-300'
                           }`}
                         >

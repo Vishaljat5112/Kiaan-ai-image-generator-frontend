@@ -11,7 +11,8 @@ export function DesktopMegaMenu({
   activeMenu,
   onClose,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
+  theme = 'light'
 }) {
   const menuData = activeMenu ? MEGA_MENU_DATA[activeMenu] : null
   const panelRef = useRef(null)
@@ -44,7 +45,7 @@ export function DesktopMegaMenu({
       aria-label={`${menuData.label} navigation menu`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white/98 backdrop-blur-xl rounded-[28px] border border-neutral-200/90 shadow-2xl shadow-neutral-950/10 p-6 sm:p-8 animate-in fade-in slide-in-from-top-1 duration-150">
+        <div className={theme === 'dark' ? "bg-[#0B0F19]/98 backdrop-blur-xl rounded-[28px] border border-cyan-500/60 shadow-[0_0_35px_rgba(6,182,212,0.25)] ring-1 ring-cyan-400/30 p-6 sm:p-8 animate-in fade-in slide-in-from-top-1 duration-150 text-white" : "bg-white/98 backdrop-blur-xl rounded-[28px] border border-neutral-200/90 shadow-2xl shadow-neutral-950/10 p-6 sm:p-8 animate-in fade-in slide-in-from-top-1 duration-150"}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Columns Area (Left side) */}
             <div
@@ -65,11 +66,11 @@ export function DesktopMegaMenu({
                         onClick={onClose}
                         className="group block p-2.5 -mx-2 rounded-2xl hover:bg-neutral-50 transition-colors"
                       >
-                        <div className="text-sm font-bold text-neutral-900 group-hover:text-violet-700 transition-colors flex items-center justify-between">
+                        <div className={`text-sm font-bold ${theme === 'dark' ? 'text-white group-hover:text-cyan-400' : 'text-neutral-900 group-hover:text-violet-700'} transition-colors flex items-center justify-between`}>
                           <span>{item.name}</span>
                           <ArrowRight className="w-3.5 h-3.5 text-neutral-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                         </div>
-                        <p className="text-xs text-neutral-500 mt-0.5 line-clamp-1 leading-relaxed">
+                        <p className={`text-xs ${theme === 'dark' ? 'text-neutral-400' : 'text-neutral-500'} mt-0.5 line-clamp-1 leading-relaxed`}>
                           {item.desc}
                         </p>
                       </Link>
@@ -81,8 +82,8 @@ export function DesktopMegaMenu({
 
             {/* Featured Card (Right side, matching ImagineArt screenshot 2) */}
             {hasFeatured && (
-              <div className="lg:col-span-4 xl:col-span-4 lg:border-l lg:border-neutral-100 lg:pl-8">
-                <div className="rounded-2xl bg-neutral-50/80 border border-neutral-200/70 p-4 flex flex-col justify-between h-full">
+              <div className={`lg:col-span-4 xl:col-span-4 ${theme === 'dark' ? 'lg:border-l lg:border-neutral-800' : 'lg:border-l lg:border-neutral-100'} lg:pl-8`}>
+                <div className={`rounded-2xl ${theme === 'dark' ? 'bg-[#0D111C] border border-neutral-800 text-white' : 'bg-neutral-50/80 border border-neutral-200/70'} p-4 flex flex-col justify-between h-full`}>
                   <div>
                     {featured.image && (
                       <div className="aspect-[16/10] rounded-xl overflow-hidden mb-3 bg-neutral-900 shadow-xs">
@@ -94,13 +95,13 @@ export function DesktopMegaMenu({
                       </div>
                     )}
                     <div className="space-y-1.5">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-100 text-violet-800">
+                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${theme === 'dark' ? 'bg-cyan-950 text-cyan-300 border border-cyan-800/50' : 'bg-violet-100 text-violet-800'}`}>
                         {featured.tag}
                       </span>
-                      <h4 className="text-sm font-extrabold text-neutral-950">
+                      <h4 className={`text-sm font-extrabold ${theme === 'dark' ? 'text-white' : 'text-neutral-950'}`}>
                         {featured.title}
                       </h4>
-                      <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed">
+                      <p className={`text-xs ${theme === 'dark' ? 'text-neutral-300' : 'text-neutral-600'} line-clamp-2 leading-relaxed`}>
                         {featured.desc}
                       </p>
                     </div>
@@ -110,7 +111,7 @@ export function DesktopMegaMenu({
                     <Link
                       to={featured.ctaTo}
                       onClick={onClose}
-                      className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-neutral-950 hover:bg-neutral-800 text-white text-center block transition-colors shadow-xs"
+                      className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold ${theme === 'dark' ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/20' : 'bg-neutral-950 hover:bg-neutral-800 text-white'} text-center block transition-all shadow-xs`}
                     >
                       {featured.ctaText}
                     </Link>

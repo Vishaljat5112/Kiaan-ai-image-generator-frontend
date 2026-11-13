@@ -53,25 +53,25 @@ export function MarketingVisualsSection() {
   }, [isPlaying, steps.length])
 
   return (
-    <section id="marketing-demo" className="py-16 sm:py-24 bg-white border-t border-neutral-100 scroll-mt-24">
+    <section id="marketing-demo" className="py-16 sm:py-24 bg-[#06080F] border-t border-neutral-800/80 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           {/* Left Column: Heading, Copy, & CTA */}
           <div className="lg:col-span-5 space-y-6">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 border border-violet-200/60 text-xs font-semibold text-violet-700">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider text-cyan-400">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Commercial Marketing Studio</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-neutral-950 tracking-tight leading-[1.15]">
+              <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-white tracking-tight leading-[1.15]">
                 Create Visuals That Make an Impression
               </h2>
-              <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
+              <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
                 Turn product concepts into striking campaign visuals without expensive photoshoots.
                 Generate social media graphics, ad creatives, email headers, and promotional images
                 that feel intentional and polished.
               </p>
-              <p className="text-sm text-neutral-500 leading-relaxed">
+              <p className="text-sm text-neutral-400 leading-relaxed">
                 Control composition, lock brand shapes, refine aesthetics, and transition from raw idea
                 to finished visual asset in minutes.
               </p>
@@ -80,7 +80,7 @@ export function MarketingVisualsSection() {
             <div className="pt-2">
               <Link
                 to="/dashboard/image-generator"
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-semibold text-base bg-neutral-950 hover:bg-neutral-800 text-white shadow-lg hover:shadow-neutral-400 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 Explore Creative Tools
               </Link>
@@ -89,12 +89,12 @@ export function MarketingVisualsSection() {
 
           {/* Right Column: Lavender Dotted Container with Interactive Walkthrough */}
           <div className="lg:col-span-7">
-            <div className="relative rounded-[32px] p-6 sm:p-10 bg-gradient-to-br from-violet-100/60 via-purple-50/40 to-indigo-100/50 border border-violet-100 shadow-sm overflow-hidden">
+            <div className="relative rounded-[32px] p-6 sm:p-10 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-2xl overflow-hidden">
               {/* Lavender Dotted Background Texture */}
               <div
                 className="absolute inset-0 opacity-40 pointer-events-none"
                 style={{
-                  backgroundImage: 'radial-gradient(#8b5cf6 1.2px, transparent 1.2px)',
+                  backgroundImage: 'radial-gradient(#06b6d4 1.2px, transparent 1.2px)',
                   backgroundSize: '18px 18px'
                 }}
               />
@@ -153,7 +153,7 @@ export function MarketingVisualsSection() {
                       <p className="text-xs font-mono text-neutral-200 truncate">
                         {steps[activeStep].promptText}
                       </p>
-                      <span className="text-[10px] uppercase font-bold text-violet-400 bg-violet-950/80 px-2 py-0.5 rounded border border-violet-800/60 shrink-0">
+                      <span className="text-[10px] uppercase font-bold text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800/60 shrink-0">
                         {steps[activeStep].short}
                       </span>
                     </div>
@@ -175,12 +175,12 @@ export function MarketingVisualsSection() {
                         }}
                         className={`p-2.5 rounded-xl text-left border transition-all text-xs flex flex-col gap-1 ${
                           isCurrent
-                            ? 'bg-white border-violet-300 text-neutral-950 shadow-sm ring-2 ring-violet-500/20'
-                            : 'bg-white/60 hover:bg-white/90 border-transparent text-neutral-600'
+                            ? 'bg-[#0B0F19] border-cyan-500/60 text-white shadow-lg ring-2 ring-cyan-500/30'
+                            : 'bg-neutral-900/60 hover:bg-neutral-900 border-neutral-800 text-neutral-400'
                         }`}
                       >
                         <div className="flex items-center gap-1.5">
-                          <IconComp className={`w-3.5 h-3.5 ${isCurrent ? 'text-violet-600' : 'text-neutral-400'}`} />
+                          <IconComp className={`w-3.5 h-3.5 ${isCurrent ? 'text-cyan-400' : 'text-neutral-500'}`} />
                           <span className="font-bold text-[11px] truncate">{st.short}</span>
                         </div>
                         <span className="text-[10px] text-neutral-400 font-mono">Step 0{idx + 1}</span>

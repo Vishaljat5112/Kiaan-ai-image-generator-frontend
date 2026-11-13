@@ -66,13 +66,13 @@ export function CreativeShowcaseSection() {
   const loopItems = [...showcaseItems, ...showcaseItems]
 
   return (
-    <section id="creative-showcase" className="py-16 sm:py-24 bg-white overflow-hidden scroll-mt-24">
+    <section id="creative-showcase" className="py-16 sm:py-24 bg-[#06080F] overflow-hidden scroll-mt-24">
       {/* Section Header (Screenshot 2) */}
       <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 mb-12 sm:mb-16">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-neutral-950 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
           Community Creations
         </h2>
-        <p className="mt-4 text-base sm:text-lg text-neutral-600 leading-relaxed max-w-3xl mx-auto">
+        <p className="mt-4 text-base sm:text-lg text-neutral-300 leading-relaxed max-w-3xl mx-auto">
           Turn your ideas into images instantly. Just enter a text prompt along with optional reference
           images, select your styles &amp; effects, and watch Kiaan Studio&apos;s Image Generator work its magic.
         </p>
@@ -81,15 +81,15 @@ export function CreativeShowcaseSection() {
       {/* Infinite Horizontal Carousel Strip (Screenshot 2) */}
       <div className="relative w-full group overflow-hidden">
         {/* Soft edge blur masks */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-[#06080F] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-[#06080F] to-transparent z-10 pointer-events-none" />
 
         {/* Marquee Track */}
         <div className="animate-marquee gap-5 sm:gap-6 px-4 py-4">
           {loopItems.map((item, index) => (
             <div
               key={`${item.id}-${index}`}
-              className="w-56 sm:w-68 h-[380px] sm:h-[430px] rounded-2xl overflow-hidden shrink-0 shadow-md hover:shadow-xl transition-shadow duration-300 group/card relative select-none bg-neutral-100 border border-neutral-200/60"
+              className="w-56 sm:w-68 h-[380px] sm:h-[430px] rounded-2xl overflow-hidden shrink-0 shadow-md hover:shadow-xl transition-shadow duration-300 group/card relative select-none bg-neutral-900 border border-neutral-800"
             >
               <img
                 src={item.image}
@@ -123,7 +123,7 @@ export function CreativeShowcaseSection() {
       <div className="mt-12 sm:mt-14 flex flex-col items-center justify-center gap-2">
         <Link
           to="/dashboard/image-generator"
-          className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-semibold text-base bg-neutral-950 hover:bg-neutral-800 text-white shadow-lg hover:shadow-neutral-300 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
           Start Generating Images
         </Link>

@@ -37,7 +37,13 @@ export function HomePage() {
   }, [hash])
 
   return (
-    <div className="bg-white text-neutral-900 overflow-x-hidden">
+    <div className="bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200 overflow-x-hidden relative">
+      {/* Background Ambient Glows (SYNTHPULSE style) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[140px]" />
+        <div className="absolute top-1/3 -right-20 w-[500px] h-[500px] bg-pink-500/10 rounded-full blur-[150px]" />
+        <div className="absolute top-2/3 left-10 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px]" />
+      </div>
       {/* 1. Hero Section + Prompt Composer (Screenshot 1) */}
       <HeroSection />
 

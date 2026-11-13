@@ -190,19 +190,19 @@ export function ImageEditingSection() {
   }
 
   return (
-    <section id="image-editing" className="py-16 sm:py-24 bg-white overflow-hidden border-t border-neutral-100 scroll-mt-24">
+    <section id="image-editing" className="py-16 sm:py-24 bg-[#06080F] overflow-hidden border-t border-neutral-800/80 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Header: Left Title + Right Carousel Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 border border-violet-200/60 text-xs font-semibold text-violet-700">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider text-cyan-400">
               <Wand2 className="w-3.5 h-3.5" />
               <span>Full Editing Suite</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-neutral-950 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
               Edit, Enhance &amp; Perfect Every Detail
             </h2>
-            <p className="text-base sm:text-lg text-neutral-600 leading-relaxed">
+            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
               Explore creative image transformations, visual refinements, and editing possibilities in
               one streamlined workspace. Add subtle variations, remove backgrounds, or adjust lighting
               in seconds.
@@ -214,7 +214,7 @@ export function ImageEditingSection() {
             <button
               type="button"
               onClick={() => handleScroll('left')}
-              className="w-11 h-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 text-neutral-700 hover:text-neutral-950 flex items-center justify-center transition-all shadow-xs hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-11 h-11 rounded-full border border-neutral-800 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-white hover:border-cyan-500/50 flex items-center justify-center transition-all shadow-xs hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Previous edit sample"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -222,7 +222,7 @@ export function ImageEditingSection() {
             <button
               type="button"
               onClick={() => handleScroll('right')}
-              className="w-11 h-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 text-neutral-700 hover:text-neutral-950 flex items-center justify-center transition-all shadow-xs hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-11 h-11 rounded-full border border-neutral-800 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-white hover:border-cyan-500/50 flex items-center justify-center transition-all shadow-xs hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Next edit sample"
             >
               <ChevronRight className="w-5 h-5" />
@@ -240,8 +240,8 @@ export function ImageEditingSection() {
           onTouchCancel={handleTouchEnd}
         >
           {/* Subtle edge fade masks */}
-          <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#06080F] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#06080F] to-transparent z-10 pointer-events-none" />
 
           {/* Middle Horizontal Carousel Track */}
           <div
@@ -272,7 +272,7 @@ export function ImageEditingSection() {
 
                   {/* Bottom Content Info */}
                   <div className="absolute bottom-0 inset-x-0 p-5 text-white space-y-2">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-violet-600/90 backdrop-blur-xs text-[11px] font-semibold uppercase tracking-wider text-white">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 backdrop-blur-xs text-[11px] font-mono uppercase tracking-wider text-white shadow-xs">
                       {item.tag}
                     </span>
                     <h3 className="text-lg font-bold text-white leading-tight">
@@ -292,7 +292,7 @@ export function ImageEditingSection() {
         <div className="mt-12 text-center space-y-2">
           <Link
             to="/dashboard/image-editor"
-            className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-semibold text-base bg-neutral-950 hover:bg-neutral-800 text-white shadow-lg hover:shadow-neutral-400 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             Explore Image Editing
           </Link>

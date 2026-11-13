@@ -6,21 +6,21 @@ export function ImageToImageSection() {
   const [activeView, setActiveView] = useState('result') // 'result' or 'reference'
 
   return (
-    <section id="image-to-image" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white scroll-mt-24">
+    <section id="image-to-image" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#06080F] scroll-mt-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
         {/* Left Column: Heading, Description & Black Pill CTA */}
         <div className="lg:col-span-5 space-y-6">
           <div className="space-y-4">
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-neutral-950 tracking-tight leading-[1.15]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-white tracking-tight leading-[1.15]">
               Generate Images Using A Reference Image
             </h2>
-            <p className="text-base text-neutral-600 leading-relaxed">
+            <p className="text-base text-neutral-300 leading-relaxed">
               Kiaan Studio photo generator allows creators to upload a reference image to guide
               your creation. Whether it&apos;s for capturing a specific pose, color palette, or visual
               structure, the image to image AI intelligently interprets your reference to deliver
               accurate and enhanced results.
             </p>
-            <p className="text-sm text-neutral-500 leading-relaxed">
+            <p className="text-sm text-neutral-400 leading-relaxed">
               It&apos;s a great way to fine-tune your AI generated image while still enjoying the freedom
               of creativity. When you&apos;re ready to animate images, Kiaan Studio AI video generator turns
               the same ideas into motion.
@@ -30,7 +30,7 @@ export function ImageToImageSection() {
           <div>
             <Link
               to="/dashboard/image-editor"
-              className="inline-flex items-center justify-center px-7 py-3 rounded-full font-semibold text-sm sm:text-base bg-neutral-950 hover:bg-neutral-800 text-white shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Generate Image to Image
             </Link>
@@ -39,12 +39,12 @@ export function ImageToImageSection() {
 
         {/* Right Column: Light Lavender Dotted Background & Interactive Demonstration (Screenshot 3) */}
         <div className="lg:col-span-7">
-          <div className="relative rounded-[32px] p-6 sm:p-10 bg-gradient-to-br from-violet-100/60 via-purple-50/40 to-indigo-100/50 border border-violet-100 shadow-sm overflow-hidden">
+          <div className="relative rounded-[32px] p-6 sm:p-10 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-2xl overflow-hidden">
             {/* Subtle Lavender Dotted Grid Pattern */}
             <div
               className="absolute inset-0 opacity-40 pointer-events-none"
               style={{
-                backgroundImage: 'radial-gradient(#8b5cf6 1.2px, transparent 1.2px)',
+                backgroundImage: 'radial-gradient(#06b6d4 1.2px, transparent 1.2px)',
                 backgroundSize: '18px 18px'
               }}
             />
@@ -81,7 +81,7 @@ export function ImageToImageSection() {
                     onClick={() => setActiveView('result')}
                     className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
                       activeView === 'result'
-                        ? 'bg-violet-600 text-white shadow-xs'
+                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-xs font-bold'
                         : 'text-neutral-300 hover:text-white'
                     }`}
                   >
@@ -113,7 +113,7 @@ export function ImageToImageSection() {
                     <div className="flex items-center gap-2 mt-0.5 text-[11px] text-neutral-400">
                       <span>FLUX.2 Klein / 1:1</span>
                       <span>&bull;</span>
-                      <span className="text-violet-400">Reference: 85% fidelity</span>
+                      <span className="text-cyan-400">Reference: 85% fidelity</span>
                     </div>
                   </div>
                 </div>
@@ -130,7 +130,7 @@ export function ImageToImageSection() {
                   </button>
                   <Link
                     to="/dashboard/image-editor"
-                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-700 text-white transition-colors"
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md shadow-pink-500/20 transition-all hover:scale-105 active:scale-95"
                   >
                     Create
                   </Link>
