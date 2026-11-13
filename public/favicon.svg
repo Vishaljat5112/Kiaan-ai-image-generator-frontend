@@ -1,0 +1,22 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="8" fill="#0a0a0a"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#262626"/>
+  <defs>
+    <linearGradient id="k-stem" x1="6" y1="4" x2="12" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#818cf8"/>
+      <stop offset="100%" stopColor="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="k-upper" x1="12" y1="16" x2="26" y2="5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#a855f7"/>
+      <stop offset="100%" stopColor="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="k-lower" x1="13" y1="14" x2="27" y2="27" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#6366f1"/>
+      <stop offset="100%" stopColor="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="5" width="5.5" height="22" rx="2.75" fill="url(#k-stem)"/>
+  <path d="M13.5 16.5L22.8 6.2C23.5 5.4 24.8 5.6 25.4 6.5C25.9 7.3 25.7 8.4 24.9 9.1L16.2 18.2L13.5 16.5Z" fill="url(#k-upper)"/>
+  <path d="M14 15.5L24.5 25.5C25.3 26.3 25.2 27.5 24.4 28.2C23.6 28.8 22.4 28.6 21.7 27.8L12.5 18L14 15.5Z" fill="url(#k-lower)"/>
+  <circle cx="14" cy="16.5" r="1.5" fill="#ffffff"/>
+</svg>
