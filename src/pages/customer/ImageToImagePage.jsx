@@ -76,10 +76,10 @@ const SAMPLE_COMPARISONS = [
   },
   {
     id: 'comp-002',
-    title: 'Product Packaging Restyling',
-    prompt: 'Commercial luxury cosmetic bottle placed on volcanic dark rock with morning water droplets and soft rim lighting',
-    beforeImage: '/images/landing/marketing-product-ref.jpg',
-    afterImage: '/images/landing/marketing-product-poster.jpg',
+    title: 'Smartwatch Commercial Restyling',
+    prompt: 'Commercial luxury smartwatch displayed on dark pedestal with glowing blue neon accents and studio lighting',
+    beforeImage: '/images/landing/img2img-ref-watch.jpg',
+    afterImage: '/images/landing/img2img-result-watch.jpg',
     model: 'Z-Image Turbo Multi',
     strength: 0.65,
     timestamp: '15m ago'
@@ -87,9 +87,9 @@ const SAMPLE_COMPARISONS = [
   {
     id: 'comp-003',
     title: 'Urban Architecture Restyling',
-    prompt: 'Re-imagine contemporary villa as a bioluminescent eco-futuristic treehouse overlooking turquoise waters',
-    beforeImage: '/images/landing/gallery-architecture.jpg',
-    afterImage: '/images/landing/gallery-fantasy.jpg',
+    prompt: 'Re-imagine contemporary villa with cinematic warm interior lighting and glowing dusk landscape at twilight',
+    beforeImage: '/images/landing/img2img-ref-villa.jpg',
+    afterImage: '/images/landing/img2img-result-villa.jpg',
     model: 'FLUX.2 Klein (Flow Match)',
     strength: 0.80,
     timestamp: '1h ago'
@@ -170,7 +170,8 @@ export function ImageToImagePage() {
 
       const pool = [
         '/images/landing/img2img-result-burger.jpg',
-        '/images/landing/marketing-product-poster.jpg',
+        '/images/landing/img2img-result-watch.jpg',
+        '/images/landing/img2img-result-villa.jpg',
         '/images/landing/edit-cyberpunk.jpg',
         '/images/landing/edit-relighting.jpg'
       ]
