@@ -45,12 +45,15 @@ export function CreditsPage() {
 
         if (isMounted) {
           if (balRes.status === 'fulfilled' && balRes.value.data?.success) {
-            const b = balRes.value.data.data.balance
+            const b = balRes.value.data.data?.balance ?? 25
             setBalance(b)
             if (setUser) setUser((prev) => (prev ? { ...prev, creditBalance: b } : prev))
           }
           if (txRes.status === 'fulfilled' && txRes.value.data?.success) {
-            const list = txRes.value.data.data
+            const rawData = txRes.value.data.data
+            const list = Array.isArray(rawData)
+              ? rawData
+              : (Array.isArray(rawData?.transactions) ? rawData.transactions : [])
             setTransactions(list.length > 0 ? list : DEMO_TRANSACTIONS)
           } else {
             setTransactions(DEMO_TRANSACTIONS)
@@ -66,7 +69,9 @@ export function CreditsPage() {
   }, [setUser])
 
   const filteredTx = useMemo(() => {
+    if (!Array.isArray(transactions)) return []
     return transactions.filter((t) => {
+      if (!t) return false
       if (categoryFilter === 'all') return true
       if (categoryFilter === 'image') return t.category === 'image' || t.rawCategory === 'IMAGE_GENERATION'
       if (categoryFilter === 'video') return t.category === 'video' || t.rawCategory === 'VIDEO_GENERATION'
@@ -80,11 +85,14 @@ export function CreditsPage() {
     let img = 0
     let vid = 0
     let added = 0
-    transactions.forEach((t) => {
-      if (t.category === 'image' || t.rawCategory === 'IMAGE_GENERATION') img += Math.abs(t.amount)
-      if ((t.category === 'video' || t.rawCategory === 'VIDEO_GENERATION') && t.type === 'debit') vid += Math.abs(t.amount)
-      if (t.amount > 0) added += t.amount
-    })
+    if (Array.isArray(transactions)) {
+      transactions.forEach((t) => {
+        if (!t) return
+        if (t.category === 'image' || t.rawCategory === 'IMAGE_GENERATION') img += Math.abs(t.amount || 0)
+        if ((t.category === 'video' || t.rawCategory === 'VIDEO_GENERATION') && t.type === 'debit') vid += Math.abs(t.amount || 0)
+        if (t.amount > 0) added += t.amount
+      })
+    }
     return { img, vid, added }
   }, [transactions])
 
@@ -194,7 +202,8 @@ export function CreditsPage() {
 
         {/* CSS Flex Bar Chart */}
         <div className="h-44 flex items-end gap-2 pt-4 border-b border-neutral-800">
-          {DEMO_USAGE_DAILY.map((day, idx) => {
+          {(DEMO_USAGE_DAILY || []).map((day, idx) => {
+            const dateLabel = day.date || day.day || `Day ${idx + 1}`
             const imgPct = (day.image / maxDaily) * 100
             const vidPct = (day.video / maxDaily) * 100
             return (
@@ -204,19 +213,19 @@ export function CreditsPage() {
                     <div
                       style={{ height: `${vidPct}%` }}
                       className="w-full bg-cyan-400/80 rounded-t-sm group-hover:bg-cyan-300 transition-colors"
-                      title={`${day.date}: ${day.video} video credits`}
+                      title={`${dateLabel}: ${day.video} video credits`}
                     />
                   )}
                   {day.image > 0 && (
                     <div
                       style={{ height: `${imgPct}%` }}
                       className="w-full bg-pink-500/80 rounded-t-sm group-hover:bg-pink-400 transition-colors"
-                      title={`${day.date}: ${day.image} image credits`}
+                      title={`${dateLabel}: ${day.image} image credits`}
                     />
                   )}
                 </div>
                 <span className="text-[10px] text-neutral-400 font-mono group-hover:text-white transition-colors">
-                  {day.date.split(' ')[0]}
+                  {dateLabel.split(' ')[0] || dateLabel}
                 </span>
               </div>
             )
