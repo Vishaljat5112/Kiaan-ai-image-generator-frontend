@@ -29,6 +29,7 @@ import { Button } from '../../components/ui/Button'
 import { Badge } from '../../components/ui/Badge'
 import { Modal } from '../../components/ui/Modal'
 import { useAuth } from '../../hooks/useAuth'
+import { api } from '../../services/api'
 import { cn } from '../../utils/cn'
 
 // Curated preset prompts for creative exploration
@@ -159,7 +160,7 @@ const INITIAL_GALLERY = [
 ]
 
 export function ImageGeneratorPage() {
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
   const fileInputRef = useRef(null)
 
   // Form State
@@ -249,12 +250,11 @@ export function ImageGeneratorPage() {
     }
   }
 
-  // Handle Generate Simulation
-  const handleGenerate = () => {
+  // Handle Generate
+  const handleGenerate = async () => {
+    const finalPrompt = prompt.trim() || PROMPT_INSPIRATIONS[Math.floor(Math.random() * PROMPT_INSPIRATIONS.length)]
     if (!prompt.trim()) {
-      // Pick a random inspiration if empty
-      const randomPrompt = PROMPT_INSPIRATIONS[Math.floor(Math.random() * PROMPT_INSPIRATIONS.length)]
-      setPrompt(randomPrompt)
+      setPrompt(finalPrompt)
     }
 
     setIsGenerating(true)
@@ -263,7 +263,75 @@ export function ImageGeneratorPage() {
 
     const randomSeedVal = isRandomSeed ? Math.floor(Math.random() * 900000000 + 100000000).toString() : (seed || '42')
 
-    // Timeline simulation
+    const pool = [
+      '/images/landing/gallery-architecture.jpg',
+      '/images/landing/hero-astronaut.jpg',
+      '/images/landing/gallery-fantasy.jpg',
+      '/images/landing/gallery-fashion.jpg',
+      '/images/landing/gallery-dandelion.jpg',
+      '/images/landing/gallery-product.jpg',
+      '/images/landing/gallery-motocross.jpg',
+      '/images/landing/gallery-motorsport.jpg'
+    ]
+    const chosenSample = pool[Math.floor(Math.random() * pool.length)]
+
+    try {
+      const res = await api.post('/generation/jobs', {
+        type: 'TEXT_TO_IMAGE',
+        modelId: currentModelObj.id,
+        prompt: finalPrompt,
+        negativePrompt: negativePrompt.trim() || undefined,
+        parameters: {
+          aspect: currentAspectObj.id,
+          width: currentAspectObj.width,
+          height: currentAspectObj.height,
+          steps,
+          cfg: guidanceScale,
+          sampler,
+          seed: randomSeedVal
+        }
+      })
+
+      if (res.data?.success && res.data?.data) {
+        const backendJob = res.data.data
+        if (setUser) {
+          setUser((prev) => (prev ? { ...prev, creditBalance: Math.max(0, (prev.creditBalance || 25) - (backendJob.creditCost || 1)) } : prev))
+        }
+
+        setGenerationProgress(100)
+        setGenerationStepText(`Job #${backendJob.id.slice(0, 8)} enqueued in position #${backendJob.queuePosition || 1}`)
+
+        const newGen = {
+          id: backendJob.id,
+          prompt: finalPrompt,
+          negativePrompt: negativePrompt.trim() || undefined,
+          model: currentModelObj.name,
+          aspect: currentAspectObj.id,
+          dimensions: `${currentAspectObj.width}×${currentAspectObj.height}`,
+          seed: randomSeedVal,
+          steps,
+          cfg: guidanceScale,
+          sampler,
+          timestamp: 'Just now',
+          image: chosenSample,
+          refImage: referenceImage ? referenceImage.url : null,
+          status: backendJob.status
+        }
+
+        setGeneratedResults([newGen])
+        setHistoryGallery((prev) => [newGen, ...prev])
+        setIsGenerating(false)
+        return
+      }
+    } catch (err) {
+      if (err.response?.status === 402) {
+        setIsGenerating(false)
+        alert('Insufficient credits! Please add credits to your account.')
+        return
+      }
+    }
+
+    // Timeline fallback simulation
     setTimeout(() => {
       setGenerationProgress(35)
       setGenerationStepText(`Compiling graph on ${currentModelObj.name} with ${steps} rectified steps...`)
@@ -278,37 +346,24 @@ export function ImageGeneratorPage() {
       setGenerationProgress(100)
       setGenerationStepText('Post-processing WebP artifact...')
 
-      // Select image based on aspect or prompt keywords
-      const pool = [
-        '/images/landing/gallery-architecture.jpg',
-        '/images/landing/hero-astronaut.jpg',
-        '/images/landing/gallery-fantasy.jpg',
-        '/images/landing/gallery-fashion.jpg',
-        '/images/landing/gallery-dandelion.jpg',
-        '/images/landing/gallery-product.jpg',
-        '/images/landing/gallery-motocross.jpg',
-        '/images/landing/gallery-motorsport.jpg'
-      ]
-      const chosenSample = pool[Math.floor(Math.random() * pool.length)]
-
       const newGen = {
         id: `gen-${Date.now()}`,
-        prompt: prompt.trim() || PROMPT_INSPIRATIONS[0],
+        prompt: finalPrompt,
         negativePrompt: negativePrompt.trim() || undefined,
         model: currentModelObj.name,
         aspect: currentAspectObj.id,
         dimensions: `${currentAspectObj.width}×${currentAspectObj.height}`,
         seed: randomSeedVal,
-        steps: steps,
+        steps,
         cfg: guidanceScale,
-        sampler: sampler,
+        sampler,
         timestamp: 'Just now',
         image: chosenSample,
         refImage: referenceImage ? referenceImage.url : null
       }
 
       setGeneratedResults([newGen])
-      setHistoryGallery(prev => [newGen, ...prev])
+      setHistoryGallery((prev) => [newGen, ...prev])
       setIsGenerating(false)
     }, 1400)
   }

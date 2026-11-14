@@ -24,6 +24,7 @@ import {
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { useAuth } from '../../hooks/useAuth'
+import { api } from '../../services/api'
 import { cn } from '../../utils/cn'
 
 // Video Generation Models (PRD / sovereign open weights)
@@ -129,7 +130,7 @@ const SAMPLE_VIDEOS = [
 ]
 
 export function VideoGeneratorPage() {
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
 
   // Form State
   const [prompt, setPrompt] = useState('')
@@ -198,10 +199,10 @@ export function VideoGeneratorPage() {
     }
   }
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    const finalPrompt = prompt.trim() || VIDEO_PROMPT_INSPIRATIONS[Math.floor(Math.random() * VIDEO_PROMPT_INSPIRATIONS.length)]
     if (!prompt.trim()) {
-      const randomPrompt = VIDEO_PROMPT_INSPIRATIONS[Math.floor(Math.random() * VIDEO_PROMPT_INSPIRATIONS.length)]
-      setPrompt(randomPrompt)
+      setPrompt(finalPrompt)
     }
 
     setIsGenerating(true)
@@ -210,6 +211,71 @@ export function VideoGeneratorPage() {
 
     const randomSeedVal = isRandomSeed ? Math.floor(Math.random() * 900000000 + 100000000).toString() : (seed || '8192')
 
+    const pool = [
+      '/images/landing/gallery-motorsport.jpg',
+      '/images/landing/gallery-motocross.jpg',
+      '/images/landing/gallery-fantasy.jpg',
+      '/images/landing/hero-astronaut.jpg',
+      '/images/landing/gallery-architecture.jpg'
+    ]
+    const chosenThumbnail = pool[Math.floor(Math.random() * pool.length)]
+
+    try {
+      const res = await api.post('/generation/jobs', {
+        type: 'TEXT_TO_VIDEO',
+        modelId: currentModelObj.id,
+        prompt: finalPrompt,
+        negativePrompt: negativePrompt.trim() || undefined,
+        parameters: {
+          duration,
+          aspectRatio,
+          fps,
+          cameraMotion,
+          seed: randomSeedVal
+        }
+      })
+
+      if (res.data?.success && res.data?.data) {
+        const backendJob = res.data.data
+        if (setUser) {
+          setUser((prev) => (prev ? { ...prev, creditBalance: Math.max(0, (prev.creditBalance || 25) - (backendJob.creditCost || 25)) } : prev))
+        }
+
+        setGenerationProgress(100)
+        setGenerationStepText(`Job #${backendJob.id.slice(0, 8)} enqueued in position #${backendJob.queuePosition || 1}`)
+
+        const newVideo = {
+          id: backendJob.id,
+          title: finalPrompt.slice(0, 30) || 'Custom Motion Sequence',
+          prompt: finalPrompt,
+          model: currentModelObj.name,
+          resolution: `${resolution === '720p' ? '1280×720' : '854×480'} (${aspectRatio})`,
+          duration: duration,
+          fps: fps,
+          cameraMotion: cameraMotion,
+          seed: randomSeedVal,
+          timestamp: 'Just now',
+          thumbnail: chosenThumbnail,
+          badge: `${resolution} ${aspectRatio}`,
+          status: backendJob.status
+        }
+
+        setCurrentVideo(newVideo)
+        setVideoHistory((prev) => [newVideo, ...prev])
+        setIsGenerating(false)
+        setIsPlaying(true)
+        setPlayerProgress(0)
+        return
+      }
+    } catch (err) {
+      if (err.response?.status === 402) {
+        setIsGenerating(false)
+        alert('Insufficient credits! You need at least 25 credits to run a 3D DiT video job.')
+        return
+      }
+    }
+
+    // Timeline fallback simulation
     setTimeout(() => {
       setGenerationProgress(30)
       setGenerationStepText(`Generating 81 temporal latent frames on ${currentModelObj.name}...`)
@@ -229,19 +295,10 @@ export function VideoGeneratorPage() {
       setGenerationProgress(100)
       setGenerationStepText('Video sequence ready!')
 
-      const pool = [
-        '/images/landing/gallery-motorsport.jpg',
-        '/images/landing/gallery-motocross.jpg',
-        '/images/landing/gallery-fantasy.jpg',
-        '/images/landing/hero-astronaut.jpg',
-        '/images/landing/gallery-architecture.jpg'
-      ]
-      const chosenThumbnail = pool[Math.floor(Math.random() * pool.length)]
-
       const newVideo = {
         id: `vid-${Date.now()}`,
-        title: prompt.slice(0, 30) || 'Custom Motion Sequence',
-        prompt: prompt.trim() || VIDEO_PROMPT_INSPIRATIONS[0],
+        title: finalPrompt.slice(0, 30) || 'Custom Motion Sequence',
+        prompt: finalPrompt,
         model: currentModelObj.name,
         resolution: `${resolution === '720p' ? '1280×720' : '854×480'} (${aspectRatio})`,
         duration: duration,

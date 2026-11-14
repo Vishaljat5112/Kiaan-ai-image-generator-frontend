@@ -1,4 +1,5 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import { api } from '../../services/api'
 import {
   HelpCircle, Search, MessageSquare, Plus, FileText, ChevronDown,
   ChevronUp, CheckCircle, Clock, Send, Sparkles, LifeBuoy, AlertCircle
@@ -49,53 +50,108 @@ export function SupportPage() {
     })
   }, [searchQuery, selectedCategory])
 
-  const handleCreateTicket = (e) => {
+  const normalizeTicket = useCallback((t) => ({
+    ...t,
+    status: t.status || 'OPEN',
+    messages: (t.messages || []).map((m) => ({
+      from: m.from || (m.sender?.role === 'ADMIN' || m.sender?.role === 'SUPER_ADMIN' ? 'support' : 'you'),
+      at: m.at || m.createdAt,
+      text: m.text || m.message
+    }))
+  }), [])
+
+  useEffect(() => {
+    async function loadTickets() {
+      try {
+        const res = await api.get('/support/tickets')
+        if (res.data?.data && res.data.data.length > 0) {
+          const normalized = res.data.data.map(normalizeTicket)
+          setTickets(normalized)
+        }
+      } catch (err) {
+        // Keep demo tickets if unauthenticated or offline
+      }
+    }
+    loadTickets()
+  }, [normalizeTicket])
+
+  const handleCreateTicket = async (e) => {
     e.preventDefault()
     if (!ticketSubject.trim() || !ticketMessage.trim()) return
 
-    const newT = {
-      id: `TCK-${Math.floor(1000 + Math.random() * 9000)}`,
-      subject: ticketSubject.trim(),
-      category: ticketCategory,
-      priority: ticketPriority,
-      status: 'Open',
-      createdAt: new Date().toISOString(),
-      messages: [
-        {
-          from: 'you',
-          at: new Date().toISOString(),
-          text: ticketMessage.trim()
-        }
-      ]
+    try {
+      const res = await api.post('/support/tickets', {
+        subject: ticketSubject.trim(),
+        category: ticketCategory,
+        priority: ticketPriority.toUpperCase(),
+        message: ticketMessage.trim()
+      })
+      const created = normalizeTicket(res.data?.data)
+      setTickets([created, ...tickets])
+      setSelectedTicket(created)
+      setNewTicketModalOpen(false)
+      setTicketSubject('')
+      setTicketMessage('')
+      setActiveTab('tickets')
+      setToast({ message: `Ticket ${created.id.slice(0, 8)} submitted. Support will respond shortly.` })
+    } catch (err) {
+      const newT = {
+        id: `TCK-${Math.floor(1000 + Math.random() * 9000)}`,
+        subject: ticketSubject.trim(),
+        category: ticketCategory,
+        priority: ticketPriority,
+        status: 'Open',
+        createdAt: new Date().toISOString(),
+        messages: [
+          {
+            from: 'you',
+            at: new Date().toISOString(),
+            text: ticketMessage.trim()
+          }
+        ]
+      }
+      setTickets([newT, ...tickets])
+      setSelectedTicket(newT)
+      setNewTicketModalOpen(false)
+      setTicketSubject('')
+      setTicketMessage('')
+      setActiveTab('tickets')
+      setToast({ message: `Ticket ${newT.id} submitted (Offline fallback).` })
     }
-    setTickets([newT, ...tickets])
-    setNewTicketModalOpen(false)
-    setTicketSubject('')
-    setTicketMessage('')
-    setActiveTab('tickets')
-    setToast({ message: `Ticket ${newT.id} submitted (Demo). Support will respond shortly.` })
   }
 
-  const handleSendReply = (e) => {
+  const handleSendReply = async (e) => {
     e.preventDefault()
     if (!replyText.trim() || !selectedTicket) return
 
-    const updated = {
-      ...selectedTicket,
-      messages: [
-        ...selectedTicket.messages,
-        {
-          from: 'you',
-          at: new Date().toISOString(),
-          text: replyText.trim()
-        }
-      ]
+    const newMsg = {
+      from: 'you',
+      at: new Date().toISOString(),
+      text: replyText.trim()
     }
 
-    setTickets(tickets.map((t) => (t.id === selectedTicket.id ? updated : t)))
-    setSelectedTicket(updated)
-    setReplyText('')
-    setToast({ message: 'Reply posted to ticket thread.' })
+    try {
+      await api.post(`/support/tickets/${selectedTicket.id}/messages`, {
+        message: replyText.trim()
+      })
+      const updated = {
+        ...selectedTicket,
+        messages: [...selectedTicket.messages, newMsg]
+      }
+      setTickets(tickets.map((t) => (t.id === selectedTicket.id ? updated : t)))
+      setSelectedTicket(updated)
+      setReplyText('')
+      setToast({ message: 'Reply posted to ticket thread.' })
+    } catch (err) {
+      const updated = {
+        ...selectedTicket,
+        messages: [...selectedTicket.messages, newMsg]
+      }
+      setTickets(tickets.map((t) => (t.id === selectedTicket.id ? updated : t)))
+      setSelectedTicket(updated)
+      setReplyText('')
+      setToast({ message: 'Reply posted to ticket thread (Local).' })
+    }
   }
 
   return (

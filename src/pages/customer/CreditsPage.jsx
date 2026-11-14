@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import {
   Coins, TrendingUp, Sparkles, Video, ArrowUpRight, ArrowDownLeft,
-  Calendar, Clock, AlertCircle, Info, RefreshCw, Plus, Check
+  Calendar, Clock, AlertCircle, Info, RefreshCw, Plus, Check, Loader2
 } from 'lucide-react'
 import { Modal } from '../../components/ui/Modal'
 import { Button } from '../../components/ui/Button'
@@ -13,6 +13,7 @@ import { DEMO_USAGE_DAILY, DEMO_TRANSACTIONS } from '../../mocks/customerDemoDat
 import { useAuth } from '../../hooks/useAuth'
 import { formatDateTime } from '../../utils/format'
 import { cn } from '../../utils/cn'
+import { api } from '../../services/api'
 
 const TOP_UP_PACKS = [
   { id: 'topup-100', credits: 100, price: '$5', desc: 'Ideal for small quick edits' },
@@ -21,21 +22,55 @@ const TOP_UP_PACKS = [
 ]
 
 export function CreditsPage() {
-  const { user } = useAuth()
-  const [balance, setBalance] = useState(user?.creditBalance ?? 250)
-  const [transactions, setTransactions] = useState(DEMO_TRANSACTIONS)
+  const { user, setUser } = useAuth()
+  const [balance, setBalance] = useState(user?.creditBalance ?? 25)
+  const [transactions, setTransactions] = useState([])
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [topUpModalOpen, setTopUpModalOpen] = useState(false)
   const [selectedPack, setSelectedPack] = useState(TOP_UP_PACKS[1].id)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
+
+  // Load real balance and transaction history on mount
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadCreditData() {
+      try {
+        const [balRes, txRes] = await Promise.allSettled([
+          api.get('/credits/balance'),
+          api.get('/credits/transactions')
+        ])
+
+        if (isMounted) {
+          if (balRes.status === 'fulfilled' && balRes.value.data?.success) {
+            const b = balRes.value.data.data.balance
+            setBalance(b)
+            if (setUser) setUser((prev) => (prev ? { ...prev, creditBalance: b } : prev))
+          }
+          if (txRes.status === 'fulfilled' && txRes.value.data?.success) {
+            const list = txRes.value.data.data
+            setTransactions(list.length > 0 ? list : DEMO_TRANSACTIONS)
+          } else {
+            setTransactions(DEMO_TRANSACTIONS)
+          }
+        }
+      } catch {
+        if (isMounted) setTransactions(DEMO_TRANSACTIONS)
+      }
+    }
+
+    loadCreditData()
+    return () => { isMounted = false }
+  }, [setUser])
 
   const filteredTx = useMemo(() => {
     return transactions.filter((t) => {
       if (categoryFilter === 'all') return true
-      if (categoryFilter === 'image') return t.category === 'image'
-      if (categoryFilter === 'video') return t.category === 'video'
-      if (categoryFilter === 'topup') return t.category === 'topup' || t.category === 'plan' || t.category === 'bonus'
+      if (categoryFilter === 'image') return t.category === 'image' || t.rawCategory === 'IMAGE_GENERATION'
+      if (categoryFilter === 'video') return t.category === 'video' || t.rawCategory === 'VIDEO_GENERATION'
+      if (categoryFilter === 'topup') return t.category === 'topup' || t.type === 'refund' || t.type === 'bonus'
       return true
     })
   }, [transactions, categoryFilter])
@@ -46,8 +81,8 @@ export function CreditsPage() {
     let vid = 0
     let added = 0
     transactions.forEach((t) => {
-      if (t.category === 'image') img += Math.abs(t.amount)
-      if (t.category === 'video' && t.type === 'debit') vid += Math.abs(t.amount)
+      if (t.category === 'image' || t.rawCategory === 'IMAGE_GENERATION') img += Math.abs(t.amount)
+      if ((t.category === 'video' || t.rawCategory === 'VIDEO_GENERATION') && t.type === 'debit') vid += Math.abs(t.amount)
       if (t.amount > 0) added += t.amount
     })
     return { img, vid, added }
@@ -55,20 +90,37 @@ export function CreditsPage() {
 
   const maxDaily = Math.max(...DEMO_USAGE_DAILY.map((d) => d.image + d.video), 1)
 
-  const handleSimulateTopUp = () => {
+  const handleSimulateTopUp = async () => {
     const pack = TOP_UP_PACKS.find((p) => p.id === selectedPack) || TOP_UP_PACKS[1]
-    const newTx = {
-      id: `tx-${Date.now()}`,
-      date: new Date().toISOString(),
-      description: `Credit top-up • ${pack.credits} credit pack (Demo)`,
-      type: 'credit',
-      category: 'topup',
-      amount: pack.credits
+    setIsSubmitting(true)
+    try {
+      const res = await api.post('/credits/topup', { packId: pack.id })
+      if (res.data?.success) {
+        const order = res.data.data
+        setTopUpModalOpen(false)
+        setToast({
+          message: `Order created (${order.invoiceNumber}). Payment gateways will be connected in Phase 6.`
+        })
+      } else {
+        setToast({ message: res.data?.error?.message || 'Failed to create top-up order', tone: 'danger' })
+      }
+    } catch {
+      // Local demo fallback
+      const newTx = {
+        id: `tx-${Date.now()}`,
+        date: new Date().toISOString(),
+        description: `Credit top-up • ${pack.credits} credit pack (Demo)`,
+        type: 'credit',
+        category: 'topup',
+        amount: pack.credits
+      }
+      setBalance((prev) => prev + pack.credits)
+      setTransactions([newTx, ...transactions])
+      setTopUpModalOpen(false)
+      setToast({ message: `Simulated top-up: +${pack.credits} credits added to local session.` })
+    } finally {
+      setIsSubmitting(false)
     }
-    setBalance((prev) => prev + pack.credits)
-    setTransactions([newTx, ...transactions])
-    setTopUpModalOpen(false)
-    setToast({ message: `Simulated top-up: +${pack.credits} credits added to local session.` })
   }
 
   return (
@@ -118,52 +170,53 @@ export function CreditsPage() {
         />
       </div>
 
-      {/* Visual Usage Breakdown Chart (HTML/Tailwind Pure Bar Chart) */}
+      {/* Visual Usage Breakdown Chart */}
       <Panel>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-cyan-400" />
-              14-Day Generative Consumption Trend
+              14-Day Consumption Timeline
             </h2>
             <p className="text-xs text-neutral-400 mt-0.5">
-              Breakdown of daily credits spent across image and video models.
+              Daily generative inference volume across multimodal and video models.
             </p>
           </div>
-          <div className="flex items-center gap-4 text-xs">
-            <span className="flex items-center gap-1.5 text-neutral-400">
-              <span className="w-3 h-3 rounded-sm bg-pink-500" /> Image (FLUX.2/Turbo)
+          <div className="flex items-center gap-3 text-xs">
+            <span className="flex items-center gap-1.5 text-neutral-300">
+              <span className="w-2.5 h-2.5 rounded-sm bg-pink-500" /> Image Synthesis
             </span>
-            <span className="flex items-center gap-1.5 text-neutral-400">
-              <span className="w-3 h-3 rounded-sm bg-cyan-400" /> Video (Wan 2.1 DiT)
+            <span className="flex items-center gap-1.5 text-neutral-300">
+              <span className="w-2.5 h-2.5 rounded-sm bg-cyan-400" /> 3D DiT Video
             </span>
           </div>
         </div>
 
-        {/* Bar chart container */}
-        <div className="h-48 flex items-end gap-2 sm:gap-3 pt-6 pb-2 border-b border-neutral-800">
-          {DEMO_USAGE_DAILY.map((d, idx) => {
-            const total = d.image + d.video
-            const totalHeight = Math.round((total / maxDaily) * 100)
-            const imgPct = total > 0 ? (d.image / total) * 100 : 0
-            const vidPct = total > 0 ? (d.video / total) * 100 : 0
-
+        {/* CSS Flex Bar Chart */}
+        <div className="h-44 flex items-end gap-2 pt-4 border-b border-neutral-800">
+          {DEMO_USAGE_DAILY.map((day, idx) => {
+            const imgPct = (day.image / maxDaily) * 100
+            const vidPct = (day.video / maxDaily) * 100
             return (
-              <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
-                {/* Tooltip on hover */}
-                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 border border-neutral-700 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap z-10 shadow-lg">
-                  {d.day}: {total} cr ({d.image} img, {d.video} vid)
+              <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                <div className="w-full max-w-[28px] flex flex-col justify-end h-full gap-0.5">
+                  {day.video > 0 && (
+                    <div
+                      style={{ height: `${vidPct}%` }}
+                      className="w-full bg-cyan-400/80 rounded-t-sm group-hover:bg-cyan-300 transition-colors"
+                      title={`${day.date}: ${day.video} video credits`}
+                    />
+                  )}
+                  {day.image > 0 && (
+                    <div
+                      style={{ height: `${imgPct}%` }}
+                      className="w-full bg-pink-500/80 rounded-t-sm group-hover:bg-pink-400 transition-colors"
+                      title={`${day.date}: ${day.image} image credits`}
+                    />
+                  )}
                 </div>
-
-                <div
-                  className="w-full max-w-[28px] rounded-t-md overflow-hidden bg-neutral-800/80 flex flex-col justify-end transition-all duration-300 group-hover:opacity-85"
-                  style={{ height: `${Math.max(totalHeight, 4)}%` }}
-                >
-                  <div className="w-full bg-cyan-400" style={{ height: `${vidPct}%` }} />
-                  <div className="w-full bg-pink-500" style={{ height: `${imgPct}%` }} />
-                </div>
-                <span className="text-[10px] text-neutral-400 mt-2 truncate w-full text-center">
-                  {d.day.split(' ')[0]}
+                <span className="text-[10px] text-neutral-400 font-mono group-hover:text-white transition-colors">
+                  {day.date.split(' ')[0]}
                 </span>
               </div>
             )
@@ -171,9 +224,9 @@ export function CreditsPage() {
         </div>
       </Panel>
 
-      {/* Transaction Ledger Table */}
-      <Panel className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Transaction History Ledger */}
+      <Panel>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <Clock className="w-4 h-4 text-cyan-400" />
@@ -226,7 +279,7 @@ export function CreditsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-neutral-400 hidden md:table-cell">
-                      {formatDateTime(tx.date)}
+                      {formatDateTime(tx.date || tx.createdAt)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <span className={cn(
@@ -244,13 +297,13 @@ export function CreditsPage() {
         </div>
       </Panel>
 
-      {/* Top-up Simulated Modal */}
+      {/* Top-up Modal */}
       <Modal
         theme="dark"
         isOpen={topUpModalOpen}
         onClose={() => setTopUpModalOpen(false)}
         title="Purchase Credit Pack"
-        description="Demo mode: simulated purchase modifies your local state only without charging a payment method."
+        description="Select a credit allocation pack for your generative studio pipelines."
       >
         <div className="space-y-4">
           <div className="space-y-2.5">
@@ -295,7 +348,7 @@ export function CreditsPage() {
           <div className="p-3 bg-cyan-950/40 rounded-xl border border-cyan-800/60 flex items-start gap-2 text-xs text-cyan-300">
             <Info className="w-4 h-4 shrink-0 mt-0.5 text-cyan-400" />
             <span>
-              This is an interactive frontend demo. Clicking "Confirm Top-Up" will update the local balance counter in real time without real billing.
+              Orders create pending invoices on the backend foundation. Real payment processing gateways will be connected in Phase 6.
             </span>
           </div>
 
@@ -303,8 +356,13 @@ export function CreditsPage() {
             <Button variant="outline" size="sm" onClick={() => setTopUpModalOpen(false)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
               Cancel
             </Button>
-            <Button variant="gradient" size="sm" onClick={handleSimulateTopUp}>
-              Confirm Top-Up (Demo)
+            <Button
+              variant="gradient"
+              size="sm"
+              onClick={handleSimulateTopUp}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Creating Order…' : 'Create Order'}
             </Button>
           </div>
         </div>

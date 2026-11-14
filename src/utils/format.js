@@ -20,3 +20,13 @@ export function formatDateTime(iso) {
 export function formatUSD(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(amount)
 }
+
+export function formatNumber(num) {
+  if (num === null || num === undefined) return '0'
+  return new Intl.NumberFormat('en-US').format(num)
+}
+
+export function formatCurrency(amount) {
+  return formatUSD(amount || 0)
+}
+
