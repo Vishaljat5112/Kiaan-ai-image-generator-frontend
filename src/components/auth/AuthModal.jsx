@@ -18,8 +18,8 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
   const [role, setRole] = useState(initialRole)
 
   // Form states
-  const [email, setEmail] = useState(role === 'admin' ? 'admin@studio.com' : 'artist@studio.com')
-  const [password, setPassword] = useState(role === 'admin' ? 'admin_secure_pass' : 'password123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [securityPin, setSecurityPin] = useState('000000')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
@@ -54,6 +54,14 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
       triggerElementRef.current?.focus?.()
     }
   }, [])
+
+  // Keep role/mode synchronized with route props and ensure credentials start blank
+  useEffect(() => {
+    setRole(initialRole)
+    setMode(initialMode)
+    setEmail('')
+    setPassword('')
+  }, [initialRole, initialMode])
 
   // Close modal and return to background location or '/'
   const handleClose = React.useCallback(() => {
@@ -103,13 +111,8 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
 
     if (newMode === 'login') {
       setRole(newRole)
-      if (newRole === 'admin') {
-        setEmail('admin@studio.com')
-        setPassword('admin_secure_pass')
-      } else {
-        setEmail('artist@studio.com')
-        setPassword('password123')
-      }
+      setEmail('')
+      setPassword('')
       navigate('/login', { replace: true, state: location.state })
     } else if (newMode === 'signup') {
       navigate('/register', { replace: true, state: location.state })
@@ -123,13 +126,8 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
     setRole(newRole)
     setErrors({})
     setFeedback(null)
-    if (newRole === 'admin') {
-      setEmail('admin@studio.com')
-      setPassword('admin_secure_pass')
-    } else {
-      setEmail('artist@studio.com')
-      setPassword('password123')
-    }
+    setEmail('')
+    setPassword('')
   }
 
   // Handle Login submission
@@ -322,11 +320,10 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                   <button
                     type="button"
                     onClick={() => handleRoleSwitch('customer')}
-                    className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      role === 'customer'
-                        ? 'bg-neutral-800 text-white shadow-2xs border border-cyan-500/40'
-                        : 'text-neutral-400 hover:text-neutral-200'
-                    }`}
+                    className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${role === 'customer'
+                      ? 'bg-neutral-800 text-white shadow-2xs border border-cyan-500/40'
+                      : 'text-neutral-400 hover:text-neutral-200'
+                      }`}
                   >
                     <User className="w-3 h-3 text-cyan-400" />
                     <span>User Login</span>
@@ -335,11 +332,10 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                   <button
                     type="button"
                     onClick={() => handleRoleSwitch('admin')}
-                    className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      role === 'admin'
-                        ? 'bg-neutral-800 text-white shadow-2xs border border-pink-500/40'
-                        : 'text-neutral-400 hover:text-neutral-200'
-                    }`}
+                    className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${role === 'admin'
+                      ? 'bg-neutral-800 text-white shadow-2xs border border-pink-500/40'
+                      : 'text-neutral-400 hover:text-neutral-200'
+                      }`}
                   >
                     <Shield className="w-3 h-3 text-pink-400" />
                     <span>Admin Login</span>
@@ -355,7 +351,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                     leftIcon={Mail}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={role === 'admin' ? 'admin@studio.com' : 'artist@studio.com'}
+                    placeholder="Enter your email"
                     required
                   />
 
@@ -367,7 +363,7 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                       leftIcon={Lock}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••••••"
+                      placeholder="Enter your password"
                       required
                     />
                     <button

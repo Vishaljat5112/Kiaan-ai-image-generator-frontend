@@ -11,8 +11,8 @@ export function DemoAccess({ onSelect, compact = false }) {
   const handleCustomerDemo = () => {
     setFeedback('User Demo active. Entering Studio...')
     loginAsMockUser('creator', {
-      fullName: 'Jane Doe (Demo)',
-      email: 'creator.demo@kiaan.studio',
+      fullName: 'Demo Creator',
+      email: 'user@gmail.com',
       tier: 'Free Tier',
       creditBalance: 250
     })
@@ -25,8 +25,8 @@ export function DemoAccess({ onSelect, compact = false }) {
   const handleAdminDemo = () => {
     setFeedback('Admin Demo active. Entering Admin Portal...')
     loginAsMockUser('super_admin', {
-      fullName: 'Admin User (Demo)',
-      email: 'admin.demo@kiaan.studio',
+      fullName: 'System Administrator',
+      email: 'admin@gmail.com',
       tier: 'Super Admin',
       creditBalance: 99999
     })

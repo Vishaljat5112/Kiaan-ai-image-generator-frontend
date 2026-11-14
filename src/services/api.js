@@ -113,7 +113,8 @@ api.interceptors.response.use(
       } catch (refreshErr) {
         processQueue(refreshErr, null)
         clearAccessToken()
-        if (typeof window !== 'undefined') {
+        const isMockSession = typeof window !== 'undefined' && localStorage.getItem('kiaan_is_mock_session') === 'true'
+        if (typeof window !== 'undefined' && !isMockSession) {
           window.dispatchEvent(new CustomEvent('auth:session-expired'))
         }
         return Promise.reject(refreshErr)
