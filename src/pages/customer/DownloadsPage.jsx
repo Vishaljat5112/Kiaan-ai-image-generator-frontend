@@ -59,7 +59,7 @@ export function DownloadsPage() {
               size="sm"
               leftIcon={Trash2}
               onClick={handleClearHistory}
-              className="text-neutral-700 border-neutral-300 hover:bg-neutral-100"
+              className="text-neutral-300 border-neutral-700 bg-neutral-900/80 hover:bg-neutral-800 hover:text-rose-400 cursor-pointer"
             >
               Clear History
             </Button>
@@ -74,7 +74,7 @@ export function DownloadsPage() {
           label="Total Exports"
           value={downloads.length}
           sub="Stored in browser history"
-          accent="violet"
+          accent="cyan"
         />
         <StatCard
           icon={HardDrive}
@@ -88,7 +88,7 @@ export function DownloadsPage() {
           label="Latest Export"
           value={downloads[0] ? formatDateTime(downloads[0].downloadedAt).split(',')[0] : 'None'}
           sub={downloads[0] ? downloads[0].name : 'No recent activity'}
-          accent="amber"
+          accent="pink"
         />
       </div>
 
@@ -97,7 +97,7 @@ export function DownloadsPage() {
           <SearchField
             value={query}
             onChange={setQuery}
-            placeholder="Search exports by filename, tool source�"
+            placeholder="Search exports by filename, tool source…"
             className="flex-1 max-w-md"
           />
           <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export function DownloadsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => { setQuery(''); setTypeFilter('all'); setFormatFilter('all'); }}
-                className="text-neutral-700 border-neutral-300"
+                className="text-neutral-300 border-neutral-700 hover:bg-neutral-800"
               >
                 Reset Filters
               </Button>
@@ -142,7 +142,7 @@ export function DownloadsPage() {
       ) : (
         <Panel className="p-0 overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-50 text-[11px] uppercase tracking-wide text-neutral-500">
+            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
               <tr>
                 <th className="text-left font-semibold px-4 py-3">File Name</th>
                 <th className="text-left font-semibold px-4 py-3 hidden sm:table-cell">Tool Source</th>
@@ -152,30 +152,30 @@ export function DownloadsPage() {
                 <th className="text-right font-semibold px-4 py-3">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-neutral-800">
               {filtered.map((d) => (
-                <tr key={d.id} className="hover:bg-neutral-50/70">
+                <tr key={d.id} className="hover:bg-neutral-800/40 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-neutral-200 bg-neutral-100 shrink-0">
+                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-neutral-700 bg-neutral-900 shrink-0">
                         <MediaThumb type={d.type} src={d.src} poster={d.thumb} alt={d.name} />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-neutral-900 truncate">{d.name}</p>
-                        <p className="text-[10px] text-neutral-500 sm:hidden">{d.source} � {formatBytes(d.sizeBytes)}</p>
+                        <p className="text-xs font-bold text-white truncate">{d.name}</p>
+                        <p className="text-[10px] text-neutral-400 sm:hidden">{d.source} • {formatBytes(d.sizeBytes)}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-neutral-700 hidden sm:table-cell">{d.source}</td>
+                  <td className="px-4 py-3 text-xs text-neutral-300 hidden sm:table-cell">{d.source}</td>
                   <td className="px-4 py-3">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 border border-neutral-200 uppercase">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800/60 uppercase">
                       {d.format}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-neutral-600 hidden md:table-cell">
+                  <td className="px-4 py-3 text-xs font-mono text-neutral-400 hidden md:table-cell">
                     {formatBytes(d.sizeBytes)}
                   </td>
-                  <td className="px-4 py-3 text-xs text-neutral-500 hidden lg:table-cell">
+                  <td className="px-4 py-3 text-xs text-neutral-400 hidden lg:table-cell">
                     {formatDateTime(d.downloadedAt)}
                   </td>
                   <td className="px-4 py-3">
@@ -183,7 +183,7 @@ export function DownloadsPage() {
                       <a
                         href={d.src}
                         download={d.name}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-950/60 hover:bg-cyan-900/60 text-cyan-300 border border-cyan-800/60 transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
                         Download
@@ -192,7 +192,7 @@ export function DownloadsPage() {
                         type="button"
                         onClick={() => handleDeleteItem(d.id)}
                         aria-label="Remove"
-                        className="p-1 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50"
+                        className="p-1 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-950/30 cursor-pointer transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>

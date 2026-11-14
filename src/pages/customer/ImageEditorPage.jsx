@@ -192,21 +192,21 @@ export function ImageEditorPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header (Light Studio Theme) */}
-      <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header (Eye-friendly Dark Slate Studio Theme) */}
+      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
-              <Edit3 className="w-3.5 h-3.5 text-violet-600" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+              <Edit3 className="w-3.5 h-3.5 text-cyan-400" />
               Creation Studio
             </span>
-            <span className="text-xs text-neutral-400 font-medium">/</span>
-            <span className="text-xs text-neutral-500 font-medium">Interactive Studio Canvas Editor</span>
+            <span className="text-xs text-neutral-500 font-medium">/</span>
+            <span className="text-xs text-neutral-400 font-medium">Interactive Studio Canvas Editor</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Image Canvas Editor
           </h1>
-          <p className="text-sm text-neutral-600 mt-1">
+          <p className="text-sm text-neutral-400 mt-1">
             Perform client-side editing: crop, rotate, brightness, contrast, stylistic photo filters, and context-aware generative inpainting.
           </p>
         </div>
@@ -218,7 +218,7 @@ export function ImageEditorPage() {
             size="sm"
             onClick={handleResetAdjustments}
             leftIcon={RotateCcw}
-            className="text-neutral-700 border-neutral-300 hover:bg-neutral-100"
+            className="text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
           >
             Reset
           </Button>
@@ -236,9 +236,9 @@ export function ImageEditorPage() {
       </div>
 
       {notification && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold rounded-xl flex items-center justify-between animate-fade-in">
+        <div className="p-3 bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs font-semibold rounded-xl flex items-center justify-between animate-fade-in">
           <span>✓ {notification}</span>
-          <button onClick={() => setNotification('')} className="text-emerald-600 hover:text-emerald-900 font-bold">×</button>
+          <button onClick={() => setNotification('')} className="text-emerald-400 hover:text-white font-bold">×</button>
         </div>
       )}
 
@@ -247,7 +247,7 @@ export function ImageEditorPage() {
         {/* Left Side: Interactive Tools Panel (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           {/* Tool Navigation Tabs */}
-          <div className="bg-white rounded-2xl p-2 border border-neutral-200 shadow-sm grid grid-cols-4 gap-1 text-center">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-2 border border-neutral-800/90 shadow-sm grid grid-cols-4 gap-1 text-center">
             {[
               { id: 'adjust', label: 'Adjust', icon: Sliders },
               { id: 'filter', label: 'Filters', icon: Palette },
@@ -264,8 +264,8 @@ export function ImageEditorPage() {
                   className={cn(
                     'py-2 px-1 rounded-xl text-xs font-semibold transition-all flex flex-col items-center justify-center gap-1',
                     isActive
-                      ? 'bg-violet-600 text-white shadow-xs'
-                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-xs'
+                      : 'text-neutral-400 hover:text-white hover:bg-neutral-800/60'
                   )}
                 >
                   <IconComp className="w-4 h-4" />
@@ -277,20 +277,20 @@ export function ImageEditorPage() {
 
           {/* TAB 1: Adjustments (Brightness, Contrast, Saturation) */}
           {activeTab === 'adjust' && (
-            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-5">
-              <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-violet-600" />
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-5 text-neutral-100">
+              <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-cyan-400" />
                 Color & Tone Adjustments
               </h2>
 
               {/* Brightness */}
               <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold text-neutral-700">
+                <div className="flex justify-between text-xs font-semibold text-neutral-300">
                   <span className="flex items-center gap-1.5">
-                    <Sun className="w-3.5 h-3.5 text-neutral-500" />
+                    <Sun className="w-3.5 h-3.5 text-neutral-400" />
                     Brightness
                   </span>
-                  <span className="font-mono text-violet-700">{brightness}%</span>
+                  <span className="font-mono text-cyan-400">{brightness}%</span>
                 </div>
                 <input
                   type="range"
@@ -298,18 +298,18 @@ export function ImageEditorPage() {
                   max="180"
                   value={brightness}
                   onChange={(e) => setBrightness(parseInt(e.target.value))}
-                  className="w-full accent-violet-600 h-2 bg-neutral-200 rounded-lg cursor-pointer"
+                  className="w-full accent-cyan-400 h-2 bg-neutral-800 rounded-lg cursor-pointer"
                 />
               </div>
 
               {/* Contrast */}
               <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold text-neutral-700">
+                <div className="flex justify-between text-xs font-semibold text-neutral-300">
                   <span className="flex items-center gap-1.5">
-                    <Contrast className="w-3.5 h-3.5 text-neutral-500" />
+                    <Contrast className="w-3.5 h-3.5 text-neutral-400" />
                     Contrast
                   </span>
-                  <span className="font-mono text-violet-700">{contrast}%</span>
+                  <span className="font-mono text-cyan-400">{contrast}%</span>
                 </div>
                 <input
                   type="range"
@@ -317,15 +317,15 @@ export function ImageEditorPage() {
                   max="180"
                   value={contrast}
                   onChange={(e) => setContrast(parseInt(e.target.value))}
-                  className="w-full accent-violet-600 h-2 bg-neutral-200 rounded-lg cursor-pointer"
+                  className="w-full accent-cyan-400 h-2 bg-neutral-800 rounded-lg cursor-pointer"
                 />
               </div>
 
               {/* Saturation */}
               <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold text-neutral-700">
+                <div className="flex justify-between text-xs font-semibold text-neutral-300">
                   <span>Saturation</span>
-                  <span className="font-mono text-violet-700">{saturation}%</span>
+                  <span className="font-mono text-cyan-400">{saturation}%</span>
                 </div>
                 <input
                   type="range"
@@ -333,11 +333,11 @@ export function ImageEditorPage() {
                   max="200"
                   value={saturation}
                   onChange={(e) => setSaturation(parseInt(e.target.value))}
-                  className="w-full accent-violet-600 h-2 bg-neutral-200 rounded-lg cursor-pointer"
+                  className="w-full accent-cyan-400 h-2 bg-neutral-800 rounded-lg cursor-pointer"
                 />
               </div>
 
-              <div className="pt-2 border-t border-neutral-100 flex justify-between">
+              <div className="pt-2 border-t border-neutral-800 flex justify-between">
                 <button
                   type="button"
                   onClick={() => {
@@ -345,7 +345,7 @@ export function ImageEditorPage() {
                     setContrast(100)
                     setSaturation(100)
                   }}
-                  className="text-xs text-neutral-500 hover:text-neutral-800"
+                  className="text-xs text-neutral-400 hover:text-white"
                 >
                   Reset Sliders
                 </button>
@@ -355,9 +355,9 @@ export function ImageEditorPage() {
 
           {/* TAB 2: Photographic Filters */}
           {activeTab === 'filter' && (
-            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Palette className="w-4 h-4 text-violet-600" />
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+              <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Palette className="w-4 h-4 text-cyan-400" />
                 Color Grading Presets
               </h2>
 
@@ -372,8 +372,8 @@ export function ImageEditorPage() {
                       className={cn(
                         'p-3 rounded-xl border text-left transition-all',
                         isSelected
-                          ? 'border-violet-600 bg-violet-50 text-violet-900 ring-2 ring-violet-500/20 font-bold'
-                          : 'border-neutral-200 hover:border-violet-300 text-neutral-700'
+                          ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 ring-2 ring-cyan-500/20 font-bold'
+                          : 'border-neutral-800 bg-[#080B14] hover:border-cyan-500/60 text-neutral-300'
                       )}
                     >
                       <div className="text-xs">{f.name}</div>
@@ -386,32 +386,32 @@ export function ImageEditorPage() {
 
           {/* TAB 3: Crop & Rotate */}
           {activeTab === 'crop' && (
-            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-5">
-              <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Crop className="w-4 h-4 text-violet-600" />
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-5 text-neutral-100">
+              <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Crop className="w-4 h-4 text-cyan-400" />
                 Orientation & Framing
               </h2>
 
               {/* Rotate Action */}
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-neutral-700 block">Rotation</label>
+                <label className="text-xs font-semibold text-neutral-300 block">Rotation</label>
                 <div className="flex items-center gap-3">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleRotate}
                     leftIcon={RotateCw}
-                    className="text-xs text-neutral-800 border-neutral-300 hover:bg-neutral-100"
+                    className="text-xs text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
                   >
                     Rotate 90° Clockwise
                   </Button>
-                  <span className="text-xs font-mono text-neutral-600 font-semibold">{rotation}°</span>
+                  <span className="text-xs font-mono text-cyan-400 font-semibold">{rotation}°</span>
                 </div>
               </div>
 
               {/* Crop Ratio Presets */}
-              <div className="space-y-2 pt-3 border-t border-neutral-100">
-                <label className="text-xs font-semibold text-neutral-700 block">Aspect Ratio Crop</label>
+              <div className="space-y-2 pt-3 border-t border-neutral-800">
+                <label className="text-xs font-semibold text-neutral-300 block">Aspect Ratio Crop</label>
                 <div className="grid grid-cols-2 gap-2">
                   {CROP_RATIOS.map((c) => (
                     <button
@@ -421,8 +421,8 @@ export function ImageEditorPage() {
                       className={cn(
                         'p-2.5 rounded-xl border text-xs font-semibold text-center transition-all',
                         cropRatio === c.id
-                          ? 'border-violet-600 bg-violet-50 text-violet-900 ring-2 ring-violet-500/20'
-                          : 'border-neutral-200 hover:bg-neutral-50 text-neutral-700'
+                          ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 ring-2 ring-cyan-500/20'
+                          : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800 text-neutral-300'
                       )}
                     >
                       {c.label}
@@ -435,32 +435,32 @@ export function ImageEditorPage() {
 
           {/* TAB 4: Inpaint & Generative Fill */}
           {activeTab === 'brush' && (
-            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-violet-600" />
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+              <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
                 Generative Inpainting Brush
               </h2>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-neutral-400">
                 Click on the canvas on the right to brush over regions you want replaced or enhanced.
               </p>
 
               {/* Inpaint Prompt */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-neutral-700 block">Fill Prompt</label>
+                <label className="text-xs font-semibold text-neutral-300 block">Fill Prompt</label>
                 <textarea
                   rows={2}
                   value={inpaintPrompt}
                   onChange={(e) => setInpaintPrompt(e.target.value)}
                   placeholder="e.g. Add glowing cybernetic visor, change hair color to turquoise..."
-                  className="w-full rounded-xl p-2.5 text-xs bg-neutral-50 border border-neutral-300 text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+                  className="w-full rounded-xl p-2.5 text-xs bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 resize-none"
                 />
               </div>
 
               {/* Brush Size */}
               <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-semibold text-neutral-700">
+                <div className="flex justify-between text-xs font-semibold text-neutral-300">
                   <span>Brush Radius</span>
-                  <span className="font-mono text-violet-700">{brushSize}px</span>
+                  <span className="font-mono text-cyan-400">{brushSize}px</span>
                 </div>
                 <input
                   type="range"
@@ -468,7 +468,7 @@ export function ImageEditorPage() {
                   max="60"
                   value={brushSize}
                   onChange={(e) => setBrushSize(parseInt(e.target.value))}
-                  className="w-full accent-violet-600 h-2 bg-neutral-200 rounded-lg cursor-pointer"
+                  className="w-full accent-cyan-400 h-2 bg-neutral-800 rounded-lg cursor-pointer"
                 />
               </div>
 
@@ -487,7 +487,7 @@ export function ImageEditorPage() {
                   <button
                     type="button"
                     onClick={() => setMaskPixelsDrawn(false)}
-                    className="p-2 rounded-lg text-neutral-500 hover:text-rose-600 hover:bg-neutral-100"
+                    className="p-2 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-neutral-800"
                     title="Clear mask"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -498,10 +498,10 @@ export function ImageEditorPage() {
           )}
 
           {/* Upload New Image Box */}
-          <div className="bg-white rounded-2xl p-5 border border-neutral-200 shadow-sm space-y-3">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 border border-neutral-800/90 shadow-sm space-y-3 text-neutral-100">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-neutral-800">Current File:</span>
-              <span className="text-xs font-mono text-neutral-500 truncate max-w-[160px]">{imageName}</span>
+              <span className="text-xs font-bold text-neutral-200">Current File:</span>
+              <span className="text-xs font-mono text-neutral-400 truncate max-w-[160px]">{imageName}</span>
             </div>
             <input
               type="file"
@@ -515,7 +515,7 @@ export function ImageEditorPage() {
               size="sm"
               onClick={() => fileInputRef.current?.click()}
               leftIcon={Upload}
-              className="w-full text-neutral-700 border-neutral-300 hover:bg-neutral-100"
+              className="w-full text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
             >
               Upload Local Image
             </Button>
@@ -524,23 +524,23 @@ export function ImageEditorPage() {
 
         {/* Right Side: Interactive Editing Canvas (8 cols) */}
         <div className="lg:col-span-8 space-y-4">
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-neutral-800">Live Studio Viewport</span>
-                <span className="text-[10px] font-semibold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded">
+                <span className="text-xs font-bold text-neutral-100">Live Studio Viewport</span>
+                <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded">
                   {rotation !== 0 ? `Rotated ${rotation}°` : 'Original Angle'}
                 </span>
                 {activeFilter !== 'normal' && (
-                  <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 px-2 py-0.5 rounded border border-violet-200">
+                  <span className="text-[10px] font-semibold text-cyan-300 bg-cyan-950/70 px-2 py-0.5 rounded border border-cyan-800/60">
                     Filter: {activeFilter}
                   </span>
                 )}
               </div>
 
-              <div className="text-xs text-neutral-500">
+              <div className="text-xs text-neutral-400">
                 {isProcessing ? (
-                  <span className="text-violet-600 font-semibold animate-pulse">{processingText}</span>
+                  <span className="text-cyan-400 font-semibold animate-pulse">{processingText}</span>
                 ) : (
                   <span>Interactive Real-time Canvas</span>
                 )}
@@ -555,7 +555,7 @@ export function ImageEditorPage() {
                 }
               }}
               className={cn(
-                'relative w-full rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-200 flex items-center justify-center min-h-[460px] max-h-[580px] cursor-crosshair',
+                'relative w-full rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center min-h-[460px] max-h-[580px] cursor-crosshair',
                 cropRatio === '1:1' && 'aspect-square',
                 cropRatio === '16:9' && 'aspect-video',
                 cropRatio === '4:3' && 'aspect-[4/3]'
@@ -576,10 +576,10 @@ export function ImageEditorPage() {
               {activeTab === 'brush' && maskPixelsDrawn && (
                 <div className="absolute inset-0 bg-transparent flex items-center justify-center pointer-events-none">
                   <div
-                    className="w-32 h-32 rounded-full bg-violet-500/40 border-2 border-dashed border-violet-300 animate-pulse"
+                    className="w-32 h-32 rounded-full bg-cyan-500/30 border-2 border-dashed border-cyan-400 animate-pulse"
                     style={{ width: `${brushSize * 4}px`, height: `${brushSize * 4}px` }}
                   />
-                  <span className="absolute text-[11px] font-bold text-white bg-violet-900/80 px-2 py-0.5 rounded border border-violet-400">
+                  <span className="absolute text-[11px] font-bold text-white bg-cyan-950/90 px-2 py-0.5 rounded border border-cyan-500">
                     Masked Region
                   </span>
                 </div>
@@ -588,8 +588,8 @@ export function ImageEditorPage() {
               {/* Inpainting Processing Overlay */}
               {isProcessing && (
                 <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center text-white space-y-3 p-6 text-center">
-                  <div className="w-12 h-12 rounded-xl bg-violet-600/30 border border-violet-400 flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-violet-300 animate-spin" />
+                  <div className="w-12 h-12 rounded-xl bg-cyan-950/60 border border-cyan-400 flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-cyan-300 animate-spin" />
                   </div>
                   <p className="text-sm font-bold">{processingText}</p>
                 </div>
@@ -597,7 +597,7 @@ export function ImageEditorPage() {
             </div>
 
             {/* Quick Status Bar */}
-            <div className="flex items-center justify-between text-xs text-neutral-500 pt-1">
+            <div className="flex items-center justify-between text-xs text-neutral-400 pt-1">
               <span>Zoom: 100% (Fit)</span>
               <span>Click Download Edited above to export final graphic</span>
             </div>

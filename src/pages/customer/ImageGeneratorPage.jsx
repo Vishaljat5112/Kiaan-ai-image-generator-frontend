@@ -45,7 +45,7 @@ const AI_MODELS = [
     id: 'flux-2-klein-4b',
     name: 'FLUX.2 Klein 4B',
     badge: 'Fastest (~1.1s)',
-    badgeColor: 'bg-emerald-500/10 text-emerald-700 border-emerald-300',
+    badgeColor: 'bg-emerald-950/70 text-emerald-300 border-emerald-800/60',
     description: 'Sub-second rectified flow matching transformer. Best for photorealism and general concepts.',
     creditCost: 1,
     defaultSteps: 4,
@@ -55,7 +55,7 @@ const AI_MODELS = [
     id: 'z-image-turbo',
     name: 'Z-Image Turbo',
     badge: 'Pro Detail (~2.2s)',
-    badgeColor: 'bg-violet-500/10 text-violet-700 border-violet-300',
+    badgeColor: 'bg-cyan-950/70 text-cyan-300 border-cyan-800/60',
     description: 'Bilingual typography engine and S3-DiT photorealism with intricate text rendering.',
     creditCost: 1,
     defaultSteps: 8,
@@ -65,7 +65,7 @@ const AI_MODELS = [
     id: 'flux-1-schnell',
     name: 'FLUX.1 Schnell',
     badge: 'Ultra Fast',
-    badgeColor: 'bg-sky-500/10 text-sky-700 border-sky-300',
+    badgeColor: 'bg-sky-950/70 text-sky-300 border-sky-800/60',
     description: 'Apache 2.0 4-step distilled latent model optimized for instant concept thumbnailing.',
     creditCost: 1,
     defaultSteps: 4,
@@ -322,38 +322,38 @@ export function ImageGeneratorPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Page Header (Light Studio Theme) */}
-      <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Page Header (Eye-friendly Dark Slate Studio Theme) */}
+      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
-              <Sparkles className="w-3.5 h-3.5 text-violet-600" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
               Creation Studio
             </span>
-            <span className="text-xs text-neutral-400 font-medium">/</span>
-            <span className="text-xs text-neutral-500 font-medium">Text-to-Image Interactive Demo</span>
+            <span className="text-xs text-neutral-500 font-medium">/</span>
+            <span className="text-xs text-neutral-400 font-medium">Text-to-Image Interactive Demo</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Text-to-Image Studio
           </h1>
-          <p className="text-sm text-neutral-600 mt-1">
+          <p className="text-sm text-neutral-400 mt-1">
             Synthesize high-fidelity photorealistic visuals in sub-second inference using FLUX.2 Klein and Z-Image Turbo.
           </p>
         </div>
 
         {/* Quick balance display & badge */}
         <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-left">
-            <div className="text-[11px] font-medium text-neutral-500 flex items-center gap-1">
-              <Coins className="w-3 h-3 text-amber-500" />
+          <div className="px-4 py-2 rounded-xl bg-[#080B14] border border-neutral-800 text-left">
+            <div className="text-[11px] font-medium text-neutral-400 flex items-center gap-1">
+              <Coins className="w-3 h-3 text-amber-400" />
               Available Credits
             </div>
-            <div className="text-base font-bold text-neutral-900">
-              {user?.creditBalance ?? 250} <span className="text-xs font-normal text-neutral-500">cr</span>
+            <div className="text-base font-bold text-white">
+              {user?.creditBalance ?? 250} <span className="text-xs font-normal text-neutral-400">cr</span>
             </div>
           </div>
-          <div className="hidden sm:block px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-600">
-            Cost per image: <strong className="text-neutral-900 font-semibold">{currentModelObj.creditCost} credit</strong>
+          <div className="hidden sm:block px-3 py-2 rounded-xl bg-[#080B14] border border-neutral-800 text-xs text-neutral-400">
+            Cost per image: <strong className="text-white font-semibold">{currentModelObj.creditCost} credit</strong>
           </div>
         </div>
       </div>
@@ -363,18 +363,18 @@ export function ImageGeneratorPage() {
         {/* Left Side: Generator Controls (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           {/* Main Prompt Card */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
-              <label htmlFor="prompt-input" className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Wand2 className="w-4 h-4 text-violet-600" />
+              <label htmlFor="prompt-input" className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Wand2 className="w-4 h-4 text-cyan-400" />
                 Prompt Description
               </label>
               <button
                 type="button"
                 onClick={handleEnhancePrompt}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-600 hover:text-violet-700 bg-violet-50 hover:bg-violet-100/80 px-2.5 py-1 rounded-lg border border-violet-200/80 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/60 px-2.5 py-1 rounded-lg border border-cyan-800/60 transition-colors"
               >
-                <Sparkles className="w-3.5 h-3.5 text-violet-500" />
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 Enhance Prompt
               </button>
             </div>
@@ -387,13 +387,13 @@ export function ImageGeneratorPage() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe what you want to see in rich sensory detail (subject, environment, lighting, shot angle, medium, aesthetic mood)..."
-                className="w-full rounded-xl p-3.5 text-sm bg-neutral-50 border border-neutral-300 text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all resize-none"
+                className="w-full rounded-xl p-3.5 text-sm bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all resize-none"
               />
               {prompt && (
                 <button
                   type="button"
                   onClick={() => setPrompt('')}
-                  className="absolute bottom-3 right-3 text-xs text-neutral-400 hover:text-neutral-600 bg-white/90 px-2 py-0.5 rounded border border-neutral-200 shadow-xs"
+                  className="absolute bottom-3 right-3 text-xs text-neutral-400 hover:text-white bg-neutral-800/90 px-2 py-0.5 rounded border border-neutral-700 shadow-xs"
                 >
                   Clear
                 </button>
@@ -402,7 +402,7 @@ export function ImageGeneratorPage() {
 
             {/* Inspiration Prompt Chips */}
             <div className="space-y-1.5 pt-1">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
                 Inspiration Presets (Click to Load)
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -411,7 +411,7 @@ export function ImageGeneratorPage() {
                     key={idx}
                     type="button"
                     onClick={() => handleApplyInspiration(preset)}
-                    className="text-left text-xs bg-neutral-100 hover:bg-violet-50 text-neutral-700 hover:text-violet-800 hover:border-violet-300 border border-neutral-200 px-3 py-1.5 rounded-lg transition-all line-clamp-1 max-w-full"
+                    className="text-left text-xs bg-[#080B14] hover:bg-cyan-950/40 text-neutral-300 hover:text-cyan-200 hover:border-cyan-700/60 border border-neutral-800 px-3 py-1.5 rounded-lg transition-all line-clamp-1 max-w-full"
                     title={preset}
                   >
                     💡 {preset}
@@ -421,11 +421,11 @@ export function ImageGeneratorPage() {
             </div>
 
             {/* Toggle Negative Prompt */}
-            <div className="pt-2 border-t border-neutral-100">
+            <div className="pt-2 border-t border-neutral-800">
               <button
                 type="button"
                 onClick={() => setShowNegative(!showNegative)}
-                className="text-xs font-semibold text-neutral-600 hover:text-neutral-900 flex items-center gap-1.5"
+                className="text-xs font-semibold text-neutral-400 hover:text-white flex items-center gap-1.5"
               >
                 {showNegative ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 {showNegative ? 'Hide Negative Prompt' : 'Add Negative Prompt (Avoid specific elements)'}
@@ -438,7 +438,7 @@ export function ImageGeneratorPage() {
                     value={negativePrompt}
                     onChange={(e) => setNegativePrompt(e.target.value)}
                     placeholder="e.g. blur, out of focus, distorted anatomy, low quality, oversaturated, watermark, extra limbs..."
-                    className="w-full rounded-xl p-3 text-xs bg-neutral-50 border border-neutral-300 text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all resize-none"
+                    className="w-full rounded-xl p-3 text-xs bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition-all resize-none"
                   />
                 </div>
               )}
@@ -446,13 +446,13 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Model Selection Card */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-violet-600" />
+              <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-cyan-400" />
                 AI Inference Model
               </label>
-              <span className="text-xs text-neutral-500">Commercial Apache 2.0 Weights</span>
+              <span className="text-xs text-neutral-400">Commercial Apache 2.0 Weights</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -465,25 +465,25 @@ export function ImageGeneratorPage() {
                     className={cn(
                       'p-3.5 rounded-xl border text-left cursor-pointer transition-all relative flex flex-col justify-between',
                       isSelected
-                        ? 'border-violet-600 bg-violet-50/50 ring-2 ring-violet-500/20'
-                        : 'border-neutral-200 bg-neutral-50/50 hover:bg-neutral-50 hover:border-neutral-300'
+                        ? 'border-cyan-500 bg-cyan-950/30 ring-2 ring-cyan-500/20 text-white'
+                        : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800/60 hover:border-neutral-700 text-neutral-300'
                     )}
                   >
                     <div>
                       <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="text-xs font-bold text-neutral-900">{model.name}</span>
+                        <span className="text-xs font-bold text-white">{model.name}</span>
                         <span className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded border', model.badgeColor)}>
                           {model.badge}
                         </span>
                       </div>
-                      <p className="text-[11px] text-neutral-600 line-clamp-2 mt-1">
+                      <p className="text-[11px] text-neutral-400 line-clamp-2 mt-1">
                         {model.description}
                       </p>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-neutral-200/60 flex items-center justify-between text-[11px] text-neutral-500">
+                    <div className="mt-3 pt-2 border-t border-neutral-800 flex items-center justify-between text-[11px] text-neutral-400">
                       <span>{model.defaultSteps} steps</span>
-                      <span className="font-semibold text-neutral-800">{model.creditCost} credit</span>
+                      <span className="font-semibold text-white">{model.creditCost} credit</span>
                     </div>
                   </div>
                 )
@@ -492,13 +492,13 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Aspect Ratio Selection */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Square className="w-4 h-4 text-violet-600" />
+              <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Square className="w-4 h-4 text-cyan-400" />
                 Aspect Ratio & Canvas Dimensions
               </label>
-              <span className="text-xs font-mono text-neutral-500">
+              <span className="text-xs font-mono text-neutral-400">
                 {currentAspectObj.width} × {currentAspectObj.height} px
               </span>
             </div>
@@ -515,13 +515,13 @@ export function ImageGeneratorPage() {
                     className={cn(
                       'p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5',
                       isSelected
-                        ? 'border-violet-600 bg-violet-50/70 text-violet-950 ring-2 ring-violet-500/20 shadow-xs'
-                        : 'border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700'
+                        ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 ring-2 ring-cyan-500/20 shadow-xs'
+                        : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800 text-neutral-300'
                     )}
                   >
-                    <IconComponent className={cn('w-5 h-5', isSelected ? 'text-violet-600' : 'text-neutral-400')} />
+                    <IconComponent className={cn('w-5 h-5', isSelected ? 'text-cyan-400' : 'text-neutral-500')} />
                     <div className="font-bold text-xs">{ratio.id}</div>
-                    <div className="text-[10px] text-neutral-500 leading-tight">{ratio.desc}</div>
+                    <div className="text-[10px] text-neutral-400 leading-tight">{ratio.desc}</div>
                   </button>
                 )
               })}
@@ -529,17 +529,17 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Reference Image Upload (Optional Multimodal / Control Guidance) */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-violet-600" />
+              <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-cyan-400" />
                 Reference Image (Optional Image-to-Image / Style Guidance)
               </label>
               {referenceImage && (
                 <button
                   type="button"
                   onClick={handleClearReference}
-                  className="text-xs text-rose-600 hover:text-rose-700 flex items-center gap-1 font-medium"
+                  className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1 font-medium"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Remove
@@ -550,7 +550,7 @@ export function ImageGeneratorPage() {
             {!referenceImage ? (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-neutral-300 hover:border-violet-400 bg-neutral-50/50 hover:bg-violet-50/20 rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
+                className="border-2 border-dashed border-neutral-700 hover:border-cyan-500/60 bg-[#080B14]/60 hover:bg-cyan-950/20 rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
               >
                 <input
                   type="file"
@@ -559,32 +559,32 @@ export function ImageGeneratorPage() {
                   accept="image/png, image/jpeg, image/webp"
                   className="hidden"
                 />
-                <div className="w-10 h-10 rounded-xl bg-white border border-neutral-200 shadow-xs flex items-center justify-center text-neutral-500 group-hover:text-violet-600 group-hover:scale-105 transition-all">
+                <div className="w-10 h-10 rounded-xl bg-[#0D111C] border border-neutral-700 shadow-xs flex items-center justify-center text-neutral-400 group-hover:text-cyan-400 group-hover:scale-105 transition-all">
                   <Upload className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-neutral-800">
+                  <p className="text-xs font-semibold text-neutral-200">
                     Click or drag & drop reference image
                   </p>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">
+                  <p className="text-[11px] text-neutral-400 mt-0.5">
                     PNG, JPG, or WebP up to 15MB. Guides composition and color palette.
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-4 p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+              <div className="flex items-center gap-4 p-3 bg-[#080B14] rounded-xl border border-neutral-800">
                 <img
                   src={referenceImage.url}
                   alt="Reference uploaded"
-                  className="w-16 h-16 object-cover rounded-lg border border-neutral-300"
+                  className="w-16 h-16 object-cover rounded-lg border border-neutral-700"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-neutral-900 truncate">{referenceImage.name}</p>
-                  <p className="text-[11px] text-neutral-500">{referenceImage.size}</p>
+                  <p className="text-xs font-bold text-white truncate">{referenceImage.name}</p>
+                  <p className="text-[11px] text-neutral-400">{referenceImage.size}</p>
                   <div className="mt-2 space-y-1">
-                    <div className="flex justify-between text-[11px] text-neutral-600">
+                    <div className="flex justify-between text-[11px] text-neutral-300">
                       <span>Influence Weight</span>
-                      <span className="font-semibold text-neutral-900">{Math.round(referenceStrength * 100)}%</span>
+                      <span className="font-semibold text-cyan-300">{Math.round(referenceStrength * 100)}%</span>
                     </div>
                     <input
                       type="range"
@@ -593,7 +593,7 @@ export function ImageGeneratorPage() {
                       step="0.05"
                       value={referenceStrength}
                       onChange={(e) => setReferenceStrength(parseFloat(e.target.value))}
-                      className="w-full accent-violet-600 h-1.5 bg-neutral-200 rounded-lg cursor-pointer"
+                      className="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                     />
                   </div>
                 </div>
@@ -602,33 +602,33 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Advanced Generation Settings Collapsible */}
-          <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl border border-neutral-800/90 shadow-sm overflow-hidden text-neutral-100">
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full p-4 px-6 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
+              className="w-full p-4 px-6 flex items-center justify-between text-left hover:bg-[#080B14]/60 transition-colors"
             >
-              <div className="flex items-center gap-2 text-sm font-bold text-neutral-800">
-                <Sliders className="w-4 h-4 text-violet-600" />
+              <div className="flex items-center gap-2 text-sm font-bold text-neutral-100">
+                <Sliders className="w-4 h-4 text-cyan-400" />
                 Advanced Generation Settings
-                <span className="text-xs font-normal text-neutral-500">(CFG, Seed, Sampler, Steps)</span>
+                <span className="text-xs font-normal text-neutral-400">(CFG, Seed, Sampler, Steps)</span>
               </div>
               {showAdvanced ? (
-                <ChevronUp className="w-4 h-4 text-neutral-500" />
+                <ChevronUp className="w-4 h-4 text-neutral-400" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-neutral-500" />
+                <ChevronDown className="w-4 h-4 text-neutral-400" />
               )}
             </button>
 
             {showAdvanced && (
-              <div className="p-6 pt-2 border-t border-neutral-100 space-y-5 bg-neutral-50/30">
+              <div className="p-6 pt-2 border-t border-neutral-800 space-y-5 bg-[#080B14]/50">
                 {/* Sliders: CFG & Steps */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {/* Guidance Scale (CFG) */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-semibold text-neutral-700">
+                    <div className="flex justify-between text-xs font-semibold text-neutral-300">
                       <span>Guidance Scale (CFG)</span>
-                      <span className="font-mono text-violet-700">{guidanceScale.toFixed(1)}</span>
+                      <span className="font-mono text-cyan-400">{guidanceScale.toFixed(1)}</span>
                     </div>
                     <input
                       type="range"
@@ -637,18 +637,18 @@ export function ImageGeneratorPage() {
                       step="0.5"
                       value={guidanceScale}
                       onChange={(e) => setGuidanceScale(parseFloat(e.target.value))}
-                      className="w-full accent-violet-600 h-1.5 bg-neutral-200 rounded-lg cursor-pointer"
+                      className="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                     />
-                    <p className="text-[10px] text-neutral-500">
+                    <p className="text-[10px] text-neutral-400">
                       Higher adherence to prompt vs. generative creativity.
                     </p>
                   </div>
 
                   {/* Inference Steps */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-semibold text-neutral-700">
+                    <div className="flex justify-between text-xs font-semibold text-neutral-300">
                       <span>Inference Steps</span>
-                      <span className="font-mono text-violet-700">{steps} steps</span>
+                      <span className="font-mono text-cyan-400">{steps} steps</span>
                     </div>
                     <input
                       type="range"
@@ -657,26 +657,26 @@ export function ImageGeneratorPage() {
                       step="1"
                       value={steps}
                       onChange={(e) => setSteps(parseInt(e.target.value))}
-                      className="w-full accent-violet-600 h-1.5 bg-neutral-200 rounded-lg cursor-pointer"
+                      className="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                     />
-                    <p className="text-[10px] text-neutral-500">
+                    <p className="text-[10px] text-neutral-400">
                       FLUX.2 Klein is distilled for 4 steps. Z-Image Turbo excels at 8.
                     </p>
                   </div>
                 </div>
 
                 {/* Seed & Sampler */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-3 border-t border-neutral-200/60">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-3 border-t border-neutral-800">
                   {/* Seed Input */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label htmlFor="seed-input" className="text-xs font-semibold text-neutral-700">
+                      <label htmlFor="seed-input" className="text-xs font-semibold text-neutral-300">
                         RNG Seed
                       </label>
                       <button
                         type="button"
                         onClick={() => setIsRandomSeed(!isRandomSeed)}
-                        className="text-[11px] text-violet-600 hover:text-violet-700 font-medium"
+                        className="text-[11px] text-cyan-400 hover:text-cyan-300 font-medium"
                       >
                         {isRandomSeed ? '✓ Random Seed' : 'Lock Seed'}
                       </button>
@@ -689,21 +689,21 @@ export function ImageGeneratorPage() {
                         value={isRandomSeed ? 'Randomized per job' : seed}
                         onChange={(e) => setSeed(e.target.value)}
                         placeholder="e.g. 849201"
-                        className="w-full rounded-xl px-3 py-2 text-xs bg-white border border-neutral-300 text-neutral-900 disabled:bg-neutral-100 disabled:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-violet-500 font-mono"
+                        className="w-full rounded-xl px-3 py-2 text-xs bg-[#080B14] border border-neutral-700 text-neutral-100 disabled:bg-neutral-900 disabled:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono"
                       />
                     </div>
                   </div>
 
                   {/* Sampler Selector */}
                   <div className="space-y-1.5">
-                    <label htmlFor="sampler-select" className="text-xs font-semibold text-neutral-700 block">
+                    <label htmlFor="sampler-select" className="text-xs font-semibold text-neutral-300 block">
                       Diffusion Sampler
                     </label>
                     <select
                       id="sampler-select"
                       value={sampler}
                       onChange={(e) => setSampler(e.target.value)}
-                      className="w-full rounded-xl px-3 py-2 text-xs bg-white border border-neutral-300 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer"
+                      className="w-full rounded-xl px-3 py-2 text-xs bg-[#080B14] border border-neutral-700 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer"
                     >
                       <option value="euler_ancestral">Euler Ancestral (Fast Flow)</option>
                       <option value="dpm_2m_karras">DPM++ 2M Karras (High Detail)</option>
@@ -717,12 +717,12 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Action Trigger Bar */}
-          <div className="bg-white rounded-2xl p-5 border border-neutral-200 shadow-md flex items-center justify-between gap-4 sticky bottom-4 z-20">
+          <div className="bg-[#0D111C]/95 backdrop-blur-md rounded-2xl p-5 border border-neutral-800/90 shadow-xl flex items-center justify-between gap-4 sticky bottom-4 z-20">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-neutral-600">Model:</span>
-              <span className="text-xs font-bold text-neutral-900">{currentModelObj.name}</span>
-              <span className="text-neutral-300">|</span>
-              <span className="text-xs font-mono text-neutral-600">{currentAspectObj.id}</span>
+              <span className="text-xs text-neutral-400">Model:</span>
+              <span className="text-xs font-bold text-white">{currentModelObj.name}</span>
+              <span className="text-neutral-700">|</span>
+              <span className="text-xs font-mono text-neutral-400">{currentAspectObj.id}</span>
             </div>
 
             <Button
@@ -741,15 +741,15 @@ export function ImageGeneratorPage() {
         {/* Right Side: Interactive Preview Canvas & Generated Gallery (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           {/* Active Generation Preview Area */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-violet-600" />
+              <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-cyan-400" />
                 Real-Time Canvas
               </h2>
               {isGenerating && (
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-violet-700 bg-violet-50 px-2.5 py-0.5 rounded-full border border-violet-200 animate-pulse">
-                  <RefreshCw className="w-3 h-3 animate-spin text-violet-600" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/70 px-2.5 py-0.5 rounded-full border border-cyan-800/60 animate-pulse">
+                  <RefreshCw className="w-3 h-3 animate-spin text-cyan-400" />
                   Generating...
                 </span>
               )}
@@ -758,7 +758,7 @@ export function ImageGeneratorPage() {
             {/* Canvas Display */}
             <div
               className={cn(
-                'relative w-full rounded-xl overflow-hidden bg-neutral-100 border border-neutral-200 flex items-center justify-center transition-all',
+                'relative w-full rounded-xl overflow-hidden bg-[#080B14] border border-neutral-800 flex items-center justify-center transition-all',
                 aspectRatio === '1:1' && 'aspect-square',
                 aspectRatio === '16:9' && 'aspect-video',
                 aspectRatio === '9:16' && 'aspect-[9/16] max-h-[500px]',
@@ -768,9 +768,9 @@ export function ImageGeneratorPage() {
             >
               {isGenerating ? (
                 /* Real-time generation progress overlay */
-                <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center text-white space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center">
-                    <Sparkles className="w-7 h-7 text-violet-400 animate-spin" />
+                <div className="absolute inset-0 bg-[#080B14]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center text-white space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center">
+                    <Sparkles className="w-7 h-7 text-cyan-400 animate-spin" />
                   </div>
                   <div>
                     <p className="text-sm font-bold tracking-tight">Generating Visual Asset</p>
@@ -824,7 +824,7 @@ export function ImageGeneratorPage() {
                         <a
                           href={generatedResults[0].image}
                           download="kiaan-generated.jpg"
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-violet-600 hover:bg-violet-500 text-white transition-colors"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white transition-colors"
                         >
                           <Download className="w-3.5 h-3.5" />
                           Download
@@ -836,12 +836,12 @@ export function ImageGeneratorPage() {
               ) : (
                 /* Default empty state */
                 <div className="text-center p-8 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-neutral-200/80 flex items-center justify-center text-neutral-500 mx-auto">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
                     <ImageIcon className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-neutral-700">Canvas Ready for Generation</p>
-                    <p className="text-[11px] text-neutral-500 max-w-xs mt-0.5">
+                    <p className="text-xs font-semibold text-neutral-300">Canvas Ready for Generation</p>
+                    <p className="text-[11px] text-neutral-400 max-w-xs mt-0.5">
                       Enter your prompt on the left and click Generate to produce your first asset.
                     </p>
                   </div>
@@ -852,14 +852,14 @@ export function ImageGeneratorPage() {
             {/* Quick action buttons below canvas */}
             {generatedResults.length > 0 && !isGenerating && (
               <div className="flex items-center justify-between pt-2">
-                <span className="text-xs text-neutral-500">
-                  Seed: <strong className="font-mono text-neutral-800">{generatedResults[0].seed}</strong>
+                <span className="text-xs text-neutral-400">
+                  Seed: <strong className="font-mono text-white">{generatedResults[0].seed}</strong>
                 </span>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setActiveModalItem(generatedResults[0])}
-                    className="text-xs font-medium text-violet-600 hover:text-violet-700 flex items-center gap-1"
+                    className="text-xs font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                     Inspect Details
@@ -870,18 +870,18 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Studio Gallery / Recent Generations */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-violet-600" />
+                <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-cyan-400" />
                   Recent Sample Results
                 </h2>
-                <p className="text-[11px] text-neutral-500 mt-0.5">
+                <p className="text-[11px] text-neutral-400 mt-0.5">
                   Click any thumbnail to preview, re-use prompt, or inspect metadata.
                 </p>
               </div>
-              <span className="text-xs font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
                 {historyGallery.length}
               </span>
             </div>
@@ -892,7 +892,7 @@ export function ImageGeneratorPage() {
                 <div
                   key={item.id}
                   onClick={() => setActiveModalItem(item)}
-                  className="group relative aspect-square rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100 cursor-pointer hover:border-violet-500 hover:shadow-md transition-all"
+                  className="group relative aspect-square rounded-xl overflow-hidden border border-neutral-800 bg-[#080B14] cursor-pointer hover:border-cyan-500 hover:shadow-cyan-500/10 transition-all"
                 >
                   <img
                     src={item.image}
@@ -902,7 +902,7 @@ export function ImageGeneratorPage() {
                   {/* Subtle dark gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-end text-white">
                     <p className="text-[10px] font-medium line-clamp-1 text-neutral-200">{item.prompt}</p>
-                    <span className="text-[9px] text-violet-300 font-mono mt-0.5">{item.aspect} • {item.model.split(' ')[0]}</span>
+                    <span className="text-[9px] text-cyan-300 font-mono mt-0.5">{item.aspect} • {item.model.split(' ')[0]}</span>
                   </div>
                 </div>
               ))}
@@ -918,11 +918,12 @@ export function ImageGeneratorPage() {
           onClose={() => setActiveModalItem(null)}
           title="Generated Visual Inspection"
           description="Detailed metadata parameters and production export options"
-          className="max-w-2xl bg-white text-neutral-900 border-neutral-200"
+          theme="dark"
+          className="max-w-2xl bg-[#0D111C] text-neutral-100 border-neutral-800"
         >
           <div className="space-y-4">
             {/* Image Preview Box */}
-            <div className="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-900 flex items-center justify-center max-h-96">
+            <div className="rounded-xl overflow-hidden border border-neutral-800 bg-[#080B14] flex items-center justify-center max-h-96">
               <img
                 src={activeModalItem.image}
                 alt={activeModalItem.prompt}
@@ -931,44 +932,44 @@ export function ImageGeneratorPage() {
             </div>
 
             {/* Prompt Display */}
-            <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-1.5">
-              <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
+            <div className="p-3.5 rounded-xl bg-[#080B14] border border-neutral-800 space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-semibold text-neutral-300">
                 <span>Generation Prompt</span>
                 <button
                   onClick={() => handleCopyPrompt(activeModalItem.prompt)}
-                  className="text-violet-600 hover:text-violet-700 flex items-center gap-1 font-normal"
+                  className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-normal"
                 >
                   {copiedNotification ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                   {copiedNotification ? 'Copied' : 'Copy'}
                 </button>
               </div>
-              <p className="text-xs text-neutral-800 leading-relaxed">
+              <p className="text-xs text-neutral-200 leading-relaxed">
                 "{activeModalItem.prompt}"
               </p>
             </div>
 
             {/* Metadata Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-              <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-200">
-                <span className="text-neutral-500 block text-[10px] font-semibold uppercase">Model</span>
-                <span className="font-semibold text-neutral-900">{activeModalItem.model}</span>
+              <div className="p-2.5 rounded-lg bg-[#080B14] border border-neutral-800">
+                <span className="text-neutral-400 block text-[10px] font-semibold uppercase">Model</span>
+                <span className="font-semibold text-white">{activeModalItem.model}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-200">
-                <span className="text-neutral-500 block text-[10px] font-semibold uppercase">Dimensions</span>
-                <span className="font-semibold text-neutral-900">{activeModalItem.dimensions} ({activeModalItem.aspect})</span>
+              <div className="p-2.5 rounded-lg bg-[#080B14] border border-neutral-800">
+                <span className="text-neutral-400 block text-[10px] font-semibold uppercase">Dimensions</span>
+                <span className="font-semibold text-white">{activeModalItem.dimensions} ({activeModalItem.aspect})</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-200">
-                <span className="text-neutral-500 block text-[10px] font-semibold uppercase">Seed</span>
-                <span className="font-mono font-semibold text-neutral-900">{activeModalItem.seed}</span>
+              <div className="p-2.5 rounded-lg bg-[#080B14] border border-neutral-800">
+                <span className="text-neutral-400 block text-[10px] font-semibold uppercase">Seed</span>
+                <span className="font-mono font-semibold text-cyan-300">{activeModalItem.seed}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-200">
-                <span className="text-neutral-500 block text-[10px] font-semibold uppercase">Steps & CFG</span>
-                <span className="font-semibold text-neutral-900">{activeModalItem.steps} st / {activeModalItem.cfg} cfg</span>
+              <div className="p-2.5 rounded-lg bg-[#080B14] border border-neutral-800">
+                <span className="text-neutral-400 block text-[10px] font-semibold uppercase">Steps & CFG</span>
+                <span className="font-semibold text-white">{activeModalItem.steps} st / {activeModalItem.cfg} cfg</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-3 border-t border-neutral-200">
+            <div className="flex items-center justify-between pt-3 border-t border-neutral-800">
               <Button
                 variant="outline"
                 size="sm"
@@ -978,7 +979,7 @@ export function ImageGeneratorPage() {
                   setActiveModalItem(null)
                 }}
                 leftIcon={Wand2}
-                className="text-neutral-700 border-neutral-300 hover:bg-neutral-100"
+                className="text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
               >
                 Use this Prompt
               </Button>
@@ -988,14 +989,14 @@ export function ImageGeneratorPage() {
                   variant="secondary"
                   size="sm"
                   onClick={() => setActiveModalItem(null)}
-                  className="bg-neutral-100 text-neutral-800 hover:bg-neutral-200 border-neutral-200"
+                  className="bg-neutral-800 text-neutral-200 hover:bg-neutral-700 border-neutral-700"
                 >
                   Close
                 </Button>
                 <a
                   href={activeModalItem.image}
                   download="kiaan-generated.jpg"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 hover:bg-violet-700 text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Download Image

@@ -60,7 +60,7 @@ export function CreditsPage() {
     const newTx = {
       id: `tx-${Date.now()}`,
       date: new Date().toISOString(),
-      description: `Credit top-up � ${pack.credits} credit pack (Demo)`,
+      description: `Credit top-up • ${pack.credits} credit pack (Demo)`,
       type: 'credit',
       category: 'topup',
       amount: pack.credits
@@ -100,13 +100,13 @@ export function CreditsPage() {
           label="Image Synthesis"
           value={`${totals.img} cr`}
           sub="1 credit per standard generation"
-          accent="violet"
+          accent="pink"
         />
         <StatCard
           icon={Video}
           label="Video Synthesis"
           value={`${totals.vid} cr`}
-          sub="10�25 credits per cinematic run"
+          sub="10–25 credits per cinematic run"
           accent="cyan"
         />
         <StatCard
@@ -122,26 +122,26 @@ export function CreditsPage() {
       <Panel>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
-            <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-violet-600" />
+            <h2 className="text-sm font-bold text-white flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-cyan-400" />
               14-Day Generative Consumption Trend
             </h2>
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="text-xs text-neutral-400 mt-0.5">
               Breakdown of daily credits spent across image and video models.
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs">
-            <span className="flex items-center gap-1.5 text-neutral-600">
-              <span className="w-3 h-3 rounded-sm bg-violet-500" /> Image (FLUX.2/Turbo)
+            <span className="flex items-center gap-1.5 text-neutral-400">
+              <span className="w-3 h-3 rounded-sm bg-pink-500" /> Image (FLUX.2/Turbo)
             </span>
-            <span className="flex items-center gap-1.5 text-neutral-600">
+            <span className="flex items-center gap-1.5 text-neutral-400">
               <span className="w-3 h-3 rounded-sm bg-cyan-400" /> Video (Wan 2.1 DiT)
             </span>
           </div>
         </div>
 
         {/* Bar chart container */}
-        <div className="h-48 flex items-end gap-2 sm:gap-3 pt-6 pb-2 border-b border-neutral-100">
+        <div className="h-48 flex items-end gap-2 sm:gap-3 pt-6 pb-2 border-b border-neutral-800">
           {DEMO_USAGE_DAILY.map((d, idx) => {
             const total = d.image + d.video
             const totalHeight = Math.round((total / maxDaily) * 100)
@@ -151,16 +151,16 @@ export function CreditsPage() {
             return (
               <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                 {/* Tooltip on hover */}
-                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap z-10 shadow-lg">
+                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 border border-neutral-700 text-white text-[10px] py-1 px-2 rounded pointer-events-none whitespace-nowrap z-10 shadow-lg">
                   {d.day}: {total} cr ({d.image} img, {d.video} vid)
                 </div>
 
                 <div
-                  className="w-full max-w-[28px] rounded-t-md overflow-hidden bg-neutral-100 flex flex-col justify-end transition-all duration-300 group-hover:opacity-85"
+                  className="w-full max-w-[28px] rounded-t-md overflow-hidden bg-neutral-800/80 flex flex-col justify-end transition-all duration-300 group-hover:opacity-85"
                   style={{ height: `${Math.max(totalHeight, 4)}%` }}
                 >
                   <div className="w-full bg-cyan-400" style={{ height: `${vidPct}%` }} />
-                  <div className="w-full bg-violet-500" style={{ height: `${imgPct}%` }} />
+                  <div className="w-full bg-pink-500" style={{ height: `${imgPct}%` }} />
                 </div>
                 <span className="text-[10px] text-neutral-400 mt-2 truncate w-full text-center">
                   {d.day.split(' ')[0]}
@@ -175,11 +175,11 @@ export function CreditsPage() {
       <Panel className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-violet-600" />
+            <h2 className="text-sm font-bold text-white flex items-center gap-2">
+              <Clock className="w-4 h-4 text-cyan-400" />
               Credit Transaction Ledger
             </h2>
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="text-xs text-neutral-400 mt-0.5">
               Transparent record of all debit reserves, refunds and pack allocations.
             </p>
           </div>
@@ -198,7 +198,7 @@ export function CreditsPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-50 text-[11px] uppercase tracking-wide text-neutral-500">
+            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
               <tr>
                 <th className="text-left font-semibold px-4 py-3">Transaction</th>
                 <th className="text-left font-semibold px-4 py-3 hidden sm:table-cell">Type</th>
@@ -206,32 +206,32 @@ export function CreditsPage() {
                 <th className="text-right font-semibold px-4 py-3">Credits</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-neutral-800">
               {filteredTx.map((tx) => {
                 const isPositive = tx.amount > 0
                 return (
-                  <tr key={tx.id} className="hover:bg-neutral-50/70">
+                  <tr key={tx.id} className="hover:bg-neutral-800/40 transition-colors">
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-xs font-bold text-neutral-900">{tx.description}</p>
+                        <p className="text-xs font-bold text-white">{tx.description}</p>
                         <p className="text-[10px] text-neutral-400 font-mono">{tx.id}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
                       <span className={cn(
                         'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase',
-                        tx.type === 'debit' ? 'bg-neutral-100 text-neutral-700' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        tx.type === 'debit' ? 'bg-neutral-800 text-neutral-300' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
                       )}>
                         {tx.type}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-neutral-500 hidden md:table-cell">
+                    <td className="px-4 py-3 text-xs text-neutral-400 hidden md:table-cell">
                       {formatDateTime(tx.date)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <span className={cn(
                         'text-xs font-bold font-mono',
-                        isPositive ? 'text-emerald-600' : 'text-neutral-800'
+                        isPositive ? 'text-emerald-400' : 'text-neutral-200'
                       )}>
                         {isPositive ? `+${tx.amount}` : tx.amount} cr
                       </span>
@@ -246,7 +246,7 @@ export function CreditsPage() {
 
       {/* Top-up Simulated Modal */}
       <Modal
-        theme="light"
+        theme="dark"
         isOpen={topUpModalOpen}
         onClose={() => setTopUpModalOpen(false)}
         title="Purchase Credit Pack"
@@ -263,44 +263,44 @@ export function CreditsPage() {
                   className={cn(
                     'p-4 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between',
                     isSelected
-                      ? 'border-violet-600 bg-violet-50/50 ring-2 ring-violet-500/20'
-                      : 'border-neutral-200 bg-white hover:border-neutral-300'
+                      ? 'border-cyan-500 bg-cyan-950/30 ring-2 ring-cyan-500/20'
+                      : 'border-neutral-700 bg-[#080B14] hover:border-neutral-600'
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <div className={cn(
                       'w-5 h-5 rounded-full border flex items-center justify-center text-white text-xs',
-                      isSelected ? 'bg-violet-600 border-violet-600' : 'border-neutral-300'
+                      isSelected ? 'bg-cyan-500 border-cyan-500' : 'border-neutral-600'
                     )}>
                       {isSelected && <Check className="w-3.5 h-3.5" />}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-neutral-900">{pack.credits} Credits</span>
+                        <span className="text-sm font-bold text-white">{pack.credits} Credits</span>
                         {pack.badge && (
-                          <span className="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-semibold bg-pink-950/70 text-pink-300 border border-pink-800/60 px-2 py-0.5 rounded-full">
                             {pack.badge}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-neutral-500 mt-0.5">{pack.desc}</p>
+                      <p className="text-xs text-neutral-400 mt-0.5">{pack.desc}</p>
                     </div>
                   </div>
-                  <span className="text-base font-bold text-neutral-900 font-mono">{pack.price}</span>
+                  <span className="text-base font-bold text-white font-mono">{pack.price}</span>
                 </div>
               )
             })}
           </div>
 
-          <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2 text-xs text-amber-800">
-            <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+          <div className="p-3 bg-cyan-950/40 rounded-xl border border-cyan-800/60 flex items-start gap-2 text-xs text-cyan-300">
+            <Info className="w-4 h-4 shrink-0 mt-0.5 text-cyan-400" />
             <span>
               This is an interactive frontend demo. Clicking "Confirm Top-Up" will update the local balance counter in real time without real billing.
             </span>
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-neutral-200">
-            <Button variant="outline" size="sm" onClick={() => setTopUpModalOpen(false)} className="text-neutral-700 border-neutral-300">
+          <div className="flex justify-end gap-2 pt-3 border-t border-neutral-800">
+            <Button variant="outline" size="sm" onClick={() => setTopUpModalOpen(false)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
               Cancel
             </Button>
             <Button variant="gradient" size="sm" onClick={handleSimulateTopUp}>
