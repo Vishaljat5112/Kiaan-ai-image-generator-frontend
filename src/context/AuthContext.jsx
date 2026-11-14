@@ -12,22 +12,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const state = sessionStorage.getItem(SESSION_STORAGE_KEY)
-      if (state === 'logged_out') {
-        return null
-      }
-      if (state) {
+      if (state && state !== 'logged_out') {
         return JSON.parse(state)
       }
-      // Default local developer exploration profile
-      const defaultUser = {
-        id: 'usr_dev_001',
-        fullName: 'Jane Doe',
-        email: 'artist@studio.com',
-        role: 'creator',
-        tier: 'Free Tier',
-        creditBalance: 250,
-      }
-      return defaultUser
+      return null
     } catch {
       return null
     }
