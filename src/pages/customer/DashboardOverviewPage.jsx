@@ -83,16 +83,6 @@ export function DashboardOverviewPage() {
       badge: 'Multimodal'
     },
     {
-      title: 'Inpainting Canvas',
-      desc: 'Context-aware visual fills and brush mask replacement',
-      icon: Edit3,
-      to: '/dashboard/image-editor',
-      color: 'text-pink-400',
-      bg: 'bg-pink-950/80',
-      border: 'border-pink-800/60',
-      badge: 'Canvas'
-    },
-    {
       title: 'Image-to-Video',
       desc: 'Animate still photographs with fluid temporal dynamics',
       icon: Film,
@@ -101,6 +91,16 @@ export function DashboardOverviewPage() {
       bg: 'bg-amber-950/80',
       border: 'border-amber-800/60',
       badge: 'Animation'
+    },
+    {
+      title: 'Inpainting Canvas',
+      desc: 'Context-aware visual fills and brush mask replacement',
+      icon: Edit3,
+      to: '/dashboard/image-editor',
+      color: 'text-pink-400',
+      bg: 'bg-pink-950/80',
+      border: 'border-pink-800/60',
+      badge: 'Canvas'
     },
     {
       title: 'My Projects',

@@ -56,8 +56,8 @@ export function CustomerLayout() {
         { label: 'AI Image Generator', to: '/dashboard/image-generator', icon: Sparkles, badge: 'FLUX.2' },
         { label: 'AI Video Generator', to: '/dashboard/video-generator', icon: Video, badge: 'Wan 2.1' },
         { label: 'Image-to-Image', to: '/dashboard/image-to-image', icon: ImageIcon },
-        { label: 'Image Editor', to: '/dashboard/image-editor', icon: Edit3 },
         { label: 'Image-to-Video', to: '/dashboard/image-to-video', icon: Film },
+        { label: 'Image Editor', to: '/dashboard/image-editor', icon: Edit3 },
       ]
     },
     {
@@ -179,29 +179,6 @@ export function CustomerLayout() {
 
         {/* Sidebar Bottom Section (Account & Logout) */}
         <div className="p-3 border-t border-neutral-800/90 shrink-0 space-y-2">
-          {/* Credit Overview */}
-          {!sidebarCollapsed ? (
-            <div className="p-3 rounded-xl bg-[#0D111C] border border-neutral-800 text-xs">
-              <div className="flex items-center justify-between text-neutral-300 font-medium mb-1">
-                <span>Credit Balance</span>
-                <span className="text-white font-semibold">{user?.creditBalance ?? 0} cr</span>
-              </div>
-              <Link to="/dashboard/credits">
-                <Button variant="secondary" size="sm" className="w-full text-xs py-1 mt-1.5 border-neutral-700 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white hover:border-cyan-500/40" leftIcon={Plus}>
-                  Add Credits
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <Link to="/dashboard/credits" title="Add Credits">
-                <div className="w-9 h-9 rounded-xl bg-[#0D111C] border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-cyan-500/40 transition-colors">
-                  <Coins className="w-4 h-4" />
-                </div>
-              </Link>
-            </div>
-          )}
-
           {/* Quick link to Admin Portal for review */}
           <Link
             to="/admin"
