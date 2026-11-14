@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Clock, Image as ImageIcon, Video, Heart, Download, Trash2, Grid3x3, List, Copy, Check, Wand2, Sparkles, Play
@@ -8,9 +8,9 @@ import { Button } from '../../components/ui/Button'
 import {
   StudioPageHeader, Panel, SearchField, SegmentedTabs, LightSelect, LightEmptyState, MediaThumb, Toast
 } from '../../components/studio/StudioUI'
-import { DEMO_GENERATIONS } from '../../mocks/customerDemoData'
 import { formatBytes, formatDateTime } from '../../utils/format'
 import { cn } from '../../utils/cn'
+import { api } from '../../services/api'
 
 const SORTS = [
   { value: 'newest', label: 'Newest first' },
@@ -20,7 +20,8 @@ const SORTS = [
 ]
 
 export function GenerationsPage() {
-  const [items, setItems] = useState(DEMO_GENERATIONS)
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [modelFilter, setModelFilter] = useState('all')
@@ -32,43 +33,93 @@ export function GenerationsPage() {
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
 
-  const models = useMemo(() => Array.from(new Set(items.map((i) => i.model))), [items])
+  // Load generations from real backend
+  useEffect(() => {
+    let isMounted = true
+
+    async function fetchGenerations() {
+      try {
+        const res = await api.get('/assets/generations')
+        if (isMounted && res.data?.success) {
+          setItems(res.data.data || [])
+        }
+      } catch (err) {
+        // Fallback gracefully
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    fetchGenerations()
+    return () => { isMounted = false }
+  }, [])
+
+  const models = useMemo(() => Array.from(new Set(items.map((i) => i.model).filter(Boolean))), [items])
 
   const counts = useMemo(() => ({
     all: items.length,
     image: items.filter((i) => i.type === 'image').length,
     video: items.filter((i) => i.type === 'video').length,
-    favorite: items.filter((i) => i.favorite).length
+    favorite: items.filter((i) => i.favorite || i.isFavorite).length
   }), [items])
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
     let list = items.filter((i) => {
-      if (typeFilter === 'favorite' && !i.favorite) return false
+      const isFav = i.favorite || i.isFavorite
+      if (typeFilter === 'favorite' && !isFav) return false
       if ((typeFilter === 'image' || typeFilter === 'video') && i.type !== typeFilter) return false
       if (modelFilter !== 'all' && i.model !== modelFilter) return false
-      if (q && !`${i.title} ${i.prompt} ${i.tool}`.toLowerCase().includes(q)) return false
+      if (q && !`${i.title || ''} ${i.prompt || ''} ${i.tool || ''}`.toLowerCase().includes(q)) return false
       return true
     })
     list = [...list].sort((a, b) => {
       if (sort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt)
-      if (sort === 'credits') return b.credits - a.credits
-      if (sort === 'title') return a.title.localeCompare(b.title)
+      if (sort === 'credits') return (b.credits || 0) - (a.credits || 0)
+      if (sort === 'title') return (a.title || '').localeCompare(b.title || '')
       return new Date(b.createdAt) - new Date(a.createdAt)
     })
     return list
   }, [items, query, typeFilter, modelFilter, sort])
 
-  const toggleFavorite = (id) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, favorite: !i.favorite } : i)))
-    setActive((prev) => (prev && prev.id === id ? { ...prev, favorite: !prev.favorite } : prev))
+  const toggleFavorite = async (id) => {
+    try {
+      const res = await api.patch(`/assets/${id}/favorite`)
+      if (res.data?.success) {
+        const updated = res.data.data
+        setItems((prev) => prev.map((i) => (i.id === id ? { ...i, favorite: updated.isFavorite, isFavorite: updated.isFavorite } : i)))
+        setActive((prev) => (prev && prev.id === id ? { ...prev, favorite: updated.isFavorite, isFavorite: updated.isFavorite } : prev))
+      }
+    } catch {
+      // Local optimistic toggle fallback
+      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, favorite: !i.favorite, isFavorite: !i.isFavorite } : i)))
+      setActive((prev) => (prev && prev.id === id ? { ...prev, favorite: !prev.favorite, isFavorite: !prev.isFavorite } : prev))
+    }
   }
 
-  const confirmDelete = () => {
-    setItems((prev) => prev.filter((i) => i.id !== pendingDelete.id))
-    setToast({ message: `"${pendingDelete.title}" removed from this demo session.` })
-    if (active?.id === pendingDelete.id) setActive(null)
-    setPendingDelete(null)
+  const confirmDelete = async () => {
+    if (!pendingDelete) return
+    try {
+      await api.delete(`/assets/${pendingDelete.id}`)
+      setItems((prev) => prev.filter((i) => i.id !== pendingDelete.id))
+      setToast({ message: `"${pendingDelete.title}" removed successfully.` })
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to delete asset', tone: 'danger' })
+    } finally {
+      if (active?.id === pendingDelete.id) setActive(null)
+      setPendingDelete(null)
+    }
+  }
+
+  const handleDownloadClick = async (asset) => {
+    try {
+      await api.post('/customer/downloads', {
+        assetId: asset.id,
+        format: asset.type === 'video' ? 'MP4' : 'JPG'
+      })
+    } catch {
+      // Background logging fails silently
+    }
   }
 
   const copyPrompt = (text) => {
@@ -83,7 +134,7 @@ export function GenerationsPage() {
     setModelFilter('all')
   }
 
-  const fileName = (g) => `${g.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.${g.type === 'video' ? 'mp4' : 'jpg'}`
+  const fileName = (g) => `${(g.title || 'asset').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.${g.type === 'video' ? 'mp4' : 'jpg'}`
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -142,41 +193,49 @@ export function GenerationsPage() {
         />
       ) : view === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-          {visible.map((g) => (
-            <div key={g.id} className="group bg-[#0D111C]/90 backdrop-blur-md rounded-2xl border border-neutral-800/90 shadow-sm overflow-hidden hover:shadow-lg hover:border-cyan-500/40 transition-all text-white">
-              <button type="button" onClick={() => setActive(g)} className="relative block w-full aspect-square bg-neutral-900 cursor-pointer" aria-label={`Preview ${g.title}`}>
-                <MediaThumb type={g.type} src={g.src} poster={g.poster} alt={g.title} className="group-hover:scale-105 transition-transform duration-300" />
-                <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-neutral-900/90 text-neutral-200 border border-neutral-700">
-                  {g.type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-                  {g.type === 'video' ? g.duration : g.aspect}
-                </span>
-                {g.type === 'video' && (
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white"><Play className="w-5 h-5 text-cyan-400 ml-0.5" /></span>
+          {visible.map((g) => {
+            const isFav = g.favorite || g.isFavorite
+            return (
+              <div key={g.id} className="group bg-[#0D111C]/90 backdrop-blur-md rounded-2xl border border-neutral-800/90 shadow-sm overflow-hidden hover:shadow-lg hover:border-cyan-500/40 transition-all text-white">
+                <button type="button" onClick={() => setActive(g)} className="relative block w-full aspect-square bg-neutral-900 cursor-pointer" aria-label={`Preview ${g.title}`}>
+                  <MediaThumb type={g.type} src={g.src} poster={g.poster} alt={g.title} className="group-hover:scale-105 transition-transform duration-300" />
+                  <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-neutral-900/90 text-neutral-200 border border-neutral-700">
+                    {g.type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
+                    {g.type === 'video' ? (g.duration || '5.0s') : (g.aspect || '1:1')}
                   </span>
-                )}
-              </button>
-              <div className="p-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-white truncate">{g.title}</p>
-                    <p className="text-[11px] text-neutral-400 truncate">{g.tool} • {formatDateTime(g.createdAt)}</p>
+                  {g.type === 'video' && (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <span className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white"><Play className="w-5 h-5 text-cyan-400 ml-0.5" /></span>
+                    </span>
+                  )}
+                </button>
+                <div className="p-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-white truncate">{g.title}</p>
+                      <p className="text-[11px] text-neutral-400 truncate">{g.tool} • {formatDateTime(g.createdAt)}</p>
+                    </div>
+                    <button type="button" onClick={() => toggleFavorite(g.id)} aria-label={isFav ? 'Remove favorite' : 'Add favorite'} className="p-1 rounded-lg hover:bg-neutral-800 cursor-pointer">
+                      <Heart className={cn('w-4 h-4 transition-colors', isFav ? 'fill-rose-500 text-rose-500' : 'text-neutral-500 hover:text-neutral-300')} />
+                    </button>
                   </div>
-                  <button type="button" onClick={() => toggleFavorite(g.id)} aria-label={g.favorite ? 'Remove favorite' : 'Add favorite'} className="p-1 rounded-lg hover:bg-neutral-800 cursor-pointer">
-                    <Heart className={cn('w-4 h-4 transition-colors', g.favorite ? 'fill-rose-500 text-rose-500' : 'text-neutral-500 hover:text-neutral-300')} />
-                  </button>
-                </div>
-                <div className="flex items-center gap-1.5 mt-2.5">
-                  <a href={g.src} download={fileName(g)} className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-cyan-950/70 hover:bg-cyan-900/70 text-cyan-300 border border-cyan-800/60 transition-colors">
-                    <Download className="w-3.5 h-3.5" /> Download
-                  </a>
-                  <button type="button" onClick={() => setPendingDelete(g)} aria-label={`Delete ${g.title}`} className="p-1.5 rounded-lg border border-neutral-800 text-neutral-400 hover:text-rose-400 hover:border-rose-900/60 hover:bg-rose-950/30 cursor-pointer">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-1.5 mt-2.5">
+                    <a
+                      href={g.src}
+                      download={fileName(g)}
+                      onClick={() => handleDownloadClick(g)}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-cyan-950/70 hover:bg-cyan-900/70 text-cyan-300 border border-cyan-800/60 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Download
+                    </a>
+                    <button type="button" onClick={() => setPendingDelete(g)} aria-label={`Delete ${g.title}`} className="p-1.5 rounded-lg border border-neutral-800 text-neutral-400 hover:text-rose-400 hover:border-rose-900/60 hover:bg-rose-950/30 cursor-pointer">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       ) : (
         <Panel className="p-0 overflow-x-auto">
@@ -191,33 +250,46 @@ export function GenerationsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800">
-              {visible.map((g) => (
-                <tr key={g.id} className="hover:bg-neutral-800/40 transition-colors">
-                  <td className="px-4 py-3">
-                    <button type="button" onClick={() => setActive(g)} className="flex items-center gap-3 text-left cursor-pointer">
-                      <span className="w-12 h-12 rounded-lg overflow-hidden border border-neutral-700 shrink-0 bg-neutral-900">
-                        <MediaThumb type={g.type} src={g.src} poster={g.poster} alt={g.title} />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-xs font-bold text-white truncate">{g.title}</span>
-                        <span className="block text-[11px] text-neutral-400">{g.tool} • {g.dimensions}</span>
-                      </span>
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-neutral-300 hidden md:table-cell">{g.model}</td>
-                  <td className="px-4 py-3 text-xs text-neutral-400 hidden sm:table-cell">{formatDateTime(g.createdAt)}</td>
-                  <td className="px-4 py-3 text-xs text-right font-semibold text-white">{g.credits}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-1">
-                      <button type="button" onClick={() => toggleFavorite(g.id)} aria-label="Toggle favorite" className="p-1.5 rounded-lg hover:bg-neutral-800 cursor-pointer">
-                        <Heart className={cn('w-4 h-4', g.favorite ? 'fill-rose-500 text-rose-500' : 'text-neutral-500 hover:text-neutral-300')} />
+              {visible.map((g) => {
+                const isFav = g.favorite || g.isFavorite
+                return (
+                  <tr key={g.id} className="hover:bg-neutral-800/40 transition-colors">
+                    <td className="px-4 py-3">
+                      <button type="button" onClick={() => setActive(g)} className="flex items-center gap-3 text-left cursor-pointer">
+                        <span className="w-12 h-12 rounded-lg overflow-hidden border border-neutral-700 shrink-0 bg-neutral-900">
+                          <MediaThumb type={g.type} src={g.src} poster={g.poster} alt={g.title} />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-xs font-bold text-white truncate">{g.title}</span>
+                          <span className="block text-[11px] text-neutral-400">{g.tool} • {g.dimensions}</span>
+                        </span>
                       </button>
-                      <a href={g.src} download={fileName(g)} aria-label={`Download ${g.title}`} className="p-1.5 rounded-lg hover:bg-neutral-800 text-cyan-400"><Download className="w-4 h-4" /></a>
-                      <button type="button" onClick={() => setPendingDelete(g)} aria-label={`Delete ${g.title}`} className="p-1.5 rounded-lg hover:bg-rose-950/30 text-neutral-400 hover:text-rose-400 cursor-pointer"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-neutral-300 hidden md:table-cell">{g.model}</td>
+                    <td className="px-4 py-3 text-xs text-neutral-400 hidden sm:table-cell">{formatDateTime(g.createdAt)}</td>
+                    <td className="px-4 py-3 text-xs text-right font-semibold text-white">{g.credits}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <button type="button" onClick={() => toggleFavorite(g.id)} aria-label="Toggle favorite" className="p-1.5 rounded-lg hover:bg-neutral-800 cursor-pointer">
+                          <Heart className={cn('w-4 h-4', isFav ? 'fill-rose-500 text-rose-500' : 'text-neutral-500 hover:text-neutral-300')} />
+                        </button>
+                        <a
+                          href={g.src}
+                          download={fileName(g)}
+                          onClick={() => handleDownloadClick(g)}
+                          aria-label={`Download ${g.title}`}
+                          className="p-1.5 rounded-lg hover:bg-neutral-800 text-cyan-400"
+                        >
+                          <Download className="w-4 h-4" />
+                        </a>
+                        <button type="button" onClick={() => setPendingDelete(g)} aria-label={`Delete ${g.title}`} className="p-1.5 rounded-lg hover:bg-rose-950/30 text-neutral-400 hover:text-rose-400 cursor-pointer">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </Panel>
@@ -251,7 +323,7 @@ export function GenerationsPage() {
                 ['Steps / CFG', `${active.steps} / ${active.cfg}`],
                 ['Credits used', active.credits],
                 ['File size', formatBytes(active.sizeBytes)],
-                ['Type', active.type === 'video' ? `Video • ${active.duration}` : 'Image'],
+                ['Type', active.type === 'video' ? `Video • ${active.duration || '5s'}` : 'Image'],
                 ['ID', active.id]
               ].map(([k, v]) => (
                 <div key={k} className="p-2.5 rounded-lg bg-[#080B14] border border-neutral-800">
@@ -263,7 +335,7 @@ export function GenerationsPage() {
             <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-neutral-800">
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" leftIcon={Heart} onClick={() => toggleFavorite(active.id)} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">
-                  {active.favorite ? 'Unfavorite' : 'Favorite'}
+                  {(active.favorite || active.isFavorite) ? 'Unfavorite' : 'Favorite'}
                 </Button>
                 <Link to={active.type === 'video' ? '/dashboard/video-generator' : '/dashboard/image-generator'}>
                   <Button variant="outline" size="sm" leftIcon={Wand2} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">Open in studio</Button>
@@ -271,7 +343,12 @@ export function GenerationsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="danger" size="sm" leftIcon={Trash2} onClick={() => setPendingDelete(active)}>Delete</Button>
-                <a href={active.src} download={fileName(active)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md">
+                <a
+                  href={active.src}
+                  download={fileName(active)}
+                  onClick={() => handleDownloadClick(active)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md"
+                >
                   <Download className="w-3.5 h-3.5" /> Download
                 </a>
               </div>
@@ -281,7 +358,7 @@ export function GenerationsPage() {
       </Modal>
 
       {/* Delete confirmation */}
-      <Modal theme="dark" isOpen={!!pendingDelete} onClose={() => setPendingDelete(null)} title="Delete generation?" description="Demo only — this removes the item from the current browser session.">
+      <Modal theme="dark" isOpen={!!pendingDelete} onClose={() => setPendingDelete(null)} title="Delete generation?" description="This action soft-deletes the visual asset from your library.">
         {pendingDelete && (
           <div className="space-y-4 text-white">
             <p className="text-sm text-neutral-300">"<strong>{pendingDelete.title}</strong>" will be removed from your library view.</p>

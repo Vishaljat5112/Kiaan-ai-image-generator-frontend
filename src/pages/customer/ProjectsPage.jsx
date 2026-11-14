@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FolderKanban, Plus, Search, Grid3x3, List, MoreVertical, Edit2, Trash2,
@@ -10,9 +10,10 @@ import {
   StudioPageHeader, Panel, SearchField, SegmentedTabs, LightSelect, LightEmptyState,
   MediaThumb, Toast, FieldLabel, lightInputClass
 } from '../../components/studio/StudioUI'
-import { DEMO_PROJECTS, DEMO_GENERATIONS, PROJECT_COLORS } from '../../mocks/customerDemoData'
+import { PROJECT_COLORS } from '../../mocks/customerDemoData'
 import { formatDate } from '../../utils/format'
 import { cn } from '../../utils/cn'
+import { api } from '../../services/api'
 
 const COLOR_CLASSES = {
   violet: 'bg-violet-500 text-violet-100 border-violet-600',
@@ -31,8 +32,9 @@ const COLOR_BADGE = {
 }
 
 export function ProjectsPage() {
-  const [projects, setProjects] = useState(DEMO_PROJECTS)
-  const [generations] = useState(DEMO_GENERATIONS)
+  const [projects, setProjects] = useState([])
+  const [generations, setGenerations] = useState([])
+  const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [view, setView] = useState('grid')
@@ -53,11 +55,41 @@ export function ProjectsPage() {
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
 
+  // Fetch real projects & assets on mount
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadData() {
+      try {
+        const [projRes, assetsRes] = await Promise.allSettled([
+          api.get('/projects'),
+          api.get('/assets/generations')
+        ])
+
+        if (isMounted) {
+          if (projRes.status === 'fulfilled' && projRes.value.data?.success) {
+            setProjects(projRes.value.data.data || [])
+          }
+          if (assetsRes.status === 'fulfilled' && assetsRes.value.data?.success) {
+            setGenerations(assetsRes.value.data.data || [])
+          }
+        }
+      } catch (err) {
+        // Handled gracefully
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadData()
+    return () => { isMounted = false }
+  }, [])
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return projects.filter((p) => {
       if (statusFilter !== 'all' && p.status !== statusFilter) return false
-      if (q && !`${p.name} ${p.description} ${p.client}`.toLowerCase().includes(q)) return false
+      if (q && !`${p.name} ${p.description || ''} ${p.client || ''}`.toLowerCase().includes(q)) return false
       return true
     })
   }, [projects, query, statusFilter])
@@ -71,65 +103,84 @@ export function ProjectsPage() {
     setCreateModalOpen(true)
   }
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault()
     if (!formName.trim()) return
-    const newP = {
-      id: `p-${Date.now()}`,
-      name: formName.trim(),
-      description: formDesc.trim(),
-      client: formClient.trim() || 'Internal',
-      color: formColor,
-      status: formStatus,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+
+    try {
+      const res = await api.post('/projects', {
+        name: formName.trim(),
+        description: formDesc.trim(),
+        client: formClient.trim() || 'Internal',
+        color: formColor
+      })
+
+      if (res.data?.success && res.data?.data) {
+        const newP = res.data.data
+        setProjects([newP, ...projects])
+        setCreateModalOpen(false)
+        setToast({ message: `Created project "${newP.name}"` })
+      } else {
+        setToast({ message: res.data?.error?.message || 'Failed to create project', tone: 'danger' })
+      }
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to create project', tone: 'danger' })
     }
-    setProjects([newP, ...projects])
-    setCreateModalOpen(false)
-    setToast({ message: `Created project "${newP.name}"` })
   }
 
   const openEdit = (p) => {
     setEditProject(p)
     setFormName(p.name)
-    setFormDesc(p.description)
-    setFormClient(p.client)
-    setFormColor(p.color)
-    setFormStatus(p.status)
+    setFormDesc(p.description || '')
+    setFormClient(p.client || '')
+    setFormColor(p.color || 'violet')
+    setFormStatus(p.status || 'Active')
   }
 
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault()
     if (!formName.trim() || !editProject) return
-    setProjects(projects.map((p) => (p.id === editProject.id ? {
-      ...p,
-      name: formName.trim(),
-      description: formDesc.trim(),
-      client: formClient.trim() || 'Internal',
-      color: formColor,
-      status: formStatus,
-      updatedAt: new Date().toISOString()
-    } : p)))
-    if (viewProject?.id === editProject.id) {
-      setViewProject({
-        ...viewProject,
+
+    try {
+      const res = await api.patch(`/projects/${editProject.id}`, {
         name: formName.trim(),
         description: formDesc.trim(),
         client: formClient.trim() || 'Internal',
-        color: formColor,
-        status: formStatus
+        color: formColor
       })
+
+      if (res.data?.success && res.data?.data) {
+        const updated = res.data.data
+        setProjects(projects.map((p) => (p.id === updated.id ? updated : p)))
+        if (viewProject?.id === updated.id) {
+          setViewProject(updated)
+        }
+        setEditProject(null)
+        setToast({ message: `Updated project "${updated.name}"` })
+      } else {
+        setToast({ message: res.data?.error?.message || 'Failed to update project', tone: 'danger' })
+      }
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to update project', tone: 'danger' })
     }
-    setEditProject(null)
-    setToast({ message: `Updated project "${formName.trim()}"` })
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteProject) return
-    setProjects(projects.filter((p) => p.id !== deleteProject.id))
-    if (viewProject?.id === deleteProject.id) setViewProject(null)
-    setToast({ message: `Deleted project "${deleteProject.name}"` })
-    setDeleteProject(null)
+
+    try {
+      const res = await api.delete(`/projects/${deleteProject.id}`)
+      if (res.data?.success) {
+        setProjects(projects.filter((p) => p.id !== deleteProject.id))
+        if (viewProject?.id === deleteProject.id) setViewProject(null)
+        setToast({ message: `Deleted project "${deleteProject.name}"` })
+        setDeleteProject(null)
+      } else {
+        setToast({ message: res.data?.error?.message || 'Failed to delete project', tone: 'danger' })
+      }
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to delete project', tone: 'danger' })
+    }
   }
 
   const getAssetsForProject = (pid) => generations.filter((g) => g.projectId === pid)
@@ -200,137 +251,100 @@ export function ProjectsPage() {
                       <span className={cn('w-2 h-2 rounded-full', COLOR_CLASSES[p.color] || COLOR_CLASSES.violet)} />
                       {p.client}
                     </span>
-                    <span className="text-[11px] font-semibold text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded-full">
-                      {p.status}
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 px-2 py-0.5 rounded bg-neutral-800">
+                      {p.status || 'Active'}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-white hover:text-cyan-400 transition-colors line-clamp-1">
+                  <h3 className="text-base font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">
                     {p.name}
                   </h3>
-                  <p className="text-xs text-neutral-400 mt-1 line-clamp-2 min-h-[32px]">
+                  <p className="text-xs text-neutral-400 line-clamp-2 mb-4 leading-relaxed">
                     {p.description || 'No description provided.'}
                   </p>
 
-                  {/* Asset thumbnail strip */}
-                  <div className="mt-4 pt-4 border-t border-neutral-800/80">
-                    <div className="flex items-center justify-between text-xs text-neutral-400 mb-2">
-                      <span>Assets in project</span>
-                      <span className="font-semibold text-neutral-200">{assets.length} items</span>
+                  <div className="space-y-1.5 pt-2 border-t border-neutral-800">
+                    <div className="flex items-center justify-between text-[11px] text-neutral-400">
+                      <span>Visual Assets</span>
+                      <span className="font-semibold text-white">{assets.length}</span>
                     </div>
-                    {assets.length > 0 ? (
-                      <div className="grid grid-cols-4 gap-1.5 h-14">
-                        {assets.slice(0, 4).map((a) => (
-                          <div key={a.id} className="rounded-lg overflow-hidden border border-neutral-700 bg-neutral-900">
-                            <MediaThumb type={a.type} src={a.src} poster={a.poster} alt={a.title} />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="h-14 rounded-lg border border-dashed border-neutral-800 bg-[#080B14] flex items-center justify-center text-[11px] text-neutral-400">
-                        No assets assigned yet
-                      </div>
-                    )}
+                    <div className="flex items-center justify-between text-[11px] text-neutral-400">
+                      <span>Last Updated</span>
+                      <span>{formatDate(p.updatedAt)}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="px-5 py-3 bg-[#080B14] border-t border-neutral-800/80 flex items-center justify-between">
-                  <span className="text-[11px] text-neutral-400">
-                    Updated {formatDate(p.updatedAt)}
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(p)}
-                      aria-label="Edit project"
-                      className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeleteProject(p)}
-                      aria-label="Delete project"
-                      className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setViewProject(p)}
-                      className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 ml-1 cursor-pointer"
-                    >
-                      View
-                    </button>
-                  </div>
+                <div className="p-3 bg-[#080B14] border-t border-neutral-800/80 flex items-center justify-between gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="flex-1 text-xs justify-center"
+                    leftIcon={FolderOpen}
+                    onClick={() => setViewProject(p)}
+                  >
+                    Open Workspace
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="p-1.5 text-neutral-400 hover:text-white border-neutral-700 hover:bg-neutral-800"
+                    onClick={() => openEdit(p)}
+                    aria-label="Edit project"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="p-1.5 text-neutral-400 hover:text-rose-400 border-neutral-700 hover:bg-neutral-800"
+                    onClick={() => setDeleteProject(p)}
+                    aria-label="Delete project"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               </div>
             )
           })}
         </div>
       ) : (
-        <Panel className="p-0 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
+        <Panel className="p-0 overflow-hidden">
+          <table className="w-full text-left text-xs text-white">
+            <thead className="bg-[#080B14] border-b border-neutral-800 text-neutral-400">
               <tr>
-                <th className="text-left font-semibold px-4 py-3">Project</th>
-                <th className="text-left font-semibold px-4 py-3 hidden md:table-cell">Client</th>
-                <th className="text-left font-semibold px-4 py-3">Status</th>
-                <th className="text-left font-semibold px-4 py-3 hidden sm:table-cell">Assets</th>
-                <th className="text-left font-semibold px-4 py-3 hidden lg:table-cell">Updated</th>
-                <th className="text-right font-semibold px-4 py-3">Actions</th>
+                <th className="py-3 px-4 font-medium">Project Name</th>
+                <th className="py-3 px-4 font-medium">Client</th>
+                <th className="py-3 px-4 font-medium">Assets</th>
+                <th className="py-3 px-4 font-medium">Updated</th>
+                <th className="py-3 px-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800">
+            <tbody className="divide-y divide-neutral-800/60">
               {filtered.map((p) => {
-                const count = getAssetsForProject(p.id).length
+                const assets = getAssetsForProject(p.id)
                 return (
-                  <tr key={p.id} className="hover:bg-neutral-800/40 transition-colors">
-                    <td className="px-4 py-3">
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => setViewProject(p)}
-                          className="font-bold text-xs text-white hover:text-cyan-400 text-left cursor-pointer"
-                        >
-                          {p.name}
-                        </button>
-                        <p className="text-[11px] text-neutral-400 line-clamp-1">{p.description}</p>
+                  <tr key={p.id} className="hover:bg-neutral-800/20 transition-colors">
+                    <td className="py-3 px-4 font-semibold text-white">
+                      <div className="flex items-center gap-2">
+                        <span className={cn('w-2 h-2 rounded-full', COLOR_CLASSES[p.color] || COLOR_CLASSES.violet)} />
+                        <span>{p.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-neutral-300 hidden md:table-cell">{p.client}</td>
-                    <td className="px-4 py-3">
-                      <span className="text-[11px] font-semibold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-neutral-300 hidden sm:table-cell">{count} items</td>
-                    <td className="px-4 py-3 text-xs text-neutral-400 hidden lg:table-cell">{formatDate(p.updatedAt)}</td>
-                    <td className="px-4 py-3">
+                    <td className="py-3 px-4 text-neutral-300">{p.client}</td>
+                    <td className="py-3 px-4 text-neutral-300">{assets.length} items</td>
+                    <td className="py-3 px-4 text-neutral-400">{formatDate(p.updatedAt)}</td>
+                    <td className="py-3 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => setViewProject(p)}
-                          className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded hover:bg-neutral-800 cursor-pointer"
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => setViewProject(p)}>
                           View
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => openEdit(p)}
-                          aria-label="Edit project"
-                          className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 cursor-pointer"
-                        >
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => openEdit(p)}>
                           <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setDeleteProject(p)}
-                          aria-label="Delete project"
-                          className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-950/30 cursor-pointer"
-                        >
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-rose-400 hover:text-rose-300" onClick={() => setDeleteProject(p)}>
                           <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -501,7 +515,7 @@ export function ProjectsPage() {
       </Modal>
 
       {/* View Project Details Modal */}
-      <Modal theme="dark" isOpen={!!viewProject} onClose={() => setViewProject(null)} title={viewProject?.name} description={viewProject?.client + ' • ' + viewProject?.status} className="max-w-2xl">
+      <Modal theme="dark" isOpen={!!viewProject} onClose={() => setViewProject(null)} title={viewProject?.name} description={(viewProject?.client || '') + ' • ' + (viewProject?.status || 'Active')} className="max-w-2xl">
         {viewProject && (
           <div className="space-y-4 text-white">
             <p className="text-xs text-neutral-300">{viewProject.description || 'No description.'}</p>
@@ -553,7 +567,7 @@ export function ProjectsPage() {
       </Modal>
 
       {/* Delete Confirmation Modal */}
-      <Modal theme="dark" isOpen={!!deleteProject} onClose={() => setDeleteProject(null)} title="Delete Project?" description="Demo only — this removes the project from the current browser session.">
+      <Modal theme="dark" isOpen={!!deleteProject} onClose={() => setDeleteProject(null)} title="Delete Project?" description="This permanently removes the project workspace.">
         {deleteProject && (
           <div className="space-y-4 text-white">
             <p className="text-sm text-neutral-300">

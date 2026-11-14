@@ -1,81 +1,142 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { AuthContext } from './authContextInstance'
+import { api, setAccessToken, getAccessToken, clearAccessToken } from '../services/api'
 
-const SESSION_STORAGE_KEY = 'kiaan_mock_session_state'
-
-/**
- * AuthProvider: Manages local mock user session state for Kiaan Studio.
- * Real JWT authentication, database queries, and server-side session invalidation
- * are scheduled for Phase 7.
- */
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  // Verify active session on initial load / page refresh
+  const checkAuth = useCallback(async () => {
     try {
-      const state = sessionStorage.getItem(SESSION_STORAGE_KEY)
-      if (state === 'logged_out') {
-        return null
+      const token = getAccessToken()
+      if (token) {
+        // Try fetching active user profile with access token
+        const meRes = await api.get('/auth/me')
+        if (meRes.data?.success && meRes.data?.data?.user) {
+          setUser(meRes.data.data.user)
+          setLoading(false)
+          return
+        }
       }
-      if (state) {
-        return JSON.parse(state)
+
+      // If no valid access token, attempt refresh via HttpOnly cookie
+      const refreshRes = await api.post('/auth/refresh')
+      if (refreshRes.data?.success) {
+        const { accessToken, user: refreshedUser } = refreshRes.data.data
+        if (accessToken) setAccessToken(accessToken)
+        if (refreshedUser) setUser(refreshedUser)
+      } else {
+        setUser(null)
+        clearAccessToken()
       }
-      // Default local developer exploration profile
-      const defaultUser = {
-        id: 'usr_dev_001',
-        fullName: 'Jane Doe',
-        email: 'artist@studio.com',
-        role: 'creator',
-        tier: 'Free Tier',
-        creditBalance: 250,
-      }
-      return defaultUser
     } catch {
-      return null
+      setUser(null)
+      clearAccessToken()
+    } finally {
+      setLoading(false)
     }
-  })
+  }, [])
+
+  useEffect(() => {
+    checkAuth()
+
+    const handleSessionExpired = () => {
+      setUser(null)
+      clearAccessToken()
+    }
+
+    window.addEventListener('auth:session-expired', handleSessionExpired)
+    return () => window.removeEventListener('auth:session-expired', handleSessionExpired)
+  }, [checkAuth])
 
   /**
-   * Log in with mock credentials during development preview.
-   * Supports role switching (creator vs super_admin) and custom signup details.
+   * Real Customer / Admin Login
+   */
+  const login = async (email, password, requestedRole = 'customer') => {
+    const res = await api.post('/auth/login', {
+      email,
+      password,
+      requestedAdmin: requestedRole === 'admin'
+    })
+
+    if (res.data?.success && res.data?.data) {
+      const { user: authUser, accessToken } = res.data.data
+      setAccessToken(accessToken)
+      setUser(authUser)
+      return authUser
+    }
+
+    throw new Error(res.data?.error?.message || 'Login failed')
+  }
+
+  /**
+   * Real Customer Registration
+   */
+  const register = async (fullName, email, password) => {
+    const res = await api.post('/auth/register', {
+      fullName,
+      email,
+      password
+    })
+
+    if (res.data?.success && res.data?.data) {
+      const { user: authUser, accessToken } = res.data.data
+      setAccessToken(accessToken)
+      setUser(authUser)
+      return authUser
+    }
+
+    throw new Error(res.data?.error?.message || 'Registration failed')
+  }
+
+  /**
+   * Real Logout: Revokes backend session and clears local tokens
+   */
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout')
+    } catch {
+      // Ignore network errors during logout
+    } finally {
+      clearAccessToken()
+      setUser(null)
+    }
+  }
+
+  /**
+   * Demo Access Utility (preserves 1-click preview without tampering real auth)
    */
   const loginAsMockUser = (role = 'creator', customData = {}) => {
-    const isSuperAdmin = role === 'super_admin'
-    const newUser = {
-      id: customData.id || (isSuperAdmin ? 'usr_admin_001' : 'usr_dev_001'),
+    const isSuperAdmin = role === 'super_admin' || role === 'SUPER_ADMIN' || role === 'admin'
+    const mockUser = {
+      id: customData.id || (isSuperAdmin ? 'usr_admin_mock' : 'usr_creator_mock'),
       fullName: customData.fullName || (isSuperAdmin ? 'Admin User' : 'Jane Doe'),
       email: customData.email || (isSuperAdmin ? 'admin@studio.com' : 'artist@studio.com'),
-      role: isSuperAdmin ? 'super_admin' : 'creator',
+      role: isSuperAdmin ? 'SUPER_ADMIN' : 'CREATOR',
       tier: customData.tier || (isSuperAdmin ? 'Enterprise Admin' : 'Free Tier'),
-      creditBalance: customData.creditBalance !== undefined ? customData.creditBalance : (isSuperAdmin ? 99999 : 250),
+      creditBalance: customData.creditBalance !== undefined ? customData.creditBalance : (isSuperAdmin ? 99999 : 25),
+      isMock: true
     }
-    setUser(newUser)
-    try {
-      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(newUser))
-    } catch {
-      // ignore storage errors
-    }
-    return newUser
+    setUser(mockUser)
+    return mockUser
   }
 
-  /**
-   * Mock logout:
-   * Clears in-memory user state and sets logged_out in application-owned session storage.
-   */
-  const logout = () => {
-    setUser(null)
-    try {
-      sessionStorage.setItem(SESSION_STORAGE_KEY, 'logged_out')
-    } catch {
-      // ignore storage errors
-    }
-  }
+  // Role validation helpers
+  const isAdmin = Boolean(
+    user && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' || user.role === 'super_admin')
+  )
 
   const value = {
     user,
     setUser,
+    loading,
     isAuthenticated: Boolean(user),
-    isDevBypass: true,
-    loginAsMockUser,
+    isAdmin,
+    login,
+    register,
     logout,
+    loginAsMockUser
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

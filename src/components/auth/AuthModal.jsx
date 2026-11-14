@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { X, User, Shield, Lock, Mail, Eye, EyeOff, ArrowRight, Sparkles, Key, CheckCircle2 } from 'lucide-react'
+import { X, User, Shield, Lock, Mail, Eye, EyeOff, ArrowRight, Sparkles, Key, CheckCircle2, AlertOctagon } from 'lucide-react'
 import { Logo } from '../common/Logo'
 import { Input } from '../ui/Input'
 import { AuthImageCarousel } from './AuthImageCarousel'
@@ -10,7 +10,7 @@ import { useAuth } from '../../hooks/useAuth'
 export function AuthModal({ initialMode = 'login', initialRole = 'customer', onClose }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { loginAsMockUser } = useAuth()
+  const { login, register, loginAsMockUser } = useAuth()
 
   // Modal active mode: 'login' | 'signup' | 'forgot-password'
   const [mode, setMode] = useState(initialMode)
@@ -133,29 +133,39 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
   }
 
   // Handle Login submission
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault()
+    setErrors({})
+    setFeedback(null)
     setIsSubmitting(true)
 
-    if (role === 'admin') {
-      setFeedback('Authenticating System Administrator...')
-      loginAsMockUser('super_admin', { email, fullName: 'System Administrator' })
+    try {
+      setFeedback(role === 'admin' ? 'Authenticating System Administrator...' : 'Signing in to Creator Studio...')
+      const authUser = await login(email, password, role)
+      const isUserAdmin = authUser.role === 'ADMIN' || authUser.role === 'SUPER_ADMIN' || authUser.role === 'super_admin'
+
       setTimeout(() => {
-        navigate('/admin')
+        if (role === 'admin' || isUserAdmin) {
+          navigate('/admin')
+        } else {
+          const redirectUrl = location.state?.from?.pathname || location.state?.redirect || '/dashboard'
+          navigate(redirectUrl)
+        }
       }, 200)
-    } else {
-      setFeedback('Signing in to Creator Studio...')
-      loginAsMockUser('creator', { email, fullName: email.split('@')[0] || 'Jane Doe' })
-      const redirectUrl = location.state?.redirect || '/dashboard'
-      setTimeout(() => {
-        navigate(redirectUrl)
-      }, 200)
+    } catch (err) {
+      const msg = err.response?.data?.error?.message || err.message || 'Login failed'
+      setErrors({ general: msg })
+      setFeedback(null)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   // Handle Signup submission
-  const handleSignupSubmit = (e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault()
+    setErrors({})
+    setFeedback(null)
     const newErrors = {}
 
     if (!fullName.trim() || fullName.trim().length < 2) {
@@ -185,18 +195,20 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
     }
 
     setIsSubmitting(true)
-    setFeedback(`Demo session initialized for ${fullName.trim()}. Loading studio...`)
+    setFeedback(`Creating account for ${fullName.trim()}...`)
 
-    loginAsMockUser('creator', {
-      fullName: fullName.trim(),
-      email: email.trim(),
-      tier: 'Free Tier',
-      creditBalance: 250
-    })
-
-    setTimeout(() => {
-      navigate('/dashboard')
-    }, 300)
+    try {
+      await register(fullName.trim(), email.trim(), password)
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 200)
+    } catch (err) {
+      const msg = err.response?.data?.error?.message || err.message || 'Registration failed'
+      setErrors({ general: msg })
+      setFeedback(null)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // Quick 1-click Demo Fill for Signup
@@ -283,6 +295,14 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
                 {mode === 'forgot-password' && 'Enter your registered email to receive simulated recovery instructions'}
               </p>
             </div>
+
+            {/* Error and Feedback Banners */}
+            {errors.general && (
+              <div className="p-2.5 rounded-xl bg-rose-950/70 border border-rose-800/80 text-xs text-rose-300 flex items-center gap-2 animate-in fade-in duration-150">
+                <AlertOctagon className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <span>{errors.general}</span>
+              </div>
+            )}
 
             {/* Temporary Feedback Banner */}
             {feedback && (

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import {
   Download, Image as ImageIcon, Video, Search, FileText, Check,
   Clock, HardDrive, Trash2, ExternalLink, RefreshCw
@@ -8,40 +8,72 @@ import {
   StudioPageHeader, Panel, SearchField, SegmentedTabs, LightSelect, LightEmptyState,
   MediaThumb, Toast, StatCard
 } from '../../components/studio/StudioUI'
-import { DEMO_DOWNLOADS } from '../../mocks/customerDemoData'
 import { formatBytes, formatDateTime } from '../../utils/format'
 import { cn } from '../../utils/cn'
+import { api } from '../../services/api'
 
 export function DownloadsPage() {
-  const [downloads, setDownloads] = useState(DEMO_DOWNLOADS)
+  const [downloads, setDownloads] = useState([])
+  const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [formatFilter, setFormatFilter] = useState('all')
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
 
-  const formats = useMemo(() => Array.from(new Set(downloads.map((d) => d.format))), [downloads])
+  // Load downloads from real backend
+  useEffect(() => {
+    let isMounted = true
 
-  const totalBytes = useMemo(() => downloads.reduce((acc, d) => acc + d.sizeBytes, 0), [downloads])
+    async function fetchDownloads() {
+      try {
+        const res = await api.get('/customer/downloads')
+        if (isMounted && res.data?.success) {
+          setDownloads(res.data.data || [])
+        }
+      } catch (err) {
+        // Handled gracefully
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    fetchDownloads()
+    return () => { isMounted = false }
+  }, [])
+
+  const formats = useMemo(() => Array.from(new Set(downloads.map((d) => d.format).filter(Boolean))), [downloads])
+
+  const totalBytes = useMemo(() => downloads.reduce((acc, d) => acc + (d.sizeBytes || 0), 0), [downloads])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return downloads.filter((d) => {
       if (typeFilter !== 'all' && d.type !== typeFilter) return false
       if (formatFilter !== 'all' && d.format !== formatFilter) return false
-      if (q && !`${d.name} ${d.source}`.toLowerCase().includes(q)) return false
+      if (q && !`${d.name || ''} ${d.source || ''}`.toLowerCase().includes(q)) return false
       return true
     })
   }, [downloads, query, typeFilter, formatFilter])
 
-  const handleClearHistory = () => {
-    setDownloads([])
-    setToast({ message: 'Download history cleared from this demo session.' })
+  const handleClearHistory = async () => {
+    try {
+      await api.delete('/customer/downloads')
+      setDownloads([])
+      setToast({ message: 'Download history cleared successfully.' })
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to clear download history.', tone: 'danger' })
+    }
   }
 
-  const handleDeleteItem = (id) => {
-    setDownloads(downloads.filter((d) => d.id !== id))
-    setToast({ message: 'Record removed from download history.' })
+  const handleDeleteItem = async (id) => {
+    try {
+      await api.delete(`/customer/downloads/${id}`)
+      setDownloads(downloads.filter((d) => d.id !== id))
+      setToast({ message: 'Record removed from download history.' })
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to remove record.', tone: 'danger' })
+    }
   }
 
   return (
@@ -73,14 +105,14 @@ export function DownloadsPage() {
           icon={Download}
           label="Total Exports"
           value={downloads.length}
-          sub="Stored in browser history"
+          sub="Logged export events"
           accent="cyan"
         />
         <StatCard
           icon={HardDrive}
           label="Total Bandwidth"
           value={formatBytes(totalBytes)}
-          sub="Sample file footprint"
+          sub="Archived file footprint"
           accent="cyan"
         />
         <StatCard

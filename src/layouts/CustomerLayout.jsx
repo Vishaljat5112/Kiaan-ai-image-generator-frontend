@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, Link, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Sparkles,
@@ -34,7 +34,19 @@ export function CustomerLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user, loading, isAuthenticated, logout } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#06080F]">
+        <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
 
   const customerNavGroups = [
     {
