@@ -294,33 +294,85 @@ export function ImageGeneratorPage() {
 
       if (res.data?.success && res.data?.data) {
         const backendJob = res.data.data
+        const jobId = backendJob.id
+
         if (setUser) {
           setUser((prev) => (prev ? { ...prev, creditBalance: Math.max(0, (prev.creditBalance || 25) - (backendJob.creditCost || 1)) } : prev))
         }
 
-        setGenerationProgress(100)
-        setGenerationStepText(`Job #${backendJob.id.slice(0, 8)} enqueued in position #${backendJob.queuePosition || 1}`)
+        setGenerationProgress(20)
+        setGenerationStepText(`Job #${jobId.slice(0, 8)} enqueued (Queue pos #${backendJob.queuePosition || 1}) - waiting for AI engine...`)
 
-        const newGen = {
-          id: backendJob.id,
-          prompt: finalPrompt,
-          negativePrompt: negativePrompt.trim() || undefined,
-          model: currentModelObj.name,
-          aspect: currentAspectObj.id,
-          dimensions: `${currentAspectObj.width}×${currentAspectObj.height}`,
-          seed: randomSeedVal,
-          steps,
-          cfg: guidanceScale,
-          sampler,
-          timestamp: 'Just now',
-          image: chosenSample,
-          refImage: referenceImage ? referenceImage.url : null,
-          status: backendJob.status
-        }
+        const pollInterval = setInterval(async () => {
+          try {
+            const jobRes = await api.get(`/generation/jobs/${jobId}`)
+            const jobData = jobRes.data?.data
+            if (!jobData) return
 
-        setGeneratedResults([newGen])
-        setHistoryGallery((prev) => [newGen, ...prev])
-        setIsGenerating(false)
+            if (jobData.status === 'PROCESSING') {
+              setGenerationProgress((prev) => Math.min(85, Math.max(prev, 50)))
+              setGenerationStepText(`AI Engine synthesizing latents on ${currentModelObj.name}...`)
+            } else if (jobData.status === 'COMPLETED') {
+              clearInterval(pollInterval)
+              setGenerationProgress(100)
+              setGenerationStepText('AI Generation completed successfully!')
+
+              const asset = jobData.assets?.[0]
+              const rawSrc = asset?.src || asset?.storagePath || chosenSample
+              const finalImageUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
+                ? rawSrc
+                : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
+
+              const newGen = {
+                id: jobData.id,
+                prompt: finalPrompt,
+                negativePrompt: negativePrompt.trim() || undefined,
+                model: currentModelObj.name,
+                aspect: currentAspectObj.id,
+                dimensions: asset?.dimensions || `${currentAspectObj.width}×${currentAspectObj.height}`,
+                seed: randomSeedVal,
+                steps,
+                cfg: guidanceScale,
+                sampler,
+                timestamp: 'Just now',
+                image: finalImageUrl,
+                refImage: referenceImage ? referenceImage.url : null,
+                status: 'COMPLETED'
+              }
+
+              setGeneratedResults([newGen])
+              setHistoryGallery((prev) => [newGen, ...prev])
+              setIsGenerating(false)
+
+              // Refresh user credit balance
+              try {
+                const balRes = await api.get('/credits/balance')
+                if (balRes.data?.data && setUser) {
+                  setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
+                }
+              } catch {}
+            } else if (jobData.status === 'FAILED' || jobData.status === 'CANCELED') {
+              clearInterval(pollInterval)
+              setIsGenerating(false)
+              alert(`Generation failed: ${jobData.errorMessage || 'AI inference error'}`)
+            }
+          } catch (pollErr) {
+            console.warn('[AI Poll Warning]', pollErr)
+          }
+        }, 1200)
+
+        // Safety timeout
+        setTimeout(() => {
+          clearInterval(pollInterval)
+          setIsGenerating((prev) => {
+            if (prev) {
+              setGenerationStepText('AI worker processing in background. View under My Generations.')
+              return false
+            }
+            return false
+          })
+        }, 60000)
+
         return
       }
     } catch (err) {
