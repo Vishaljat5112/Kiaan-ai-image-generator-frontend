@@ -9,6 +9,41 @@ export function AuthProvider({ children }) {
   // Verify active session on initial load / page refresh
   const checkAuth = useCallback(async () => {
     try {
+      const token = getAccessToken()
+      if (token && token !== 'mock_preview_token') {
+        // Try fetching active user profile with access token
+        const meRes = await api.get('/auth/me')
+        if (meRes.data?.success && meRes.data?.data?.user) {
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('kiaan_is_mock_session')
+            sessionStorage.removeItem('kiaan_mock_user')
+          }
+          setUser(meRes.data.data.user)
+          setLoading(false)
+          return
+        }
+      }
+
+      // If no valid access token, attempt refresh via HttpOnly cookie
+      try {
+        const refreshRes = await api.post('/auth/refresh')
+        if (refreshRes.data?.success) {
+          const { accessToken, user: refreshedUser } = refreshRes.data.data
+          if (accessToken) setAccessToken(accessToken)
+          if (refreshedUser) {
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('kiaan_is_mock_session')
+              sessionStorage.removeItem('kiaan_mock_user')
+            }
+            setUser(refreshedUser)
+            setLoading(false)
+            return
+          }
+        }
+      } catch {
+        // Refresh failed, check for offline mock session fallback below
+      }
+
       if (typeof window !== 'undefined' && localStorage.getItem('kiaan_is_mock_session') === 'true') {
         const savedMock = sessionStorage.getItem('kiaan_mock_user')
         if (savedMock) {
@@ -18,27 +53,8 @@ export function AuthProvider({ children }) {
         }
       }
 
-      const token = getAccessToken()
-      if (token && token !== 'mock_preview_token') {
-        // Try fetching active user profile with access token
-        const meRes = await api.get('/auth/me')
-        if (meRes.data?.success && meRes.data?.data?.user) {
-          setUser(meRes.data.data.user)
-          setLoading(false)
-          return
-        }
-      }
-
-      // If no valid access token, attempt refresh via HttpOnly cookie
-      const refreshRes = await api.post('/auth/refresh')
-      if (refreshRes.data?.success) {
-        const { accessToken, user: refreshedUser } = refreshRes.data.data
-        if (accessToken) setAccessToken(accessToken)
-        if (refreshedUser) setUser(refreshedUser)
-      } else {
-        setUser(null)
-        clearAccessToken()
-      }
+      setUser(null)
+      clearAccessToken()
     } catch {
       setUser(null)
       clearAccessToken()
@@ -72,6 +88,10 @@ export function AuthProvider({ children }) {
 
       if (res.data?.success && res.data?.data) {
         const { user: authUser, accessToken } = res.data.data
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('kiaan_is_mock_session')
+          sessionStorage.removeItem('kiaan_mock_user')
+        }
         setAccessToken(accessToken)
         setUser(authUser)
         return authUser

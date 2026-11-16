@@ -52,6 +52,7 @@ import { AdminRevenuePage } from '../pages/admin/AdminRevenuePage'
 import { AdminAnalyticsPage } from '../pages/admin/AdminAnalyticsPage'
 import { AdminFailedJobsPage } from '../pages/admin/AdminFailedJobsPage'
 import { AdminSupportPage } from '../pages/admin/AdminSupportPage'
+import { AdminInquiriesPage } from '../pages/admin/AdminInquiriesPage'
 import { AdminAuditLogsPage } from '../pages/admin/AdminAuditLogsPage'
 import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage'
 
@@ -130,6 +131,7 @@ export function AppRoutes() {
           <Route path="analytics" element={<AdminAnalyticsPage />} />
           <Route path="failed-jobs" element={<AdminFailedJobsPage />} />
           <Route path="support" element={<AdminSupportPage />} />
+          <Route path="inquiries" element={<AdminInquiriesPage />} />
           <Route path="audit-logs" element={<AdminAuditLogsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>

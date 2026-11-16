@@ -91,6 +91,7 @@ const requiredFiles = [
   'src/pages/admin/AdminAnalyticsPage.jsx',
   'src/pages/admin/AdminFailedJobsPage.jsx',
   'src/pages/admin/AdminSupportPage.jsx',
+  'src/pages/admin/AdminInquiriesPage.jsx',
   'src/pages/admin/AdminAuditLogsPage.jsx',
   'src/pages/admin/AdminSettingsPage.jsx',
   // Core State & Services

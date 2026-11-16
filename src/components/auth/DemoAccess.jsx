@@ -5,35 +5,55 @@ import { useAuth } from '../../hooks/useAuth'
 
 export function DemoAccess({ onSelect, compact = false }) {
   const navigate = useNavigate()
-  const { loginAsMockUser } = useAuth()
+  const { login, loginAsMockUser } = useAuth()
   const [feedback, setFeedback] = useState(null)
 
-  const handleCustomerDemo = () => {
-    setFeedback('User Demo active. Entering Studio...')
-    loginAsMockUser('creator', {
-      fullName: 'Demo Creator',
-      email: 'user@gmail.com',
-      tier: 'Free Tier',
-      creditBalance: 250
-    })
-    if (onSelect) onSelect('creator')
-    setTimeout(() => {
-      navigate('/dashboard')
-    }, 200)
+  const handleCustomerDemo = async () => {
+    try {
+      setFeedback('Connecting Demo Creator to live API...')
+      await login('user@gmail.com', '12345678', 'customer')
+      setFeedback('User Demo active. Entering Studio...')
+      if (onSelect) onSelect('creator')
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 150)
+    } catch {
+      setFeedback('User Demo active (offline mode). Entering Studio...')
+      loginAsMockUser('creator', {
+        fullName: 'Demo Creator',
+        email: 'user@gmail.com',
+        tier: 'Free Tier',
+        creditBalance: 250
+      })
+      if (onSelect) onSelect('creator')
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 150)
+    }
   }
 
-  const handleAdminDemo = () => {
-    setFeedback('Admin Demo active. Entering Admin Portal...')
-    loginAsMockUser('super_admin', {
-      fullName: 'System Administrator',
-      email: 'admin@gmail.com',
-      tier: 'Super Admin',
-      creditBalance: 99999
-    })
-    if (onSelect) onSelect('super_admin')
-    setTimeout(() => {
-      navigate('/admin')
-    }, 200)
+  const handleAdminDemo = async () => {
+    try {
+      setFeedback('Authenticating Demo Admin with live API...')
+      await login('admin@gmail.com', '12345678', 'admin')
+      setFeedback('Admin Demo active. Entering Admin Portal...')
+      if (onSelect) onSelect('super_admin')
+      setTimeout(() => {
+        navigate('/admin')
+      }, 150)
+    } catch {
+      setFeedback('Admin Demo active (offline mode). Entering Admin Portal...')
+      loginAsMockUser('super_admin', {
+        fullName: 'System Administrator',
+        email: 'admin@gmail.com',
+        tier: 'Super Admin',
+        creditBalance: 99999
+      })
+      if (onSelect) onSelect('super_admin')
+      setTimeout(() => {
+        navigate('/admin')
+      }, 150)
+    }
   }
 
   if (compact) {

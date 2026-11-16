@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, Sparkles, Zap, Shield, Crown } from 'lucide-react'
+import { Check, Sparkles, Zap, Shield, Crown, ArrowRight } from 'lucide-react'
 
 export function PricingSection() {
   const [billingCycle, setBillingCycle] = useState('monthly') // 'monthly', 'quarterly', 'yearly'
@@ -238,6 +238,17 @@ export function PricingSection() {
               </div>
             )
           })}
+        </div>
+
+        {/* See Full Pricing Table CTA Link */}
+        <div className="mt-10 text-center">
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700/80 shadow-md transition-all hover:scale-105"
+          >
+            <span>See Full Pricing & Comparison Table</span>
+            <ArrowRight className="w-4 h-4 text-pink-400" />
+          </Link>
         </div>
 
         {/* Disclaimer Note */}

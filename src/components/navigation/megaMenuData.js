@@ -72,7 +72,7 @@ export const MEGA_MENU_DATA = {
       desc: '4-step distilled rectified flow matching yielding rapid photorealistic visual synthesis at 1024×1024.',
       image: '/images/landing/hero-astronaut.jpg',
       ctaText: 'Explore Models',
-      ctaTo: '/features',
+      ctaTo: '/features#models',
       linkText: 'Launch Studio Generator',
       linkTo: '/dashboard/image-generator'
     }
@@ -88,12 +88,12 @@ export const MEGA_MENU_DATA = {
           {
             name: 'Text to Video',
             desc: 'Transform narrative prompts into 5-second cinematic shots',
-            to: '/features#text-to-video'
+            to: '/features#video-specs'
           },
           {
             name: 'Image to Video',
             desc: 'Animate still photographs with natural motion dynamics',
-            to: '/features#image-to-video'
+            to: '/features#video-specs'
           }
         ]
       },
@@ -103,12 +103,12 @@ export const MEGA_MENU_DATA = {
           {
             name: 'Video Projects',
             desc: 'Organize sequential visual scenes into project folders',
-            to: '/features#projects'
+            to: '/features#creative-tools'
           },
           {
             name: 'Video Settings',
             desc: 'Configure frame rate, temporal coherence, and motion speed',
-            to: '/features#settings'
+            to: '/features#video-specs'
           }
         ]
       },
@@ -118,12 +118,12 @@ export const MEGA_MENU_DATA = {
           {
             name: 'Video Examples',
             desc: 'High-definition motion showcase and temporal dynamics',
-            to: '/features#video-showcase'
+            to: '/features#video-specs'
           },
           {
             name: 'Explore AI Video',
             desc: 'Wan 2.1 3D spatio-temporal diffusion architecture',
-            to: '/features'
+            to: '/features#video-specs'
           }
         ]
       }
@@ -134,9 +134,9 @@ export const MEGA_MENU_DATA = {
       desc: 'Self-hosted 3D spatio-temporal diffusion generating continuous video sequences with natural motion.',
       image: '/images/landing/gallery-motorsport.jpg',
       ctaText: 'Explore Video Specs',
-      ctaTo: '/features',
+      ctaTo: '/features#video-specs',
       linkText: 'Evaluation Preview Info',
-      linkTo: '/about'
+      linkTo: '/about#evaluation'
     }
   },
 
@@ -248,9 +248,9 @@ export const MEGA_MENU_DATA = {
       desc: 'Designed for private, self-hosted AI creation with zero 3rd-party API markups or restrictions.',
       image: '/images/landing/gallery-fantasy.jpg',
       ctaText: 'Explore Architecture',
-      ctaTo: '/features',
+      ctaTo: '/features#architecture',
       linkText: 'About the Project',
-      linkTo: '/about'
+      linkTo: '/about#project'
     }
   },
 
@@ -264,22 +264,22 @@ export const MEGA_MENU_DATA = {
           {
             name: 'Free Tier ($0)',
             desc: '100 monthly credits for newcomers taking first steps',
-            to: '/#pricing'
+            to: '/pricing#plans'
           },
           {
-            name: 'Creator ($29)',
-            desc: '2,500 credits with expedited GPU queue priority',
-            to: '/#pricing'
+            name: 'Creator ($19)',
+            desc: '600 monthly credits with commercial generation rights',
+            to: '/pricing#plans'
           },
           {
-            name: 'Pro ($59)',
-            desc: '8,000 credits with full 4K output and Wan 2.1 Video',
-            to: '/#pricing'
+            name: 'Studio Pro ($49)',
+            desc: '2,000 monthly credits with 4K output and Wan Video Cinema',
+            to: '/pricing#plans'
           },
           {
-            name: 'Business ($199)',
-            desc: '30,000 credits with dedicated node allocation',
-            to: '/#pricing'
+            name: 'Enterprise ($199)',
+            desc: '10,000 monthly credits with dedicated node fast-track',
+            to: '/pricing#plans'
           }
         ]
       },
@@ -289,12 +289,17 @@ export const MEGA_MENU_DATA = {
           {
             name: 'View All Plans',
             desc: 'Compare complete feature table and credit allowances',
-            to: '/pricing'
+            to: '/pricing#comparison'
+          },
+          {
+            name: 'Credit Top-Up Packs',
+            desc: 'Non-expiring credit packs with automatic refund guarantee',
+            to: '/pricing#topups'
           },
           {
             name: 'Commercial Licensing',
             desc: 'Commercial open weights with zero 3rd-party API markups',
-            to: '/features'
+            to: '/about#project'
           }
         ]
       }

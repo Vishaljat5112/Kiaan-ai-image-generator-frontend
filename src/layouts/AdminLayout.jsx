@@ -16,6 +16,7 @@ import {
   LifeBuoy,
   ShieldCheck,
   Settings,
+  Building2,
   Menu,
   X,
   ChevronLeft,
@@ -84,6 +85,7 @@ export function AdminLayout() {
       group: 'System & Support',
       items: [
         { label: 'Support Requests', to: '/admin/support', icon: LifeBuoy },
+        { label: 'Enterprise Inquiries', to: '/admin/inquiries', icon: Building2 },
         { label: 'Settings', to: '/admin/settings', icon: Settings },
       ]
     }

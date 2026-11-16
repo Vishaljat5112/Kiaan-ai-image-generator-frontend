@@ -14,7 +14,6 @@ export function PublicLayout() {
   const timeoutRef = useRef(null)
   const location = useLocation()
   const { user } = useAuth()
-  const isLandingPage = location.pathname === '/'
 
   // 5 Public Mega Menu Categories
   const navCategories = [
@@ -68,44 +67,37 @@ export function PublicLayout() {
   }
 
   return (
-    <div className={isLandingPage ? "min-h-screen flex flex-col bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200" : "min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-violet-100 selection:text-violet-900"}>
+    <div className="min-h-screen flex flex-col bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200">
       {/* Platform Preview Developer Bar */}
-      <div className={isLandingPage ? "bg-[#0A0E17] border-b border-neutral-800 px-4 py-1.5 text-center text-xs text-neutral-400 flex items-center justify-center gap-2" : "bg-neutral-50 border-b border-neutral-200/80 px-4 py-1.5 text-center text-xs text-neutral-600 flex items-center justify-center gap-2"}>
-        <Sparkles className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+      <div className="bg-[#0A0E17] border-b border-neutral-800 px-4 py-1.5 text-center text-xs text-neutral-400 flex items-center justify-center gap-2">
+        <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
         <span>
           <strong>Kiaan Studio Preview:</strong> Explore the workstation via{' '}
-          <Link to="/dashboard" className="text-violet-700 underline hover:text-violet-800 font-semibold">Customer Studio</Link> or{' '}
-          <Link to="/admin" className="text-neutral-900 underline hover:text-neutral-700 font-semibold">Admin Portal</Link>.
+          <Link to="/dashboard" className="text-cyan-400 underline hover:text-cyan-300 font-semibold">Customer Studio</Link> or{' '}
+          <Link to="/admin" className="text-pink-400 underline hover:text-pink-300 font-semibold">Admin Portal</Link>.
         </span>
       </div>
 
       {/* Main Responsive Sticky Navbar (Screenshot 1 & Mega Menu Architecture) */}
-      <header className={isLandingPage ? "sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#06080F]/90 backdrop-blur-md" : "sticky top-0 z-50 w-full border-b border-neutral-100 bg-white/95 backdrop-blur-md"}>
+      <header className="sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#06080F]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Brand Logo */}
-          <Logo to="/" theme={isLandingPage ? "dark" : "light"} size="md" showBadge={false} />
+          <Logo to="/" theme="dark" size="md" showBadge={false} />
 
           {/* Desktop Navigation Triggers with Mega Menu Hover/Click */}
-          <nav
-            className="hidden md:flex items-center gap-1 lg:gap-1.5"
-
-          >
+          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5">
             {navCategories.map((cat) => {
               const isOpen = activeMenu === cat.id
               return (
-                <div
-                  key={cat.id}
-                  className="relative py-2"
-
-                >
+                <div key={cat.id} className="relative py-2">
                   <button
                     type="button"
                     onClick={() => setActiveMenu(isOpen ? null : cat.id)}
                     className={cn(
                       'px-3.5 py-2 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5 focus:outline-none cursor-pointer select-none',
                       isOpen
-                        ? (isLandingPage ? 'text-white font-bold bg-neutral-900 border border-cyan-500/60 shadow-lg shadow-cyan-500/20' : 'text-neutral-950 font-bold bg-neutral-100/90 shadow-2xs')
-                        : (isLandingPage ? 'text-neutral-300' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50')
+                        ? 'text-white font-bold bg-neutral-900 border border-cyan-500/60 shadow-lg shadow-cyan-500/20'
+                        : 'text-neutral-300 hover:text-white hover:bg-neutral-800/60'
                     )}
                     aria-haspopup="true"
                     aria-expanded={isOpen}
@@ -114,7 +106,7 @@ export function PublicLayout() {
                     <ChevronDown
                       className={cn(
                         'w-3.5 h-3.5 text-neutral-400 transition-transform duration-200',
-                        isOpen && (isLandingPage ? 'rotate-180 text-cyan-400' : 'rotate-180 text-violet-600')
+                        isOpen && 'rotate-180 text-cyan-400'
                       )}
                     />
                   </button>
@@ -129,25 +121,25 @@ export function PublicLayout() {
               <div className="flex items-center gap-3">
                 <Link
                   to="/dashboard"
-                  className="px-4 py-2 rounded-full text-sm font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-900 transition-colors"
+                  className="px-4 py-2 rounded-full text-sm font-semibold bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 transition-colors"
                 >
                   Open Studio
                 </Link>
-                <ProfileMenu variant="customer" theme={isLandingPage ? "dark" : "light"} />
+                <ProfileMenu variant="customer" theme="dark" />
               </div>
             ) : (
               <div className="flex items-center gap-3">
                 <Link
                   to="/login"
                   state={{ background: location }}
-                  className={isLandingPage ? "px-3.5 py-2 text-sm font-semibold text-neutral-300 hover:text-white transition-colors" : "px-3.5 py-2 text-sm font-semibold text-neutral-700 hover:text-neutral-950 transition-colors"}
+                  className="px-3.5 py-2 text-sm font-semibold text-neutral-300 hover:text-white transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
                   state={{ background: location }}
-                  className={isLandingPage ? "inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]" : "inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-semibold bg-neutral-950 text-white hover:bg-neutral-800 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"}
+                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Try it free
                 </Link>
@@ -157,10 +149,10 @@ export function PublicLayout() {
 
           {/* Mobile Menu Hamburger */}
           <div className="md:hidden flex items-center gap-2">
-            {user && <ProfileMenu variant="customer" theme={isLandingPage ? "dark" : "light"} />}
+            {user && <ProfileMenu variant="customer" theme="dark" />}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={isLandingPage ? "p-2 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors" : "p-2 rounded-xl text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100 transition-colors"}
+              className="p-2 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -170,32 +162,30 @@ export function PublicLayout() {
 
         {/* Desktop Mega Menu Dropdown Panel */}
         <DesktopMegaMenu
-          theme={isLandingPage ? 'dark' : 'light'}
+          theme="dark"
           activeMenu={activeMenu}
           onClose={handleCloseMenu}
-
-
         />
 
         {/* Mobile Navigation Drawer with Accordion Mega Menu */}
         {mobileMenuOpen && (
-          <div className={isLandingPage ? "md:hidden border-b border-neutral-800 bg-[#0B0F19] px-4 pt-3 pb-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto text-white" : "md:hidden border-b border-neutral-200 bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto"}>
+          <div className="md:hidden border-b border-neutral-800 bg-[#0B0F19] px-4 pt-3 pb-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto text-white">
             {/* Mobile Accordion */}
             <MobileMegaMenuAccordion onItemClick={() => setMobileMenuOpen(false)} />
 
             {/* Studio & Auth Action Controls */}
-            <div className="pt-3 border-t border-neutral-100 flex flex-col gap-2.5">
+            <div className="pt-3 border-t border-neutral-800 flex flex-col gap-2.5">
               <Link
                 to="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl text-sm font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-900 transition-colors"
+                className="w-full text-center py-2.5 rounded-xl text-sm font-semibold bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 text-white transition-colors"
               >
                 Customer Studio
               </Link>
               <Link
                 to="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl text-sm font-semibold border border-neutral-300 hover:bg-neutral-50 text-neutral-800 transition-colors"
+                className="w-full text-center py-2.5 rounded-xl text-sm font-semibold border border-neutral-700 hover:bg-neutral-800 text-neutral-300 transition-colors"
               >
                 Admin Portal
               </Link>
@@ -205,7 +195,7 @@ export function PublicLayout() {
                     to="/login"
                     state={{ background: location }}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center py-2.5 rounded-xl text-sm font-medium text-neutral-800 hover:bg-neutral-50 transition-colors"
+                    className="w-full text-center py-2.5 rounded-xl text-sm font-medium text-neutral-300 hover:text-white hover:bg-neutral-800/50 transition-colors"
                   >
                     Login
                   </Link>
@@ -213,7 +203,7 @@ export function PublicLayout() {
                     to="/register"
                     state={{ background: location }}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold bg-neutral-950 text-white hover:bg-neutral-800 shadow-md transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 transition-all"
                   >
                     <span>Try it free</span>
                     <ArrowRight className="w-4 h-4" />
