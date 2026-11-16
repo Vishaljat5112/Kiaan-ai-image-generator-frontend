@@ -142,8 +142,24 @@ export function AuthModal({ initialMode = 'login', initialRole = 'customer', onC
       const authUser = await login(email, password, role)
       const isUserAdmin = authUser.role === 'ADMIN' || authUser.role === 'SUPER_ADMIN' || authUser.role === 'super_admin'
 
+      // Guard: Block admin accounts from entering through customer login
+      if (role === 'customer' && isUserAdmin) {
+        setErrors({ general: 'This account has administrator privileges. Please switch to Admin Login.' })
+        setFeedback(null)
+        setIsSubmitting(false)
+        return
+      }
+
+      // Guard: Block customer accounts from entering through admin login
+      if (role === 'admin' && !isUserAdmin) {
+        setErrors({ general: 'Access denied: Administrative privileges required. Please use User Login.' })
+        setFeedback(null)
+        setIsSubmitting(false)
+        return
+      }
+
       setTimeout(() => {
-        if (role === 'admin' || isUserAdmin) {
+        if (role === 'admin') {
           navigate('/admin')
         } else {
           const redirectUrl = location.state?.from?.pathname || location.state?.redirect || '/dashboard'

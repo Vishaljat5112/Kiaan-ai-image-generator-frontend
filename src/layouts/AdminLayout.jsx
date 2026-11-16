@@ -20,7 +20,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  ArrowLeft,
   LogOut
 } from 'lucide-react'
 import { Logo } from '../components/common/Logo'
@@ -204,20 +203,8 @@ export function AdminLayout() {
           ))}
         </div>
 
-        {/* Footer: Return to Customer Studio & Logout */}
-        <div className="p-3 border-t border-neutral-800/80 shrink-0 space-y-1">
-          <Link
-            to="/dashboard"
-            className={cn(
-              'flex items-center gap-2 p-2 rounded-lg text-xs text-neutral-400 hover:text-cyan-300 hover:bg-neutral-800/50 transition-colors',
-              sidebarCollapsed && 'justify-center'
-            )}
-            title="Return to Customer Studio"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-            {!sidebarCollapsed && <span>Return to Customer Studio</span>}
-          </Link>
-
+        {/* Footer: Logout */}
+        <div className="p-3 border-t border-neutral-800/80 shrink-0">
           <button
             onClick={handleLogout}
             className={cn(

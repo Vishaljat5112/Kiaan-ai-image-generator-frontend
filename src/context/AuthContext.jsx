@@ -84,7 +84,15 @@ export function AuthProvider({ children }) {
       const isAdminDemo = email === 'admin@gmail.com' && password === '12345678'
 
       if (isUserDemo || isAdminDemo) {
-        const targetRole = isAdminDemo || requestedRole === 'admin' ? 'SUPER_ADMIN' : 'CREATOR'
+        // Enforce strict tab matching in demo fallback
+        if (requestedRole === 'customer' && isAdminDemo) {
+          throw new Error('This account has administrator privileges. Please switch to Admin Login.')
+        }
+        if (requestedRole === 'admin' && isUserDemo) {
+          throw new Error('Access denied: Administrative privileges required. Please use User Login.')
+        }
+
+        const targetRole = isAdminDemo ? 'SUPER_ADMIN' : 'CREATOR'
         const fallbackUser = {
           id: isAdminDemo ? 'usr_admin_demo' : 'usr_customer_demo',
           fullName: isAdminDemo ? 'System Administrator' : 'Demo Creator',

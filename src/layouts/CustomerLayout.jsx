@@ -18,7 +18,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Shield,
   Plus,
   LogOut
 } from 'lucide-react'
@@ -178,20 +177,7 @@ export function CustomerLayout() {
         </div>
 
         {/* Sidebar Bottom Section (Account & Logout) */}
-        <div className="p-3 border-t border-neutral-800/90 shrink-0 space-y-2">
-          {/* Quick link to Admin Portal for review */}
-          <Link
-            to="/admin"
-            className={cn(
-              'flex items-center gap-2 p-2 rounded-lg text-xs text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 transition-colors',
-              sidebarCollapsed && 'justify-center'
-            )}
-            title="Switch to Admin Portal"
-          >
-            <Shield className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            {!sidebarCollapsed && <span>Admin Portal Switch</span>}
-          </Link>
-
+        <div className="p-3 border-t border-neutral-800/90 shrink-0">
           {/* Sidebar Logout Button */}
           <button
             onClick={handleLogout}
