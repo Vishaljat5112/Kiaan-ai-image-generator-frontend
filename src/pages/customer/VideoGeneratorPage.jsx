@@ -237,34 +237,86 @@ export function VideoGeneratorPage() {
 
       if (res.data?.success && res.data?.data) {
         const backendJob = res.data.data
+        const jobId = backendJob.id
+
         if (setUser) {
           setUser((prev) => (prev ? { ...prev, creditBalance: Math.max(0, (prev.creditBalance || 25) - (backendJob.creditCost || 25)) } : prev))
         }
 
-        setGenerationProgress(100)
-        setGenerationStepText(`Job #${backendJob.id.slice(0, 8)} enqueued in position #${backendJob.queuePosition || 1}`)
+        setGenerationProgress(20)
+        setGenerationStepText(`Job #${jobId.slice(0, 8)} enqueued (Queue pos #${backendJob.queuePosition || 1}) - waiting for Wan 2.1 video worker...`)
 
-        const newVideo = {
-          id: backendJob.id,
-          title: finalPrompt.slice(0, 30) || 'Custom Motion Sequence',
-          prompt: finalPrompt,
-          model: currentModelObj.name,
-          resolution: `${resolution === '720p' ? '1280×720' : '854×480'} (${aspectRatio})`,
-          duration: duration,
-          fps: fps,
-          cameraMotion: cameraMotion,
-          seed: randomSeedVal,
-          timestamp: 'Just now',
-          thumbnail: chosenThumbnail,
-          badge: `${resolution} ${aspectRatio}`,
-          status: backendJob.status
-        }
+        const pollInterval = setInterval(async () => {
+          try {
+            const jobRes = await api.get(`/generation/jobs/${jobId}`)
+            const jobData = jobRes.data?.data
+            if (!jobData) return
 
-        setCurrentVideo(newVideo)
-        setVideoHistory((prev) => [newVideo, ...prev])
-        setIsGenerating(false)
-        setIsPlaying(true)
-        setPlayerProgress(0)
+            if (jobData.status === 'PROCESSING') {
+              setGenerationProgress((prev) => Math.min(85, Math.max(prev, 50)))
+              setGenerationStepText(`Synthesizing spatio-temporal video latents on ${currentModelObj.name}...`)
+            } else if (jobData.status === 'COMPLETED') {
+              clearInterval(pollInterval)
+              setGenerationProgress(100)
+              setGenerationStepText('Video sequence ready!')
+
+              const asset = jobData.assets?.[0]
+              const rawSrc = asset?.src || asset?.storagePath || chosenThumbnail
+              const finalVideoUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
+                ? rawSrc
+                : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
+
+              const newVideo = {
+                id: jobData.id,
+                title: finalPrompt.slice(0, 30) || 'Custom Motion Sequence',
+                prompt: finalPrompt,
+                model: currentModelObj.name,
+                resolution: `${resolution === '720p' ? '1280×720' : '854×480'} (${aspectRatio})`,
+                duration: duration,
+                fps: fps,
+                cameraMotion: cameraMotion,
+                seed: randomSeedVal,
+                timestamp: 'Just now',
+                thumbnail: finalVideoUrl,
+                videoUrl: finalVideoUrl,
+                badge: `${resolution} ${aspectRatio}`,
+                status: 'COMPLETED'
+              }
+
+              setCurrentVideo(newVideo)
+              setVideoHistory((prev) => [newVideo, ...prev])
+              setIsGenerating(false)
+              setIsPlaying(true)
+              setPlayerProgress(0)
+
+              // Refresh credits
+              try {
+                const balRes = await api.get('/credits/balance')
+                if (balRes.data?.data && setUser) {
+                  setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
+                }
+              } catch {}
+            } else if (jobData.status === 'FAILED' || jobData.status === 'CANCELED') {
+              clearInterval(pollInterval)
+              setIsGenerating(false)
+              alert(`Video generation error: ${jobData.errorMessage || 'AI inference error'}`)
+            }
+          } catch (pollErr) {
+            console.warn('[AI Video Poll Warning]', pollErr)
+          }
+        }, 1500)
+
+        setTimeout(() => {
+          clearInterval(pollInterval)
+          setIsGenerating((prev) => {
+            if (prev) {
+              setGenerationStepText('Video worker processing in background. View under My Generations.')
+              return false
+            }
+            return false
+          })
+        }, 90000)
+
         return
       }
     } catch (err) {
