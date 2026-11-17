@@ -17,12 +17,14 @@ export function AdminQueuePage() {
   const [metrics, setMetrics] = useState(null)
   const [activeJobs, setActiveJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
 
   const fetchQueueData = useCallback(async () => {
     try {
       setLoading(true)
+      setError(null)
       const [metricsRes, jobsRes] = await Promise.all([
         api.get('/admin/queue'),
         api.get('/admin/jobs?status=PROCESSING&limit=10')
@@ -34,7 +36,9 @@ export function AdminQueuePage() {
         setActiveJobs(jobsRes.data.data.jobs)
       }
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Failed to load queue metrics', type: 'error' })
+      const msg = err.response?.data?.error?.message || 'Failed to load queue metrics'
+      setError(msg)
+      setToast({ message: msg, type: 'error' })
     } finally {
       setLoading(false)
     }
@@ -139,7 +143,21 @@ export function AdminQueuePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
-              {activeJobs.length === 0 ? (
+              {error ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-rose-400">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <span className="text-xs font-medium">{error}</span>
+                      <button
+                        onClick={fetchQueueData}
+                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : activeJobs.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="py-12 text-center text-neutral-400">
                     Task queue is idle. No jobs currently executing.

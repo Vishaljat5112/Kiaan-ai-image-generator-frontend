@@ -14,6 +14,7 @@ import { Toast } from '../../components/studio/StudioUI'
 export function AdminFailedJobsPage() {
   const [failedJobs, setFailedJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 })
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
@@ -21,13 +22,16 @@ export function AdminFailedJobsPage() {
   const fetchFailed = useCallback(async (page = 1) => {
     try {
       setLoading(true)
+      setError(null)
       const res = await api.get(`/admin/jobs/failed?page=${page}&limit=10`)
       if (res.data?.data) {
         setFailedJobs(res.data.data.jobs || [])
         setPagination(res.data.data.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 })
       }
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Failed to fetch failed jobs', type: 'error' })
+      const msg = err.response?.data?.error?.message || 'Failed to fetch failed jobs'
+      setError(msg)
+      setToast({ message: msg, type: 'error' })
     } finally {
       setLoading(false)
     }
@@ -85,7 +89,21 @@ export function AdminFailedJobsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
-              {failedJobs.length === 0 ? (
+              {error ? (
+                <tr>
+                  <td colSpan="5" className="py-12 text-center text-rose-400">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <span className="text-xs font-medium">{error}</span>
+                      <button
+                        onClick={() => fetchFailed(pagination.page)}
+                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : failedJobs.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="py-12 text-center text-neutral-400">
                     <CheckCircle className="w-8 h-8 text-emerald-500/60 mx-auto mb-2" />
