@@ -15,6 +15,7 @@ import { Toast } from '../../components/studio/StudioUI'
 export function AdminImageJobsPage() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 })
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -24,6 +25,7 @@ export function AdminImageJobsPage() {
   const fetchJobs = useCallback(async (page = 1) => {
     try {
       setLoading(true)
+      setError(null)
       const params = new URLSearchParams()
       params.append('page', page)
       params.append('limit', '10')
@@ -37,7 +39,9 @@ export function AdminImageJobsPage() {
         setPagination(res.data.data.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 })
       }
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Failed to fetch image jobs', type: 'error' })
+      const msg = err.response?.data?.error?.message || 'Failed to fetch image jobs'
+      setError(msg)
+      setToast({ message: msg, type: 'error' })
     } finally {
       setLoading(false)
     }
@@ -136,7 +140,21 @@ export function AdminImageJobsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
-              {jobs.length === 0 ? (
+              {error ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-rose-400">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <span className="text-xs font-medium">{error}</span>
+                      <button
+                        onClick={() => fetchJobs(pagination.page)}
+                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : jobs.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="py-12 text-center text-neutral-400">
                     No image generation jobs found.
