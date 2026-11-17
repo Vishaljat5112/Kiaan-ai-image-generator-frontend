@@ -27,15 +27,18 @@ export function HowItWorksSection() {
   ]
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#06080F] scroll-mt-24">
+    <section id="how-it-works" className="py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#06080F] scroll-mt-20 border-t border-neutral-800/80">
       {/* Section Title */}
-      <div className="mb-12">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+      <div className="mb-6 sm:mb-8 space-y-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider text-cyan-400">
+          <span>Workflow Architecture</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
           How To Make AI Images Instantly
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
         {/* Left Column: Interactive 3 Vertical Steps */}
         <div className="lg:col-span-5 space-y-4">
           <div className="space-y-3">
@@ -45,29 +48,29 @@ export function HowItWorksSection() {
                 <div
                   key={item.step}
                   onClick={() => setActiveStep(item.step)}
-                  className={`cursor-pointer rounded-2xl p-4 sm:p-5 transition-all duration-300 border ${
+                  className={`w-full cursor-pointer rounded-2xl p-4 sm:p-4.5 transition-all duration-300 border ${
                     isActive
-                      ? 'bg-cyan-950/40 border-cyan-500/50 shadow-lg shadow-cyan-500/10'
-                      : 'bg-transparent border-transparent hover:bg-neutral-900/40 hover:border-neutral-800'
+                      ? 'bg-[#0D1322] border-cyan-500/60 shadow-lg shadow-cyan-500/15 ring-1 ring-cyan-500/30'
+                      : 'bg-[#0B0F19]/60 border-neutral-800/80 hover:border-neutral-700 hover:bg-[#0E1322]/80'
                   }`}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3.5">
                     {/* Number Badge */}
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${
+                      className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shrink-0 transition-all ${
                         isActive
-                          ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-xs'
+                          ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/25'
                           : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
                       }`}
                     >
                       {item.step}
                     </div>
 
-                    <div className="space-y-1.5">
-                      <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                    <div className="space-y-1">
+                      <h3 className={`text-sm sm:text-base font-bold transition-colors ${isActive ? 'text-white' : 'text-neutral-200'}`}>
                         {item.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-neutral-300/90 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -77,11 +80,11 @@ export function HowItWorksSection() {
             })}
           </div>
 
-          {/* Compact Violet CTA (Screenshot 4) */}
-          <div className="pt-4">
+          {/* Compact CTA */}
+          <div className="pt-2 sm:pt-3">
             <Link
               to="/dashboard/image-generator"
-              className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Get Started Now
             </Link>
@@ -90,32 +93,35 @@ export function HowItWorksSection() {
 
         {/* Right Column: Dynamic Preview Container Updating with Selected Step */}
         <div className="lg:col-span-7">
-          <div className="relative rounded-[32px] overflow-hidden bg-neutral-900 border border-neutral-800 shadow-2xl aspect-[4/3] group">
+          <div className="relative rounded-[24px] sm:rounded-[28px] overflow-hidden bg-neutral-950 border border-neutral-800/90 shadow-2xl aspect-[16/11] max-w-[560px] xl:max-w-[580px] lg:ml-auto w-full group">
             {/* Step 1 Visual: Prompt & Reference Input */}
             {activeStep === 1 && (
-              <div className="w-full h-full relative flex flex-col justify-end p-6 sm:p-8 animate-fadeIn">
+              <div className="w-full h-full relative flex flex-col justify-end p-4 sm:p-5 transition-opacity duration-300">
                 <img
                   src="/images/landing/howitworks-step1.jpg"
                   alt="Prompt input demonstration"
                   className="absolute inset-0 w-full h-full object-cover opacity-85"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#06080F]/95 via-[#06080F]/45 to-transparent" />
 
-                {/* Floating Mockup UI (Screenshot 4 Prompt Composer Representation) */}
-                <div className="relative z-10 bg-[#0D111C]/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-2xl border border-neutral-800 text-white max-w-xl mx-auto w-full space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400">
-                    <Wand2 className="w-4 h-4" />
-                    <span>Step 1 &bull; Text &amp; Reference Input</span>
+                {/* Floating Mockup UI */}
+                <div className="relative z-10 bg-[#0B0F19]/95 backdrop-blur-md rounded-2xl p-4 sm:p-4.5 shadow-2xl border border-neutral-700/80 text-white max-w-lg mx-auto w-full space-y-3">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <div className="flex items-center gap-2 text-cyan-400">
+                      <Wand2 className="w-4 h-4" />
+                      <span>Step 1 &bull; Text &amp; Reference Input</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-neutral-400">FLUX.2 Klein Engine</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800 text-sm text-neutral-200 font-mono">
+                  <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800 text-xs sm:text-sm text-neutral-200 font-mono leading-relaxed">
                     &quot;Celestial astronaut helmet, fiery orange nebula reflections, hyperrealistic 8k render&quot;
                   </div>
-                  <div className="flex items-center justify-between text-xs text-neutral-500 pt-1">
+                  <div className="flex items-center justify-between text-xs text-neutral-400 pt-0.5">
                     <span className="flex items-center gap-1.5 font-medium text-neutral-300">
                       <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
                       Optional reference image attached
                     </span>
-                    <span className="font-semibold text-white">Ready to configure &rarr;</span>
+                    <span className="font-semibold text-cyan-400 hover:text-cyan-300">Ready to configure &rarr;</span>
                   </div>
                 </div>
               </div>
@@ -123,33 +129,33 @@ export function HowItWorksSection() {
 
             {/* Step 2 Visual: Style & Model Customization */}
             {activeStep === 2 && (
-              <div className="w-full h-full relative flex flex-col justify-center p-6 sm:p-8 animate-fadeIn">
+              <div className="w-full h-full relative flex flex-col justify-center p-4 sm:p-5 transition-opacity duration-300">
                 <img
                   src="/images/landing/howitworks-step2.jpg"
                   alt="Style customization demonstration"
-                  className="absolute inset-0 w-full h-full object-cover opacity-70"
+                  className="absolute inset-0 w-full h-full object-cover opacity-65"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/75" />
 
-                <div className="relative z-10 bg-neutral-950/95 backdrop-blur-md rounded-2xl p-5 shadow-2xl border border-neutral-800 text-white max-w-lg mx-auto w-full space-y-4">
-                  <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
+                <div className="relative z-10 bg-[#0B0F19]/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-2xl border border-neutral-700/80 text-white max-w-lg mx-auto w-full space-y-3.5">
+                  <div className="flex items-center justify-between border-b border-neutral-800 pb-2.5">
                     <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400">
                       <Sliders className="w-4 h-4" />
                       <span>Step 2 &bull; Style &amp; Engine Customization</span>
                     </div>
-                    <span className="text-[11px] font-mono text-neutral-400">FLUX.2 Klein 4B</span>
+                    <span className="text-[11px] font-mono text-cyan-300/90 bg-cyan-950/70 px-2 py-0.5 rounded border border-cyan-500/30">FLUX.2 Klein 4B</span>
                   </div>
 
                   <div>
-                    <span className="text-[11px] text-neutral-400 font-medium uppercase tracking-wider">Style Presets</span>
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <span className="text-[11px] text-neutral-300 font-bold uppercase tracking-wider">Style Presets</span>
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
                       {['Photorealistic', 'Cinematic 8K', 'Anime Studio', '3D Concept', 'Macro Shot'].map((style, i) => (
                         <span
                           key={style}
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                             i === 0
                               ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-xs'
-                              : 'bg-neutral-800 text-neutral-300'
+                              : 'bg-neutral-900 border border-neutral-700/80 text-neutral-300'
                           }`}
                         >
                           {style}
@@ -158,13 +164,13 @@ export function HowItWorksSection() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800">
-                      <span className="text-neutral-400 block text-[10px] uppercase font-bold">Aspect Ratio</span>
+                  <div className="grid grid-cols-2 gap-2.5 sm:gap-3 text-xs">
+                    <div className="p-2.5 rounded-xl bg-neutral-900/90 border border-neutral-800">
+                      <span className="text-neutral-400 block text-[11px] uppercase font-bold">Aspect Ratio</span>
                       <span className="font-semibold text-white mt-0.5 block">16:9 Landscape (1024×576)</span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800">
-                      <span className="text-neutral-400 block text-[10px] uppercase font-bold">Inference Steps</span>
+                    <div className="p-2.5 rounded-xl bg-neutral-900/90 border border-neutral-800">
+                      <span className="text-neutral-400 block text-[11px] uppercase font-bold">Inference Steps</span>
                       <span className="font-semibold text-white mt-0.5 block">4 Steps (Distilled Flow)</span>
                     </div>
                   </div>
@@ -174,15 +180,15 @@ export function HowItWorksSection() {
 
             {/* Step 3 Visual: High-Resolution Generation & Download */}
             {activeStep === 3 && (
-              <div className="w-full h-full relative flex flex-col justify-end p-6 sm:p-8 animate-fadeIn">
+              <div className="w-full h-full relative flex flex-col justify-end p-4 sm:p-5 transition-opacity duration-300">
                 <img
                   src="/images/landing/howitworks-step3.jpg"
                   alt="High-resolution generated asset"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
 
-                <div className="relative z-10 bg-black/70 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 text-white flex flex-wrap items-center justify-between gap-3">
+                <div className="relative z-10 bg-[#0B0F19]/95 backdrop-blur-md rounded-2xl p-4 sm:p-4.5 border border-neutral-700/80 text-white flex flex-wrap items-center justify-between gap-3 shadow-2xl max-w-lg mx-auto w-full">
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5" />
@@ -195,7 +201,7 @@ export function HowItWorksSection() {
                   <div className="flex items-center gap-2">
                     <Link
                       to="/dashboard/image-generator"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-white text-neutral-950 hover:bg-neutral-100 transition-colors shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white text-neutral-950 hover:bg-neutral-100 transition-colors shadow-sm"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download 4K</span>

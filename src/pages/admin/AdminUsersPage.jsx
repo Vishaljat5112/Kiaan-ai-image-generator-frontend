@@ -10,7 +10,8 @@ import {
   RefreshCw,
   MoreVertical,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Pencil
 } from 'lucide-react'
 import { api } from '../../services/api'
 import { formatNumber, formatDateTime } from '../../utils/format'
@@ -33,6 +34,16 @@ export function AdminUsersPage() {
   const [creditReason, setCreditReason] = useState('')
   const [creditSubmitting, setCreditSubmitting] = useState(false)
 
+  // Edit User Modal state
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState(null)
+  const [editFullName, setEditFullName] = useState('')
+  const [editRole, setEditRole] = useState('CREATOR')
+  const [editStatus, setEditStatus] = useState('ACTIVE')
+  const [editCreditDelta, setEditCreditDelta] = useState('')
+  const [editReason, setEditReason] = useState('')
+  const [editSubmitting, setEditSubmitting] = useState(false)
+
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
 
@@ -52,7 +63,7 @@ export function AdminUsersPage() {
         setPagination(res.data.data.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 })
       }
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Failed to fetch users', type: 'error' })
+      setToast({ message: err.response?.data?.error?.message || 'Failed to fetch users', tone: 'danger', type: 'error' })
     } finally {
       setLoading(false)
     }
@@ -65,16 +76,50 @@ export function AdminUsersPage() {
     return () => clearTimeout(timer)
   }, [fetchUsers])
 
+  const openEditModal = (u) => {
+    setEditingUser(u)
+    setEditFullName(u.fullName || '')
+    setEditRole(u.role || 'CREATOR')
+    setEditStatus(u.status || 'ACTIVE')
+    setEditCreditDelta('')
+    setEditReason('')
+    setEditModalOpen(true)
+  }
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault()
+    if (!editingUser) return
+    try {
+      setEditSubmitting(true)
+      await api.patch(`/admin/users/${editingUser.id}`, {
+        fullName: editFullName.trim(),
+        role: editRole,
+        status: editStatus,
+        creditDelta: editCreditDelta.trim() ? parseInt(editCreditDelta, 10) : undefined,
+        reason: editReason.trim() || `Admin updated account (status: ${editStatus})`
+      })
+      setToast({ message: `User ${editingUser.email} updated successfully`, tone: 'success' })
+      setEditModalOpen(false)
+      setEditingUser(null)
+      setEditCreditDelta('')
+      fetchUsers(pagination.page)
+    } catch (err) {
+      setToast({ message: err.response?.data?.error?.message || 'Failed to update user', tone: 'danger', type: 'error' })
+    } finally {
+      setEditSubmitting(false)
+    }
+  }
+
   const handleStatusChange = async (userId, newStatus) => {
     try {
       await api.patch(`/admin/users/${userId}/status`, {
         status: newStatus,
         reason: `Admin updated status to ${newStatus}`
       })
-      setToast({ message: `User status changed to ${newStatus}` })
+      setToast({ message: `User status changed to ${newStatus}`, tone: 'success' })
       fetchUsers(pagination.page)
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Status change failed', type: 'error' })
+      setToast({ message: err.response?.data?.error?.message || 'Status change failed', tone: 'danger', type: 'error' })
     }
   }
 
@@ -84,10 +129,10 @@ export function AdminUsersPage() {
         role: newRole,
         reason: `Admin assigned role ${newRole}`
       })
-      setToast({ message: `User role changed to ${newRole}` })
+      setToast({ message: `User role changed to ${newRole}`, tone: 'success' })
       fetchUsers(pagination.page)
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Role change failed', type: 'error' })
+      setToast({ message: err.response?.data?.error?.message || 'Role change failed', tone: 'danger', type: 'error' })
     }
   }
 
@@ -100,14 +145,14 @@ export function AdminUsersPage() {
         amount: parseInt(creditAmount, 10),
         reason: creditReason.trim() || 'Admin credit adjustment'
       })
-      setToast({ message: `Adjusted credits for ${selectedUser.email}` })
+      setToast({ message: `Adjusted credits for ${selectedUser.email}`, tone: 'success' })
       setCreditModalOpen(false)
       setSelectedUser(null)
       setCreditAmount('')
       setCreditReason('')
       fetchUsers(pagination.page)
     } catch (err) {
-      setToast({ message: err.response?.data?.error?.message || 'Credit adjustment failed', type: 'error' })
+      setToast({ message: err.response?.data?.error?.message || 'Credit adjustment failed', tone: 'danger', type: 'error' })
     } finally {
       setCreditSubmitting(false)
     }
@@ -189,7 +234,7 @@ export function AdminUsersPage() {
                 <th className="py-3 px-4">Active Plan</th>
                 <th className="py-3 px-4">Credit Balance</th>
                 <th className="py-3 px-4">Joined</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+                <th className="py-3 px-4 text-right whitespace-nowrap w-[90px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
@@ -247,48 +292,19 @@ export function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-neutral-400">{formatDateTime(u.createdAt)}</td>
-                    <td className="py-3 px-4 text-right space-x-1.5">
-                      <button
-                        onClick={() => {
-                          setSelectedUser(u)
-                          setCreditModalOpen(true)
-                        }}
-                        className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-neutral-700 text-cyan-400 border border-neutral-700 transition-colors"
-                      >
-                        Adjust Credits
-                      </button>
-
-                      {u.status === 'ACTIVE' ? (
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end">
+                        {/* Edit Button (Icon Only) */}
                         <button
-                          onClick={() => handleStatusChange(u.id, 'SUSPENDED')}
-                          className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-amber-950/40 text-amber-400 border border-neutral-700 transition-colors"
+                          type="button"
+                          onClick={() => openEditModal(u)}
+                          title="Edit User Account"
+                          aria-label="Edit User"
+                          className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-cyan-400 hover:text-cyan-300 border border-neutral-700 hover:border-cyan-500/40 transition-all cursor-pointer flex items-center justify-center shadow-2xs"
                         >
-                          Suspend
+                          <Pencil className="w-3.5 h-3.5" />
                         </button>
-                      ) : (
-                        <button
-                          onClick={() => handleStatusChange(u.id, 'ACTIVE')}
-                          className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-emerald-950/40 text-emerald-400 border border-neutral-700 transition-colors"
-                        >
-                          Activate
-                        </button>
-                      )}
-
-                      {u.role === 'CREATOR' ? (
-                        <button
-                          onClick={() => handleRoleChange(u.id, 'ADMIN')}
-                          className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700 transition-colors"
-                        >
-                          Promote
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleRoleChange(u.id, 'CREATOR')}
-                          className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-400 border border-neutral-700 transition-colors"
-                        >
-                          Demote
-                        </button>
-                      )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -323,6 +339,144 @@ export function AdminUsersPage() {
           </div>
         </div>
       </div>
+
+      {/* Edit User Modal */}
+      <Modal
+        theme="dark"
+        isOpen={editModalOpen}
+        onClose={() => {
+          if (!editSubmitting) {
+            setEditModalOpen(false)
+            setEditingUser(null)
+          }
+        }}
+        title={`Edit User: ${editingUser?.email || ''}`}
+        description="Update user full name, RBAC privileges, and account status."
+        className="max-w-md bg-[#0D111C] text-neutral-100 border-neutral-800"
+      >
+        {editingUser && (
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <div>
+              <FieldLabel htmlFor="e-email">User Email</FieldLabel>
+              <input
+                id="e-email"
+                type="text"
+                disabled
+                value={editingUser.email}
+                className="w-full px-3 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-400 cursor-not-allowed"
+              />
+            </div>
+
+            <div>
+              <FieldLabel htmlFor="e-name">Full Name</FieldLabel>
+              <input
+                id="e-name"
+                type="text"
+                value={editFullName}
+                onChange={(e) => setEditFullName(e.target.value)}
+                placeholder="e.g. John Doe"
+                className={lightInputClass}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <FieldLabel>Role & Promotion</FieldLabel>
+                {editingUser.role === 'SUPER_ADMIN' ? (
+                  <div className="w-full px-3 py-2 rounded-xl bg-purple-950/40 border border-purple-500/30 text-xs text-purple-300 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 font-semibold">
+                      <Shield className="w-3.5 h-3.5 text-purple-400" />
+                      SUPER_ADMIN
+                    </span>
+                    <span className="text-[10px] text-neutral-400">Protected Root</span>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setEditRole(editRole === 'ADMIN' ? 'CREATOR' : 'ADMIN')}
+                    className={`w-full px-3 py-2 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
+                      editRole === 'ADMIN'
+                        ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20'
+                        : 'bg-neutral-900 border-neutral-700/80 text-neutral-300 hover:bg-neutral-800'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>{editRole === 'ADMIN' ? 'Role: ADMIN' : 'Role: CREATOR'}</span>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-neutral-800 border border-neutral-700 text-cyan-300 hover:text-white">
+                      {editRole === 'ADMIN' ? 'Demote' : 'Promote to Admin'}
+                    </span>
+                  </button>
+                )}
+              </div>
+
+              <div>
+                <FieldLabel htmlFor="e-status">Account Status</FieldLabel>
+                <select
+                  id="e-status"
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-[#080B14] border border-neutral-700/80 text-xs text-neutral-100 focus:outline-none focus:border-cyan-500"
+                >
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="SUSPENDED">SUSPENDED</option>
+                  <option value="BANNED">BANNED</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <FieldLabel htmlFor="e-credits">Adjust Wallet Credits</FieldLabel>
+                <span className="text-[11px] text-cyan-400 font-semibold flex items-center gap-1">
+                  <Coins className="w-3 h-3 text-cyan-400" />
+                  Current: {formatNumber(editingUser.creditBalance)} credits
+                </span>
+              </div>
+              <input
+                id="e-credits"
+                type="number"
+                value={editCreditDelta}
+                onChange={(e) => setEditCreditDelta(e.target.value)}
+                placeholder="Enter amount to add or deduct, e.g. 50 or -25 (leave blank for no change)"
+                className={lightInputClass}
+              />
+            </div>
+
+            <div>
+              <FieldLabel htmlFor="e-reason">Administrative Reason (Optional)</FieldLabel>
+              <input
+                id="e-reason"
+                type="text"
+                value={editReason}
+                onChange={(e) => setEditReason(e.target.value)}
+                placeholder="e.g. Profile update, Account sanction, or Policy review"
+                className={lightInputClass}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-neutral-800">
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                disabled={editSubmitting}
+                onClick={() => {
+                  setEditModalOpen(false)
+                  setEditingUser(null)
+                }}
+                className="text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
+              >
+                Cancel
+              </Button>
+              <Button variant="gradient" size="sm" type="submit" disabled={editSubmitting}>
+                {editSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
 
       {/* Credit Adjustment Modal */}
       <Modal

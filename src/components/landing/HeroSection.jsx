@@ -57,15 +57,15 @@ export function HeroSection() {
   }
 
   return (
-    <section id="hero-prompt" className="py-12 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+    <section id="hero-prompt" className="pt-6 pb-8 sm:pt-8 sm:pb-10 lg:pt-10 lg:pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column: Headline, Description & Prompt Composer */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="space-y-4">
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-white leading-[1.1]">
+        <div className="lg:col-span-7 space-y-5">
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[54px] font-extrabold tracking-tight text-white leading-[1.14]">
               Free AI <span className="bg-gradient-to-r from-cyan-400 via-pink-500 to-amber-300 bg-clip-text text-transparent">Image Generator</span>
             </h1>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-base text-neutral-300 leading-relaxed max-w-xl">
               Convert text-to-image instantly. Describe your idea, product shots, character art,
               social media graphics, logo concepts, and Kiaan Studio generates photorealistic or
               stylized images matching your exact vision. No design skills required.
@@ -75,15 +75,15 @@ export function HeroSection() {
           {/* Interactive Prompt Composer (Screenshot 1) */}
           <div className="relative">
             {/* Subtle Gradient Glow Ring */}
-            <div className="rounded-[26px] p-1 bg-gradient-to-r from-cyan-500/40 via-pink-500/30 to-purple-500/40 shadow-xl shadow-cyan-500/10 ring-1 ring-white/10">
-              <div className="bg-[#0B0F19]/95 backdrop-blur-md rounded-[22px] p-4 sm:p-5 space-y-4 border border-neutral-800">
+            <div className="rounded-[24px] p-0.5 sm:p-1 bg-gradient-to-r from-cyan-500/40 via-pink-500/30 to-purple-500/40 shadow-xl shadow-cyan-500/10 ring-1 ring-white/10">
+              <div className="bg-[#0B0F19]/95 backdrop-blur-md rounded-[20px] p-3.5 sm:p-4 space-y-3 border border-neutral-800">
                 {/* Textarea Input */}
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Describe the image you want to create..."
-                  rows={3}
-                  className="w-full text-base sm:text-lg text-white placeholder:text-neutral-500 placeholder:font-normal bg-transparent border-0 focus:ring-0 focus:outline-none resize-none"
+                  rows={2}
+                  className="w-full text-sm sm:text-base text-white placeholder:text-neutral-400 placeholder:font-normal bg-transparent border-0 focus:ring-0 focus:outline-none resize-none leading-relaxed"
                 />
 
                 {/* Reference Image Thumbnail Preview */}
@@ -101,7 +101,7 @@ export function HeroSection() {
                     <button
                       type="button"
                       onClick={removeReferenceImage}
-                      className="p-1 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-200/50"
+                      className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
                       aria-label="Remove reference image"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -123,9 +123,9 @@ export function HeroSection() {
                     />
                     <label
                       htmlFor="hero-reference-file"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-700 hover:border-cyan-500/50 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-300 cursor-pointer transition-colors shadow-2xs select-none"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-700 hover:border-cyan-500/50 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-200 cursor-pointer transition-colors shadow-2xs select-none"
                     >
-                      <Plus className="w-3.5 h-3.5 text-neutral-500" />
+                      <Plus className="w-3.5 h-3.5 text-neutral-400" />
                       <span>Add image</span>
                     </label>
 
@@ -134,12 +134,12 @@ export function HeroSection() {
                       <button
                         type="button"
                         onClick={() => setShowConfigMenu(!showConfigMenu)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-700 hover:border-cyan-500/50 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-300 transition-colors shadow-2xs select-none"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-700 hover:border-cyan-500/50 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-200 transition-colors shadow-2xs select-none"
                       >
                         <span>{aspectRatio}</span>
-                        <span className="text-neutral-300">&bull;</span>
+                        <span className="text-neutral-400">&bull;</span>
                         <span>{model}</span>
-                        <span className="text-neutral-300">&bull;</span>
+                        <span className="text-neutral-400">&bull;</span>
                         <span>{variations}</span>
                         <ChevronDown className="w-3 h-3 text-neutral-400" />
                       </button>
@@ -148,7 +148,7 @@ export function HeroSection() {
                       {showConfigMenu && (
                         <div className="absolute left-0 bottom-full mb-2 w-64 rounded-2xl bg-[#0D111C] border border-neutral-800 shadow-xl shadow-black/80 p-3 z-30 space-y-3 text-white">
                           <div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Aspect Ratio</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-neutral-300">Aspect Ratio</span>
                             <div className="grid grid-cols-4 gap-1.5 mt-1.5">
                               {['1:1', '16:9', '9:16', '4:3'].map((ratio) => (
                                 <button
@@ -168,7 +168,7 @@ export function HeroSection() {
                           </div>
 
                           <div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Model</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-neutral-300">Model</span>
                             <div className="flex flex-col gap-1 mt-1.5">
                               {['FLUX.2 Klein', 'Z-Image Turbo'].map((m) => (
                                 <button
@@ -189,7 +189,7 @@ export function HeroSection() {
                           </div>
 
                           <div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">Variations</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-neutral-300">Variations</span>
                             <div className="grid grid-cols-2 gap-1.5 mt-1.5">
                               {['1 var', '4 var'].map((v) => (
                                 <button
@@ -235,15 +235,15 @@ export function HeroSection() {
             </div>
 
             {/* Note below composer */}
-            <p className="text-xs text-neutral-400 mt-2.5 pl-2 font-medium">
+            <p className="text-xs text-neutral-300/80 mt-2.5 pl-2 font-medium">
               No credit card required &bull; Commercial open weights
             </p>
           </div>
         </div>
 
         {/* Right Column: Large Cinematic Artwork (Screenshot 1) */}
-        <div className="lg:col-span-5 flex justify-center">
-          <div className="relative w-full max-w-[480px] lg:max-w-none aspect-[4/4] sm:aspect-[4/3] lg:aspect-[1/1] rounded-[32px] overflow-hidden shadow-2xl border border-neutral-800 bg-neutral-950 group ring-1 ring-cyan-500/20">
+        <div className="lg:col-span-5 flex justify-center items-center">
+          <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[420px] xl:max-w-[440px] aspect-square rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl border border-neutral-800/90 bg-neutral-950 group ring-1 ring-cyan-500/20">
             {/* The astronaut artwork matching screenshot 1 */}
             <img
               src="/images/landing/hero-astronaut.jpg"
@@ -256,7 +256,7 @@ export function HeroSection() {
             />
 
             {/* Subtle inner shadow overlay */}
-            <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[32px] pointer-events-none" />
+            <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] pointer-events-none" />
 
             {/* Floating prompt badge on hover */}
             <div className="absolute bottom-4 left-4 right-4 p-3 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
