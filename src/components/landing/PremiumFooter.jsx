@@ -48,8 +48,11 @@ export function PremiumFooter() {
 
   return (
     <footer className="relative bg-[#06080F] text-neutral-300 pt-8 sm:pt-10 pb-8 overflow-hidden border-t border-neutral-800/80">
-      {/* Subtle Purple Glow Gradient near bottom */}
-      <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-pink-950/15 via-cyan-950/10 to-transparent pointer-events-none" />
+      {/* Top subtle light beam separator */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" />
+
+      {/* Atmospheric Multi-Tone Aurora Glow near bottom */}
+      <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-pink-950/20 via-cyan-950/15 to-transparent pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         {/* Top: Brand Info + Multi-Column Links Grid */}
@@ -77,7 +80,7 @@ export function PremiumFooter() {
                   <li key={link.label}>
                     <Link
                       to={link.to}
-                      className="hover:text-cyan-300 transition-colors block py-0.5"
+                      className="hover:text-cyan-300 transition-colors block py-0.5 hover:translate-x-0.5 duration-200"
                     >
                       {link.label}
                     </Link>
@@ -89,7 +92,7 @@ export function PremiumFooter() {
         </div>
 
         {/* Bottom Metadata & Copyright Line */}
-        <div className="pt-6 border-t border-neutral-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-400">
+        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-400">
           <p>&copy; {CURRENT_YEAR} Kiaan Studio. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="hover:text-neutral-200 transition-colors">Privacy</Link>

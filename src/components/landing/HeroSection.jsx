@@ -63,7 +63,7 @@ export function HeroSection() {
         <div className="lg:col-span-7 space-y-5">
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[54px] font-extrabold tracking-tight text-white leading-[1.14]">
-              Free AI <span className="bg-gradient-to-r from-cyan-400 via-pink-500 to-amber-300 bg-clip-text text-transparent">Image Generator</span>
+              Free AI <span className="bg-gradient-to-r from-cyan-300 via-pink-500 to-amber-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">Image Generator</span>
             </h1>
             <p className="text-sm sm:text-base text-neutral-300 leading-relaxed max-w-xl">
               Convert text-to-image instantly. Describe your idea, product shots, character art,
@@ -74,9 +74,9 @@ export function HeroSection() {
 
           {/* Interactive Prompt Composer (Screenshot 1) */}
           <div className="relative">
-            {/* Subtle Gradient Glow Ring */}
-            <div className="rounded-[24px] p-0.5 sm:p-1 bg-gradient-to-r from-cyan-500/40 via-pink-500/30 to-purple-500/40 shadow-xl shadow-cyan-500/10 ring-1 ring-white/10">
-              <div className="bg-[#0B0F19]/95 backdrop-blur-md rounded-[20px] p-3.5 sm:p-4 space-y-3 border border-neutral-800">
+            {/* Subtle Gradient Ring */}
+            <div className="rounded-[24px] p-0.5 sm:p-1 bg-gradient-to-r from-cyan-500/40 via-pink-500/30 to-purple-500/40 shadow-xl shadow-cyan-500/10 ring-1 ring-white/10 transition-all duration-300">
+              <div className="bg-[#0B0F19]/95 backdrop-blur-2xl rounded-[20px] p-3.5 sm:p-4 space-y-3 border border-neutral-800">
                 {/* Textarea Input */}
                 <textarea
                   value={prompt}
@@ -88,11 +88,11 @@ export function HeroSection() {
 
                 {/* Reference Image Thumbnail Preview */}
                 {referenceImage && (
-                  <div className="flex items-center gap-2 p-2 rounded-xl bg-neutral-900 border border-neutral-700 max-w-fit">
+                  <div className="flex items-center gap-2 p-2 rounded-xl bg-neutral-900/90 border border-cyan-500/50 shadow-lg shadow-cyan-500/20 max-w-fit backdrop-blur-md">
                     <img
                       src={referenceImage}
                       alt="Reference preview"
-                      className="w-10 h-10 object-cover rounded-lg shadow-xs"
+                      className="w-10 h-10 object-cover rounded-lg shadow-xs ring-1 ring-white/30"
                     />
                     <div className="text-xs text-neutral-300 pr-1">
                       <p className="font-semibold text-cyan-400">Reference attached</p>
@@ -101,7 +101,7 @@ export function HeroSection() {
                     <button
                       type="button"
                       onClick={removeReferenceImage}
-                      className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+                      className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
                       aria-label="Remove reference image"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -110,7 +110,7 @@ export function HeroSection() {
                 )}
 
                 {/* Bottom Composer Toolbar */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-neutral-800/80">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-white/10">
                   <div className="flex items-center gap-2">
                     {/* Add Image Control */}
                     <input
@@ -123,9 +123,9 @@ export function HeroSection() {
                     />
                     <label
                       htmlFor="hero-reference-file"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-700 hover:border-cyan-500/50 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-200 cursor-pointer transition-colors shadow-2xs select-none"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/20 hover:border-cyan-400/80 bg-white/[0.06] hover:bg-cyan-950/40 text-xs font-semibold text-neutral-100 hover:text-cyan-200 cursor-pointer transition-all shadow-xs select-none hover:shadow-[0_0_15px_rgba(6,182,212,0.35)]"
                     >
-                      <Plus className="w-3.5 h-3.5 text-neutral-400" />
+                      <Plus className="w-3.5 h-3.5 text-cyan-400" />
                       <span>Add image</span>
                     </label>
 
@@ -134,19 +134,19 @@ export function HeroSection() {
                       <button
                         type="button"
                         onClick={() => setShowConfigMenu(!showConfigMenu)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-700 hover:border-cyan-500/50 bg-neutral-900 hover:bg-neutral-800 text-xs font-semibold text-neutral-200 transition-colors shadow-2xs select-none"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/20 hover:border-cyan-400/80 bg-white/[0.06] hover:bg-cyan-950/40 text-xs font-semibold text-neutral-100 hover:text-cyan-200 transition-all shadow-xs select-none hover:shadow-[0_0_15px_rgba(6,182,212,0.35)] cursor-pointer"
                       >
-                        <span>{aspectRatio}</span>
-                        <span className="text-neutral-400">&bull;</span>
+                        <span className="text-cyan-300 font-semibold">{aspectRatio}</span>
+                        <span className="text-neutral-500">&bull;</span>
                         <span>{model}</span>
-                        <span className="text-neutral-400">&bull;</span>
+                        <span className="text-neutral-500">&bull;</span>
                         <span>{variations}</span>
                         <ChevronDown className="w-3 h-3 text-neutral-400" />
                       </button>
 
                       {/* Dropdown Popover */}
                       {showConfigMenu && (
-                        <div className="absolute left-0 bottom-full mb-2 w-64 rounded-2xl bg-[#0D111C] border border-neutral-800 shadow-xl shadow-black/80 p-3 z-30 space-y-3 text-white">
+                        <div className="absolute left-0 bottom-full mb-2 w-64 rounded-2xl bg-[#0D111C]/95 backdrop-blur-2xl border border-white/20 shadow-2xl shadow-black/95 p-3 z-30 space-y-3 text-white ring-1 ring-cyan-500/30">
                           <div>
                             <span className="text-xs font-bold uppercase tracking-wider text-neutral-300">Aspect Ratio</span>
                             <div className="grid grid-cols-4 gap-1.5 mt-1.5">
@@ -155,11 +155,10 @@ export function HeroSection() {
                                   key={ratio}
                                   type="button"
                                   onClick={() => setAspectRatio(ratio)}
-                                  className={`py-1 rounded-lg text-xs font-semibold transition-colors ${
-                                    aspectRatio === ratio
-                                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold'
-                                      : 'bg-neutral-900 text-neutral-300 hover:bg-neutral-800'
-                                  }`}
+                                  className={`py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${aspectRatio === ratio
+                                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/30 ring-1 ring-cyan-300'
+                                    : 'bg-neutral-900 text-neutral-300 hover:bg-neutral-800'
+                                    }`}
                                 >
                                   {ratio}
                                 </button>
@@ -175,11 +174,10 @@ export function HeroSection() {
                                   key={m}
                                   type="button"
                                   onClick={() => setModel(m)}
-                                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                                    model === m
-                                      ? 'bg-cyan-950/60 text-cyan-300 border border-cyan-500/50'
-                                      : 'text-neutral-300 hover:bg-neutral-900'
-                                  }`}
+                                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${model === m
+                                    ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400/70 shadow-sm'
+                                    : 'text-neutral-300 hover:bg-neutral-900'
+                                    }`}
                                 >
                                   <span>{m}</span>
                                   {model === m && <Check className="w-3 h-3 text-cyan-400" />}
@@ -196,11 +194,10 @@ export function HeroSection() {
                                   key={v}
                                   type="button"
                                   onClick={() => setVariations(v)}
-                                  className={`py-1 rounded-lg text-xs font-semibold transition-colors ${
-                                    variations === v
-                                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold'
-                                      : 'bg-neutral-900 text-neutral-300 hover:bg-neutral-800'
-                                  }`}
+                                  className={`py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${variations === v
+                                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/30 ring-1 ring-cyan-300'
+                                    : 'bg-neutral-900 text-neutral-300 hover:bg-neutral-800'
+                                    }`}
                                 >
                                   {v}
                                 </button>
@@ -212,7 +209,7 @@ export function HeroSection() {
                             <button
                               type="button"
                               onClick={() => setShowConfigMenu(false)}
-                              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 cursor-pointer"
                             >
                               Done
                             </button>
@@ -243,26 +240,21 @@ export function HeroSection() {
 
         {/* Right Column: Large Cinematic Artwork (Screenshot 1) */}
         <div className="lg:col-span-5 flex justify-center items-center">
-          <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[420px] xl:max-w-[440px] aspect-square rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] overflow-hidden shadow-2xl border border-neutral-800/90 bg-neutral-950 group ring-1 ring-cyan-500/20">
-            {/* The astronaut artwork matching screenshot 1 */}
-            <img
-              src="/images/landing/hero-astronaut.jpg"
-              onError={(e) => {
-                e.target.onerror = null
-                e.target.src = '/images/landing/hero-astronaut-fallback.jpg'
-              }}
-              alt="Cinematic astronaut portrait with fiery reflections"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-
-            {/* Subtle inner shadow overlay */}
-            <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] pointer-events-none" />
-
-            {/* Floating prompt badge on hover */}
-            <div className="absolute bottom-4 left-4 right-4 p-3 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <p className="text-xs font-mono text-neutral-300 line-clamp-1">
-                prompt: &quot;cinematic astronaut, fiery cosmic sparks, 8k render&quot;
-              </p>
+          <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[420px] xl:max-w-[440px] aspect-square rounded-[26px] sm:rounded-[30px] lg:rounded-[34px]">
+            {/* Clean Gradient Border Container (Only the border, no lighting/glow effects) */}
+            <div className="relative w-full h-full p-[2px] bg-gradient-to-br from-cyan-400 via-white/40 to-pink-500 rounded-[26px] sm:rounded-[30px] lg:rounded-[34px] shadow-2xl overflow-hidden">
+              <div className="relative w-full h-full rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] overflow-hidden bg-neutral-950">
+                {/* The astronaut artwork matching screenshot 1 */}
+                <img
+                  src="/images/landing/hero-astronaut.jpg"
+                  onError={(e) => {
+                    e.target.onerror = null
+                    e.target.src = '/images/landing/hero-astronaut-fallback.jpg'
+                  }}
+                  alt="Cinematic astronaut portrait with fiery reflections"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>

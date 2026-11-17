@@ -17,6 +17,8 @@ export function ImageToImageSection() {
   }, [])
 
   const handlePointerDown = (e) => {
+    // If the click is on an interactive button or control, do not trigger dragging
+    if (e.target.closest('button')) return
     setIsDragging(true)
     handleMove(e.clientX)
     e.currentTarget.setPointerCapture(e.pointerId)
@@ -52,15 +54,18 @@ export function ImageToImageSection() {
   }
 
   return (
-    <section id="image-to-image" className="py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#06080F] scroll-mt-20 border-t border-neutral-800/80">
+    <section id="image-to-image" className="relative py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-[#06080F] scroll-mt-20 border-t border-neutral-800/80">
+      {/* Top subtle light beam separator */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" />
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
         {/* Left Column: Heading, Description & Pill CTA */}
         <div className="lg:col-span-6 space-y-5">
           <div className="space-y-3.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider text-cyan-400">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 backdrop-blur-md border border-cyan-400/50 text-xs font-mono uppercase tracking-wider text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
               <span>Reference Synthesis</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight leading-[1.2]">
+            <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight leading-[1.2] drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
               Generate Images Using A Reference Image
             </h2>
             <p className="text-sm sm:text-base text-neutral-300 leading-relaxed">
@@ -91,11 +96,7 @@ export function ImageToImageSection() {
           <div className="relative rounded-[24px] sm:rounded-[28px] p-4 sm:p-5 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800/90 shadow-2xl overflow-hidden max-w-[490px] xl:max-w-[510px] lg:ml-auto w-full">
             {/* Subtle Dotted Background Pattern */}
             <div
-              className="absolute inset-0 opacity-30 pointer-events-none"
-              style={{
-                backgroundImage: 'radial-gradient(#06b6d4 1.2px, transparent 1.2px)',
-                backgroundSize: '18px 18px'
-              }}
+              className="absolute inset-0 opacity-30 pointer-events-none bg-studio-dots"
             />
 
             {/* Interactive Image Container */}
@@ -115,7 +116,7 @@ export function ImageToImageSection() {
                 onPointerCancel={handlePointerUp}
                 onKeyDown={handleKeyDown}
                 style={{ touchAction: 'none' }}
-                className="relative rounded-2xl sm:rounded-[20px] overflow-hidden shadow-xl bg-neutral-900 aspect-[4/3] group border border-white/10 select-none cursor-ew-resize focus:outline-none focus:ring-2 focus:ring-cyan-400/60"
+                className="relative rounded-2xl sm:rounded-[20px] overflow-hidden shadow-2xl bg-neutral-900 aspect-[4/3] group/slider border border-white/15 select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/60"
               >
                 {/* AFTER Image (Full Base Layer: AI Output) */}
                 <img
@@ -136,13 +137,23 @@ export function ImageToImageSection() {
                   />
                 </div>
 
-                {/* Draggable Vertical Divider Line */}
+                {/* Draggable Vertical Divider Line with Neon Glow */}
                 <div
-                  className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.7)] pointer-events-none z-20"
+                  className="absolute top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-300 via-white to-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.9)] pointer-events-none z-20"
                   style={{ left: `${sliderPosition}%` }}
                 >
                   {/* Centered Circular Handle */}
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-neutral-950/95 border-2 border-cyan-400 text-cyan-300 shadow-xl shadow-black/80 flex items-center justify-center cursor-ew-resize pointer-events-auto hover:scale-110 active:scale-95 transition-transform duration-150">
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-neutral-950/95 border-2 border-cyan-400 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.7)] flex items-center justify-center cursor-pointer pointer-events-auto hover:scale-115 active:scale-95 transition-transform duration-150 ring-2 ring-cyan-500/30"
+                    style={{
+                      transform:
+                        sliderPosition >= 96
+                          ? 'translate(-88%, -50%)'
+                          : sliderPosition <= 4
+                            ? 'translate(-12%, -50%)'
+                            : 'translate(-50%, -50%)'
+                    }}
+                  >
                     <svg
                       className="w-4 h-4 text-cyan-300"
                       viewBox="0 0 24 24"
@@ -159,57 +170,128 @@ export function ImageToImageSection() {
                 </div>
 
                 {/* Top Corner Quick Preset Snap Chips */}
-                <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between pointer-events-none">
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-black/60 backdrop-blur-md text-neutral-200 border border-white/15 shadow-sm">
+                <div
+                  className="absolute top-3 inset-x-3 z-30 flex items-center justify-between pointer-events-auto"
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSliderPosition(100)
+                    }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold backdrop-blur-xl border transition-all cursor-pointer shadow-md select-none ${
+                      sliderPosition === 100
+                        ? 'bg-cyan-950/90 text-cyan-300 border-cyan-400 shadow-cyan-500/30'
+                        : 'bg-black/70 text-neutral-200 border-white/20 hover:border-white/40'
+                    }`}
+                  >
                     BEFORE: Reference
-                  </span>
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-black/60 backdrop-blur-md text-cyan-300 border border-cyan-500/40 shadow-sm">
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSliderPosition(0)
+                    }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold backdrop-blur-xl border transition-all cursor-pointer shadow-md select-none ${
+                      sliderPosition === 0
+                        ? 'bg-cyan-950/90 text-cyan-300 border-cyan-400 shadow-cyan-500/30'
+                        : 'bg-black/70 text-cyan-300 border-cyan-400/50 hover:border-cyan-400'
+                    }`}
+                  >
                     AFTER: AI Output
-                  </span>
+                  </button>
                 </div>
 
-                {/* Bottom Center Hint Overlay */}
-                <div className="absolute bottom-3 inset-x-3 z-20 flex items-center justify-between pointer-events-auto">
-                  <div className="flex items-center gap-1.5 bg-black/65 backdrop-blur-md rounded-full px-2.5 py-0.5 border border-white/10 text-[11px] font-medium text-neutral-300">
+                {/* Bottom Center Hint Overlay with Working Before, 50/50, and After Buttons */}
+                <div
+                  className="absolute bottom-3 inset-x-3 z-30 flex items-center justify-between pointer-events-auto"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onPointerMove={(e) => e.stopPropagation()}
+                  onPointerUp={(e) => e.stopPropagation()}
+                >
+                  <div
+                    className="flex items-center gap-1.5 bg-black/80 backdrop-blur-xl rounded-full p-1 border border-white/20 text-[11px] font-medium text-neutral-300 shadow-xl"
+                    onPointerDown={(e) => e.stopPropagation()}
+                  >
                     <button
                       type="button"
-                      onClick={() => setSliderPosition(100)}
-                      className={`hover:text-white transition-colors ${sliderPosition === 100 ? 'text-cyan-400 font-bold' : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setSliderPosition(100)
+                      }}
+                      onPointerDown={(e) => {
+                        e.stopPropagation()
+                      }}
+                      className={`px-2.5 py-1 rounded-full transition-all cursor-pointer select-none font-semibold ${
+                        sliderPosition === 100
+                          ? 'bg-cyan-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/40 ring-1 ring-cyan-300'
+                          : 'text-neutral-300 hover:text-white hover:bg-white/10'
+                      }`}
+                      aria-label="Show Before image on right"
                     >
                       Before
                     </button>
-                    <span>&bull;</span>
+                    <span className="text-neutral-500">&bull;</span>
                     <button
                       type="button"
-                      onClick={() => setSliderPosition(50)}
-                      className={`hover:text-white transition-colors ${sliderPosition === 50 ? 'text-cyan-400 font-bold' : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setSliderPosition(50)
+                      }}
+                      onPointerDown={(e) => {
+                        e.stopPropagation()
+                      }}
+                      className={`px-2.5 py-1 rounded-full transition-all cursor-pointer select-none font-semibold ${
+                        sliderPosition === 50
+                          ? 'bg-cyan-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/40 ring-1 ring-cyan-300'
+                          : 'text-neutral-300 hover:text-white hover:bg-white/10'
+                      }`}
+                      aria-label="Show 50/50 comparison in between"
                     >
                       50/50
                     </button>
-                    <span>&bull;</span>
+                    <span className="text-neutral-500">&bull;</span>
                     <button
                       type="button"
-                      onClick={() => setSliderPosition(0)}
-                      className={`hover:text-white transition-colors ${sliderPosition === 0 ? 'text-cyan-400 font-bold' : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setSliderPosition(0)
+                      }}
+                      onPointerDown={(e) => {
+                        e.stopPropagation()
+                      }}
+                      className={`px-2.5 py-1 rounded-full transition-all cursor-pointer select-none font-semibold ${
+                        sliderPosition === 0
+                          ? 'bg-cyan-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/40 ring-1 ring-cyan-300'
+                          : 'text-neutral-300 hover:text-white hover:bg-white/10'
+                      }`}
+                      aria-label="Show After image on left"
                     >
                       After
                     </button>
                   </div>
 
-                  <span className="text-[10px] text-neutral-400 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 hidden sm:inline-block">
+                  <span className="text-[10px] text-neutral-400 bg-black/70 backdrop-blur-xl px-2.5 py-1 rounded-full border border-white/15 hidden sm:inline-block shadow-sm">
                     Drag or use &larr; &rarr; keys
                   </span>
                 </div>
               </div>
 
               {/* Bottom Dark Floating Prompt Bar */}
-              <div className="rounded-xl sm:rounded-2xl bg-neutral-950/95 text-white p-3 sm:p-3.5 shadow-xl border border-neutral-800 flex flex-wrap items-center justify-between gap-3">
+              <div className="rounded-xl sm:rounded-2xl bg-black/80 backdrop-blur-xl text-white p-3 sm:p-3.5 shadow-2xl border border-white/10 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   {/* Thumbnail */}
                   <img
                     src="/images/landing/img2img-ref-burger.jpg"
                     alt="Ref thumbnail"
-                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover border border-neutral-700 shrink-0"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover border border-cyan-500/40 ring-1 ring-white/15 shrink-0 shadow-sm"
                   />
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm font-mono text-neutral-100 truncate">
@@ -218,7 +300,7 @@ export function ImageToImageSection() {
                     <div className="flex items-center gap-2 mt-0.5 text-xs text-neutral-300">
                       <span>FLUX.2 Klein / 1:1</span>
                       <span>&bull;</span>
-                      <span className="text-cyan-400">Reference: 85% fidelity</span>
+                      <span className="text-cyan-400 font-medium">Reference: 85% fidelity</span>
                     </div>
                   </div>
                 </div>
@@ -227,7 +309,7 @@ export function ImageToImageSection() {
                   <button
                     type="button"
                     onClick={() => setSliderPosition(50)}
-                    className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 transition-colors"
+                    className="p-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-700/80 transition-colors cursor-pointer"
                     title="Reset to 50/50 comparison"
                     aria-label="Reset to 50/50 comparison"
                   >

@@ -69,13 +69,16 @@ export function PublicLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200">
       {/* Main Responsive Sticky Navbar (Screenshot 1 & Mega Menu Architecture) */}
-      <header className="sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#06080F]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#06080F]/85 backdrop-blur-xl relative">
+        {/* Subtle Glowing Edge Under Navbar */}
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-500/25 to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-13 sm:h-14 flex items-center justify-between">
           {/* Brand Logo */}
-          <Logo to="/" theme="dark" size="md" showBadge={false} />
+          <Logo to="/" theme="dark" size="sm" showBadge={false} />
 
           {/* Desktop Navigation Triggers with Mega Menu Hover/Click */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5">
+          <nav className="hidden md:flex items-center gap-1">
             {navCategories.map((cat) => {
               const isOpen = activeMenu === cat.id
               return (
@@ -84,10 +87,10 @@ export function PublicLayout() {
                     type="button"
                     onClick={() => setActiveMenu(isOpen ? null : cat.id)}
                     className={cn(
-                      'px-3 py-1.5 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5 focus:outline-none cursor-pointer select-none',
+                      'px-2.5 py-1 rounded-full text-xs sm:text-[13px] font-medium transition-all inline-flex items-center gap-1 focus:outline-none cursor-pointer select-none',
                       isOpen
-                        ? 'text-white font-bold bg-neutral-900 border border-cyan-500/60 shadow-lg shadow-cyan-500/20'
-                        : 'text-neutral-300 hover:text-white hover:bg-neutral-800/60'
+                        ? 'text-white font-bold bg-neutral-900 border border-cyan-400/60 shadow-md shadow-cyan-500/20 ring-1 ring-cyan-400/30'
+                        : 'text-neutral-300 hover:text-white hover:bg-white/[0.06]'
                     )}
                     aria-haspopup="true"
                     aria-expanded={isOpen}
@@ -95,7 +98,7 @@ export function PublicLayout() {
                     <span>{cat.label}</span>
                     <ChevronDown
                       className={cn(
-                        'w-3.5 h-3.5 text-neutral-400 transition-transform duration-200',
+                        'w-3 h-3 text-neutral-400 transition-transform duration-200',
                         isOpen && 'rotate-180 text-cyan-400'
                       )}
                     />
@@ -106,30 +109,30 @@ export function PublicLayout() {
           </nav>
 
           {/* Header Action Controls */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2.5">
             {user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <Link
                   to="/dashboard"
-                  className="px-3.5 py-1.5 rounded-full text-sm font-semibold bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 transition-colors"
+                  className="px-3 py-1 rounded-full text-xs sm:text-[13px] font-semibold bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 hover:border-cyan-500/40 transition-all shadow-xs"
                 >
                   Open Studio
                 </Link>
                 <ProfileMenu variant="customer" theme="dark" />
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <Link
                   to="/login"
                   state={{ background: location }}
-                  className="px-3 py-1.5 text-sm font-semibold text-neutral-300 hover:text-white transition-colors"
+                  className="px-2.5 py-1 text-xs sm:text-[13px] font-medium text-neutral-300 hover:text-white transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
                   state={{ background: location }}
-                  className="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-rose-600 text-white shadow-md shadow-pink-500/25 hover:shadow-pink-500/40 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Try it free
                 </Link>
@@ -142,10 +145,10 @@ export function PublicLayout() {
             {user && <ProfileMenu variant="customer" theme="dark" />}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
+              className="p-1.5 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>

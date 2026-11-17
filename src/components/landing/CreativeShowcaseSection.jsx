@@ -66,9 +66,12 @@ export function CreativeShowcaseSection() {
   const loopItems = [...showcaseItems, ...showcaseItems]
 
   return (
-    <section id="creative-showcase" className="py-8 sm:py-10 lg:py-12 bg-[#06080F] overflow-hidden scroll-mt-20 border-t border-neutral-800/80">
+    <section id="creative-showcase" className="relative py-8 sm:py-10 lg:py-12 bg-[#06080F] overflow-hidden scroll-mt-20 border-t border-neutral-800/80">
+      {/* Subtle top divider line */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-500/25 to-transparent pointer-events-none" />
+
       {/* Section Header (Screenshot 2) */}
-      <div className="max-w-3xl mx-auto text-center px-4 sm:px-6 mb-6 sm:mb-8">
+      <div className="relative z-10 max-w-3xl mx-auto text-center px-4 sm:px-6 mb-6 sm:mb-8">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
           Community Creations
         </h2>
@@ -89,7 +92,7 @@ export function CreativeShowcaseSection() {
           {loopItems.map((item, index) => (
             <div
               key={`${item.id}-${index}`}
-              className="w-56 sm:w-64 h-[350px] sm:h-[390px] rounded-2xl overflow-hidden shrink-0 shadow-md hover:shadow-xl transition-all duration-300 group/card relative select-none bg-neutral-900 border border-neutral-800/90 hover:border-cyan-500/40"
+              className="w-56 sm:w-64 h-[350px] sm:h-[390px] rounded-2xl overflow-hidden shrink-0 shadow-lg hover:shadow-2xl transition-all duration-300 group/card relative select-none bg-neutral-900 border border-neutral-800/90 hover:border-cyan-500/40"
             >
               <img
                 src={item.image}
@@ -98,8 +101,8 @@ export function CreativeShowcaseSection() {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
               />
 
-              {/* Bottom Vignette for Caption Legibility — Scoped strictly to bottom 140px, eliminating the horizontal dark strip cutting across card centers */}
-              <div className="absolute inset-x-0 bottom-0 h-36 sm:h-40 bg-gradient-to-t from-[#06080F] via-[#06080F]/70 to-transparent pointer-events-none" />
+              {/* Bottom Vignette for Caption Legibility — Scoped strictly to bottom 140px, eliminating horizontal center strips */}
+              <div className="absolute inset-x-0 bottom-0 h-36 sm:h-40 bg-gradient-to-t from-[#06080F] via-[#06080F]/80 to-transparent pointer-events-none" />
 
               <div className="absolute bottom-0 inset-x-0 p-4 text-white space-y-1.5 z-10">
                 <div className="flex items-center justify-between text-xs font-semibold">
@@ -120,7 +123,7 @@ export function CreativeShowcaseSection() {
       </div>
 
       {/* Centered CTA (Screenshot 2) */}
-      <div className="mt-6 sm:mt-8 flex flex-col items-center justify-center gap-2">
+      <div className="relative z-10 mt-6 sm:mt-8 flex flex-col items-center justify-center gap-2">
         <Link
           to="/dashboard/image-generator"
           className="inline-flex items-center justify-center px-7 py-3 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"

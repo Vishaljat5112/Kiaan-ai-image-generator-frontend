@@ -38,11 +38,17 @@ export function HomePage() {
 
   return (
     <div className="bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200 overflow-x-hidden relative">
-      {/* Background Ambient Glows (SYNTHPULSE style) */}
+      {/* Background Ambient Glows & Canvas Texture */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[140px]" />
+        {/* Hero Section Overhead Spotlight Crown (Preserved per instruction) */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1200px] h-[650px] bg-[radial-gradient(ellipse_at_top,_rgba(6,182,212,0.35),_rgba(236,72,153,0.22),_rgba(99,102,241,0.15),_transparent_70%)] blur-[90px]" />
+
+        {/* Original Subtle Background Ambient Glows */}
         <div className="absolute top-1/3 -right-20 w-[500px] h-[500px] bg-pink-500/10 rounded-full blur-[150px]" />
         <div className="absolute top-2/3 left-10 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px]" />
+
+        {/* Subtle Canvas Texture */}
+        <div className="absolute inset-0 bg-studio-grid opacity-40" />
       </div>
       {/* 1. Hero Section + Prompt Composer (Screenshot 1) */}
       <HeroSection />

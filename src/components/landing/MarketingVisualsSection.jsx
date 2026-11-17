@@ -53,17 +53,20 @@ export function MarketingVisualsSection() {
   }, [isPlaying, steps.length])
 
   return (
-    <section id="marketing-demo" className="py-8 sm:py-10 lg:py-12 bg-[#06080F] border-t border-neutral-800/80 scroll-mt-20">
+    <section id="marketing-demo" className="relative py-8 sm:py-10 lg:py-12 bg-[#06080F] border-t border-neutral-800/80 scroll-mt-20 overflow-hidden">
+      {/* Top subtle light beam separator */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-          {/* Left Column: Heading, Copy, & CTA */}
-          <div className="lg:col-span-6 space-y-5">
-            <div className="space-y-3.5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider text-cyan-400">
-                <Sparkles className="w-3.5 h-3.5" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Heading, Copy, & CTA (Increased Width) */}
+          <div className="lg:col-span-6 xl:col-span-6 space-y-5">
+            <div className="space-y-3.5 max-w-xl xl:max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 backdrop-blur-md border border-cyan-400/50 text-xs font-mono uppercase tracking-wider text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Commercial Marketing Studio</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight leading-[1.2]">
+              <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight leading-[1.2] drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                 Create Visuals That Make an Impression
               </h2>
               <p className="text-sm sm:text-base text-neutral-300 leading-relaxed">
@@ -87,21 +90,17 @@ export function MarketingVisualsSection() {
             </div>
           </div>
 
-          {/* Right Column: Balanced Container with Interactive Walkthrough */}
-          <div className="lg:col-span-6">
-            <div className="relative rounded-[24px] sm:rounded-[28px] p-4 sm:p-5.5 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800/90 shadow-2xl overflow-hidden max-w-[540px] xl:max-w-[560px] lg:ml-auto w-full">
-              {/* Dotted Background Texture */}
+          {/* Right Column: Balanced Container (Reduced Size & Shifted Right) */}
+          <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center lg:justify-end">
+            <div className="relative rounded-[22px] sm:rounded-[26px] p-4 sm:p-5 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800/90 shadow-2xl overflow-hidden max-w-[440px] sm:max-w-[470px] lg:max-w-[470px] xl:max-w-[490px] w-full group">
+              {/* Subtle Dotted Background Texture */}
               <div
-                className="absolute inset-0 opacity-30 pointer-events-none"
-                style={{
-                  backgroundImage: 'radial-gradient(#06b6d4 1.2px, transparent 1.2px)',
-                  backgroundSize: '18px 18px'
-                }}
+                className="absolute inset-0 opacity-30 pointer-events-none bg-studio-dots"
               />
 
               <div className="relative z-10 space-y-4">
                 {/* Visual Preview Screen */}
-                <div className="relative rounded-2xl sm:rounded-[20px] overflow-hidden shadow-xl bg-neutral-950 aspect-[16/10.5] group border border-white/10">
+                <div className="relative rounded-2xl sm:rounded-[20px] overflow-hidden shadow-2xl bg-neutral-950 aspect-[16/10.5] group/preview border border-white/15">
                   <img
                     src={
                       activeStep === 1
@@ -117,12 +116,12 @@ export function MarketingVisualsSection() {
 
                   {/* Top Demo Status Tag */}
                   <div className="absolute top-3 inset-x-3 flex items-center justify-between z-20">
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-black/60 backdrop-blur-md text-white border border-white/20">
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-black/70 backdrop-blur-xl text-white border border-white/20 shadow-md">
                       Product Preview &bull; {steps[activeStep].badge}
                     </span>
 
                     {/* Play / Pause / Reset Interactive Controls */}
-                    <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md rounded-full p-1 border border-white/20 text-white">
+                    <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-xl rounded-full p-1 border border-white/20 text-white shadow-md">
                       <button
                         type="button"
                         onClick={() => setIsPlaying(!isPlaying)}
@@ -149,11 +148,11 @@ export function MarketingVisualsSection() {
 
                   {/* Bottom Prompt Bar inside Preview */}
                   <div className="absolute bottom-3 inset-x-3 z-20">
-                    <div className="rounded-xl bg-black/80 backdrop-blur-md p-2.5 sm:p-3 border border-white/20 text-white flex items-center justify-between gap-2.5 shadow-lg">
+                    <div className="rounded-xl bg-black/80 backdrop-blur-xl p-2.5 sm:p-3 border border-white/20 text-white flex items-center justify-between gap-2.5 shadow-2xl">
                       <p className="text-xs font-mono text-neutral-200 truncate">
                         {steps[activeStep].promptText}
                       </p>
-                      <span className="text-[10px] uppercase font-bold text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800/60 shrink-0">
+                      <span className="text-[10px] uppercase font-bold text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-400/50 shrink-0 shadow-xs">
                         {steps[activeStep].short}
                       </span>
                     </div>
@@ -173,11 +172,10 @@ export function MarketingVisualsSection() {
                           setActiveStep(idx)
                           setIsPlaying(false)
                         }}
-                        className={`p-2 sm:p-2.5 rounded-xl text-left border transition-all text-xs flex flex-col gap-1 cursor-pointer select-none ${
-                          isCurrent
-                            ? 'bg-[#0B0F19] border-cyan-500/60 text-white shadow-md shadow-cyan-500/10 ring-1 ring-cyan-500/30'
-                            : 'bg-neutral-900/60 hover:bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-200'
-                        }`}
+                        className={`p-2 sm:p-2.5 rounded-xl text-left border transition-all text-xs flex flex-col gap-1 cursor-pointer select-none ${isCurrent
+                          ? 'bg-[#0D152A] border-cyan-500/50 text-white shadow-sm ring-1 ring-cyan-500/30'
+                          : 'bg-neutral-900/80 hover:bg-neutral-900 border-white/[0.08] hover:border-white/20 text-neutral-400 hover:text-neutral-200'
+                          }`}
                       >
                         <div className="flex items-center gap-1.5">
                           <IconComp className={`w-3.5 h-3.5 shrink-0 ${isCurrent ? 'text-cyan-400' : 'text-neutral-500'}`} />
