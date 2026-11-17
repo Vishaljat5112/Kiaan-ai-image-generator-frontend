@@ -20,6 +20,7 @@
   display: flex;
   width: max-content;
   animation: marquee 35s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee:hover,
@@ -41,4 +42,13 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(115, 115, 115, 0.6);
+}
+
+/* Hide native scrollbars cleanly while preserving scrolling & swipe functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Menu, X, ArrowRight, Sparkles, ChevronDown } from 'lucide-react'
+import { Menu, X, ArrowRight, ChevronDown } from 'lucide-react'
 import { Logo } from '../components/common/Logo'
 import { ProfileMenu } from '../components/navigation/ProfileMenu'
 import { PremiumFooter } from '../components/landing/PremiumFooter'
@@ -68,19 +68,9 @@ export function PublicLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#06080F] text-white selection:bg-pink-500/30 selection:text-pink-200">
-      {/* Platform Preview Developer Bar */}
-      <div className="bg-[#0A0E17] border-b border-neutral-800 px-4 py-1.5 text-center text-xs text-neutral-400 flex items-center justify-center gap-2">
-        <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-        <span>
-          <strong>Kiaan Studio Preview:</strong> Explore the workstation via{' '}
-          <Link to="/dashboard" className="text-cyan-400 underline hover:text-cyan-300 font-semibold">Customer Studio</Link> or{' '}
-          <Link to="/admin" className="text-pink-400 underline hover:text-pink-300 font-semibold">Admin Portal</Link>.
-        </span>
-      </div>
-
       {/* Main Responsive Sticky Navbar (Screenshot 1 & Mega Menu Architecture) */}
       <header className="sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#06080F]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Brand Logo */}
           <Logo to="/" theme="dark" size="md" showBadge={false} />
 
@@ -89,12 +79,12 @@ export function PublicLayout() {
             {navCategories.map((cat) => {
               const isOpen = activeMenu === cat.id
               return (
-                <div key={cat.id} className="relative py-2">
+                <div key={cat.id} className="relative py-1">
                   <button
                     type="button"
                     onClick={() => setActiveMenu(isOpen ? null : cat.id)}
                     className={cn(
-                      'px-3.5 py-2 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5 focus:outline-none cursor-pointer select-none',
+                      'px-3 py-1.5 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5 focus:outline-none cursor-pointer select-none',
                       isOpen
                         ? 'text-white font-bold bg-neutral-900 border border-cyan-500/60 shadow-lg shadow-cyan-500/20'
                         : 'text-neutral-300 hover:text-white hover:bg-neutral-800/60'
@@ -121,7 +111,7 @@ export function PublicLayout() {
               <div className="flex items-center gap-3">
                 <Link
                   to="/dashboard"
-                  className="px-4 py-2 rounded-full text-sm font-semibold bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full text-sm font-semibold bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 transition-colors"
                 >
                   Open Studio
                 </Link>
@@ -132,14 +122,14 @@ export function PublicLayout() {
                 <Link
                   to="/login"
                   state={{ background: location }}
-                  className="px-3.5 py-2 text-sm font-semibold text-neutral-300 hover:text-white transition-colors"
+                  className="px-3 py-1.5 text-sm font-semibold text-neutral-300 hover:text-white transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
                   state={{ background: location }}
-                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/25 hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Try it free
                 </Link>
@@ -218,7 +208,7 @@ export function PublicLayout() {
       {/* Outside Click Backdrop Overlay (Dismisses Mega Menu when clicking outside) */}
       {activeMenu && (
         <div
-          className="fixed inset-0 top-20 z-40 bg-neutral-950/5 backdrop-blur-[1px] transition-opacity"
+          className="fixed inset-0 top-16 z-40 bg-neutral-950/5 backdrop-blur-[1px] transition-opacity"
           onClick={handleCloseMenu}
           aria-hidden="true"
         />
