@@ -96,7 +96,46 @@ export function CreditsPage() {
     return { img, vid, added }
   }, [transactions])
 
-  const maxDaily = Math.max(...DEMO_USAGE_DAILY.map((d) => d.image + d.video), 1)
+  // Chart state & animation trigger
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const [hoveredBar, setHoveredBar] = useState(null)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (mediaQuery.matches) {
+      setHasAnimated(true)
+      return
+    }
+    const timer = setTimeout(() => {
+      setHasAnimated(true)
+    }, 60)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const yScale = useMemo(() => {
+    const dailyTotals = (DEMO_USAGE_DAILY || []).map((d) => (d.image || 0) + (d.video || 0))
+    const maxVal = Math.max(...dailyTotals, 1)
+
+    const roughStep = maxVal / 4
+    const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep || 1)))
+    const normalizedStep = roughStep / magnitude
+
+    let step
+    if (normalizedStep <= 1) step = 1 * magnitude
+    else if (normalizedStep <= 2) step = 2 * magnitude
+    else if (normalizedStep <= 5) step = 5 * magnitude
+    else step = 10 * magnitude
+
+    step = Math.max(1, Math.ceil(step))
+    const niceMax = Math.ceil(maxVal / step) * step
+
+    const ticks = []
+    for (let val = 0; val <= niceMax; val += step) {
+      ticks.push(val)
+    }
+
+    return { max: niceMax, ticks }
+  }, [])
 
   const handleSimulateTopUp = async () => {
     const pack = TOP_UP_PACKS.find((p) => p.id === selectedPack) || TOP_UP_PACKS[1]
@@ -192,45 +231,216 @@ export function CreditsPage() {
           </div>
           <div className="flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1.5 text-neutral-300">
-              <span className="w-2.5 h-2.5 rounded-sm bg-pink-500" /> Image Synthesis
+              <span className="w-2.5 h-2.5 rounded-sm bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.3)]" /> Image Synthesis
             </span>
             <span className="flex items-center gap-1.5 text-neutral-300">
-              <span className="w-2.5 h-2.5 rounded-sm bg-cyan-400" /> 3D DiT Video
+              <span className="w-2.5 h-2.5 rounded-sm bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.3)]" /> 3D DiT Video
             </span>
           </div>
         </div>
 
-        {/* CSS Flex Bar Chart */}
-        <div className="overflow-x-auto pb-1">
-          <div className="h-44 min-w-[500px] flex items-end gap-2 sm:gap-2.5 pt-4 border-b border-neutral-800">
-            {(DEMO_USAGE_DAILY || []).map((day, idx) => {
-              const dateLabel = day.date || day.day || `Day ${idx + 1}`
-              const imgPct = (day.image / maxDaily) * 100
-              const vidPct = (day.video / maxDaily) * 100
-              return (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
-                  <div className="w-full max-w-[28px] sm:max-w-[32px] flex flex-col justify-end h-full gap-0.5">
-                    {day.video > 0 && (
-                      <div
-                        style={{ height: `${vidPct}%` }}
-                        className="w-full bg-cyan-400/80 rounded-t-sm group-hover:bg-cyan-300 transition-colors shadow-[0_0_8px_rgba(34,211,238,0.25)]"
-                        title={`${dateLabel}: ${day.video} video credits`}
-                      />
-                    )}
-                    {day.image > 0 && (
-                      <div
-                        style={{ height: `${imgPct}%` }}
-                        className="w-full bg-pink-500/80 rounded-t-sm group-hover:bg-pink-400 transition-colors shadow-[0_0_8px_rgba(236,72,153,0.25)]"
-                        title={`${dateLabel}: ${day.image} image credits`}
-                      />
-                    )}
-                  </div>
-                  <span className="text-[11px] font-medium text-neutral-300 font-mono group-hover:text-cyan-300 transition-colors pt-1">
-                    {dateLabel.split(' ')[0] || dateLabel}
+        {/* Enhanced Interactive Bar Chart */}
+        <div className="overflow-x-auto pb-1 no-scrollbar">
+          <div className="min-w-[560px]">
+            {/* Plot Area with Y-Axis */}
+            <div className="flex items-stretch gap-3">
+              {/* Y-Axis numeric scale labels */}
+              <div className="flex flex-col justify-between items-end h-48 py-1 select-none text-[10px] font-mono text-neutral-400 w-11 shrink-0">
+                {yScale.ticks.slice().reverse().map((tick) => (
+                  <span key={tick} className="leading-none">
+                    {tick} cr
                   </span>
+                ))}
+              </div>
+
+              {/* Chart Canvas & Grid */}
+              <div className="relative flex-1 h-48 border-b border-neutral-800">
+                {/* Horizontal Reference Grid Lines */}
+                {yScale.ticks.map((tick) => {
+                  if (tick === 0) return null
+                  const bottomPct = (tick / yScale.max) * 100
+                  return (
+                    <div
+                      key={tick}
+                      className="absolute inset-x-0 border-b border-neutral-800/40 pointer-events-none"
+                      style={{ bottom: `${bottomPct}%` }}
+                    />
+                  )
+                })}
+
+                {/* Floating Interactive Tooltip — displays exclusively on active bar hover */}
+                {hoveredBar !== null && DEMO_USAGE_DAILY[hoveredBar.index] && (() => {
+                  const activeDay = DEMO_USAGE_DAILY[hoveredBar.index]
+                  const isVideo = hoveredBar.type === 'video'
+                  const value = isVideo ? (activeDay.video || 0) : (activeDay.image || 0)
+                  const fullDate = activeDay.day.includes('202')
+                    ? activeDay.day
+                    : `${activeDay.day} 2026`
+
+                  return (
+                    <div
+                      className="absolute z-30 pointer-events-none transition-all duration-150 ease-out"
+                      style={{
+                        left: `${((hoveredBar.index + 0.5) / DEMO_USAGE_DAILY.length) * 100}%`,
+                        top: '6px',
+                        transform:
+                          hoveredBar.index <= 1
+                            ? 'translateX(0%)'
+                            : hoveredBar.index >= DEMO_USAGE_DAILY.length - 2
+                            ? 'translateX(-100%)'
+                            : 'translateX(-50%)'
+                      }}
+                    >
+                      <div className="w-44 sm:w-48 p-2.5 rounded-xl bg-[#0B0F19]/95 backdrop-blur-md border border-neutral-700/80 shadow-2xl shadow-black/80 text-white space-y-1.5 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between pb-1.5 border-b border-neutral-800 text-[11px] font-semibold text-neutral-200">
+                          <span className="flex items-center gap-1.5">
+                            <Calendar className="w-3 h-3 text-cyan-400" />
+                            {fullDate}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] pt-0.5">
+                          <span className="flex items-center gap-1.5 text-neutral-300">
+                            <span
+                              className={`w-2 h-2 rounded-full shrink-0 ${
+                                isVideo
+                                  ? 'bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.5)]'
+                                  : 'bg-pink-500 shadow-[0_0_6px_rgba(236,72,153,0.5)]'
+                              }`}
+                            />
+                            {isVideo ? '3D DiT Video' : 'Image Synthesis'}
+                          </span>
+                          <span
+                            className={`font-mono font-bold ${
+                              isVideo ? 'text-cyan-300' : 'text-pink-300'
+                            }`}
+                          >
+                            {value} cr
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                {/* Bars Columns — Pointer events disabled on empty container & columns */}
+                <div className="absolute inset-0 flex items-end gap-2 sm:gap-2.5 px-1 pointer-events-none">
+                  {(DEMO_USAGE_DAILY || []).map((day, idx) => {
+                    const totalCredits = (day.image || 0) + (day.video || 0)
+                    const totalPct = yScale.max > 0 ? (totalCredits / yScale.max) * 100 : 0
+                    const isVideoHovered = hoveredBar?.index === idx && hoveredBar?.type === 'video'
+                    const isImageHovered = hoveredBar?.index === idx && hoveredBar?.type === 'image'
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex-1 flex flex-col items-center h-full justify-end relative pointer-events-none select-none"
+                      >
+                        {totalCredits > 0 ? (
+                          <div
+                            style={{
+                              height: hasAnimated ? `${totalPct}%` : '0%',
+                              transition: hasAnimated
+                                ? `height 750ms cubic-bezier(0.16, 1, 0.3, 1) ${idx * 35}ms`
+                                : 'none'
+                            }}
+                            className="w-full max-w-[28px] sm:max-w-[32px] flex flex-col justify-end gap-0.5 overflow-hidden pointer-events-none"
+                          >
+                            {day.video > 0 && (
+                              <div
+                                role="graphics-symbol"
+                                tabIndex={0}
+                                aria-label={`${day.day}: 3D DiT Video ${day.video} credits`}
+                                onMouseEnter={() => setHoveredBar({ index: idx, type: 'video' })}
+                                onMouseLeave={() => setHoveredBar(null)}
+                                onFocus={() => setHoveredBar({ index: idx, type: 'video' })}
+                                onBlur={() => setHoveredBar(null)}
+                                onTouchStart={(e) => {
+                                  e.stopPropagation()
+                                  setHoveredBar({ index: idx, type: 'video' })
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Escape') setHoveredBar(null)
+                                }}
+                                style={{ height: `${(day.video / totalCredits) * 100}%` }}
+                                className={`w-full bg-cyan-400/85 rounded-t-sm transition-all shadow-[0_0_8px_rgba(34,211,238,0.25)] pointer-events-auto cursor-pointer focus:outline-none focus:ring-1 focus:ring-cyan-300 ${
+                                  isVideoHovered ? 'bg-cyan-300 shadow-[0_0_14px_rgba(34,211,238,0.6)] brightness-110' : ''
+                                }`}
+                              />
+                            )}
+                            {day.image > 0 && (
+                              <div
+                                role="graphics-symbol"
+                                tabIndex={0}
+                                aria-label={`${day.day}: Image Synthesis ${day.image} credits`}
+                                onMouseEnter={() => setHoveredBar({ index: idx, type: 'image' })}
+                                onMouseLeave={() => setHoveredBar(null)}
+                                onFocus={() => setHoveredBar({ index: idx, type: 'image' })}
+                                onBlur={() => setHoveredBar(null)}
+                                onTouchStart={(e) => {
+                                  e.stopPropagation()
+                                  setHoveredBar({ index: idx, type: 'image' })
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Escape') setHoveredBar(null)
+                                }}
+                                style={{ height: `${(day.image / totalCredits) * 100}%` }}
+                                className={`w-full bg-pink-500/85 ${
+                                  day.video === 0 ? 'rounded-t-sm' : ''
+                                } transition-all shadow-[0_0_8px_rgba(236,72,153,0.25)] pointer-events-auto cursor-pointer focus:outline-none focus:ring-1 focus:ring-pink-300 ${
+                                  isImageHovered ? 'bg-pink-400 shadow-[0_0_14px_rgba(236,72,153,0.6)] brightness-110' : ''
+                                }`}
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          <div className="h-0 w-full max-w-[28px] sm:max-w-[32px] pointer-events-none" />
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
-              )
-            })}
+              </div>
+            </div>
+
+            {/* X-Axis labels row */}
+            <div className="flex items-start gap-3 mt-2 pointer-events-none">
+              <div className="w-11 shrink-0" />
+              <div className="flex-1 flex gap-2 sm:gap-2.5 px-1">
+                {(DEMO_USAGE_DAILY || []).map((day, idx) => {
+                  const parts = (day.day || day.date || '').split(' ')
+                  const dayNum = parts[0] || `D${idx + 1}`
+                  const month = parts[1] || ''
+                  const isHovered = hoveredBar?.index === idx
+
+                  return (
+                    <div
+                      key={idx}
+                      className="flex-1 flex flex-col items-center select-none"
+                    >
+                      <span
+                        className={`text-[11px] font-medium font-mono transition-colors ${
+                          isHovered ? 'text-cyan-300 font-bold' : 'text-neutral-300'
+                        }`}
+                      >
+                        {dayNum}
+                      </span>
+                      {month && (
+                        <span
+                          className={`text-[9px] transition-colors ${
+                            isHovered
+                              ? 'text-cyan-400/90 font-medium'
+                              : 'text-neutral-400'
+                          }`}
+                        >
+                          {month}
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </Panel>
