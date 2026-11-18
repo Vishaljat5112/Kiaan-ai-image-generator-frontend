@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
+import { User, LogOut, ChevronDown } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { Badge } from '../ui/Badge'
 import { cn } from '../../utils/cn'
@@ -80,7 +80,6 @@ export function ProfileMenu({ variant = 'customer', theme = 'dark', className = 
     : 'U'
 
   const profilePath = variant === 'admin' ? '/admin/settings' : '/dashboard/settings'
-  const settingsPath = variant === 'admin' ? '/admin/settings' : '/dashboard/settings'
 
   return (
     <div className={cn('relative', className)} ref={menuRef}>
@@ -196,7 +195,7 @@ export function ProfileMenu({ variant = 'customer', theme = 'dark', className = 
               to={profilePath}
               onClick={() => setIsOpen(false)}
               className={cn(
-                'flex items-center gap-2.5 px-4 py-2 transition-colors',
+                'flex items-center gap-2.5 px-4 py-2 transition-colors cursor-pointer',
                 isLight
                   ? 'hover:bg-neutral-100 text-neutral-700 hover:text-neutral-950'
                   : 'hover:bg-neutral-800/80 text-neutral-300 hover:text-white'
@@ -204,20 +203,6 @@ export function ProfileMenu({ variant = 'customer', theme = 'dark', className = 
             >
               <User className="w-4 h-4 text-neutral-400" />
               <span>Profile &amp; Account</span>
-            </Link>
-
-            <Link
-              to={settingsPath}
-              onClick={() => setIsOpen(false)}
-              className={cn(
-                'flex items-center gap-2.5 px-4 py-2 transition-colors',
-                isLight
-                  ? 'hover:bg-neutral-100 text-neutral-700 hover:text-neutral-950'
-                  : 'hover:bg-neutral-800/80 text-neutral-300 hover:text-white'
-              )}
-            >
-              <Settings className="w-4 h-4 text-neutral-400" />
-              <span>Workspace Preferences</span>
             </Link>
           </div>
 

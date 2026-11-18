@@ -137,7 +137,7 @@ export function GenerationsPage() {
   const fileName = (g) => `${(g.title || 'asset').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.${g.type === 'video' ? 'mp4' : 'jpg'}`
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6">
       <StudioPageHeader
         icon={Clock}
         section="Asset Management"
@@ -151,10 +151,10 @@ export function GenerationsPage() {
         }
       />
 
-      <Panel className="space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-          <SearchField value={query} onChange={setQuery} placeholder="Search by title, prompt or tool…" className="flex-1" />
-          <div className="flex flex-wrap items-center gap-2">
+      <Panel className="p-4 sm:p-5 space-y-3 sm:space-y-3.5">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2.5 sm:gap-3">
+          <SearchField value={query} onChange={setQuery} placeholder="Search by title, prompt or tool…" className="flex-1 min-w-0" />
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <LightSelect
               label="Filter by model"
               value={modelFilter}
@@ -170,16 +170,18 @@ export function GenerationsPage() {
             />
           </div>
         </div>
-        <SegmentedTabs
-          value={typeFilter}
-          onChange={setTypeFilter}
-          options={[
-            { value: 'all', label: 'All', count: counts.all },
-            { value: 'image', label: 'Images', icon: ImageIcon, count: counts.image },
-            { value: 'video', label: 'Videos', icon: Video, count: counts.video },
-            { value: 'favorite', label: 'Favorites', icon: Heart, count: counts.favorite }
-          ]}
-        />
+        <div className="pt-3 border-t border-neutral-800/60 flex flex-wrap items-center justify-between gap-2">
+          <SegmentedTabs
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={[
+              { value: 'all', label: 'All', count: counts.all },
+              { value: 'image', label: 'Images', icon: ImageIcon, count: counts.image },
+              { value: 'video', label: 'Videos', icon: Video, count: counts.video },
+              { value: 'favorite', label: 'Favorites', icon: Heart, count: counts.favorite }
+            ]}
+          />
+        </div>
       </Panel>
 
       {visible.length === 0 ? (
