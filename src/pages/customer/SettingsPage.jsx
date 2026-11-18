@@ -163,7 +163,7 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-5 sm:space-y-6 pt-1.5 sm:pt-2">
       <StudioPageHeader
         icon={Settings}
         section="Account & Billing"
@@ -173,7 +173,7 @@ export function SettingsPage() {
       />
 
       {/* Profile Information Panel */}
-      <Panel>
+      <Panel className="p-5 sm:p-6">
         <PanelTitle icon={User}>Personal Profile</PanelTitle>
         <form onSubmit={handleSaveProfile} className="space-y-5">
           <div className="flex flex-col sm:flex-row items-center gap-5 pb-5 border-b border-neutral-800">
@@ -186,7 +186,7 @@ export function SettingsPage() {
               <button
                 type="button"
                 onClick={() => avatarInputRef.current?.click()}
-                className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
+                className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white cursor-pointer"
                 aria-label="Upload photo"
               >
                 <Camera className="w-5 h-5 text-cyan-400" />
@@ -207,7 +207,7 @@ export function SettingsPage() {
                 size="sm"
                 type="button"
                 onClick={() => avatarInputRef.current?.click()}
-                className="text-xs py-1 text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
+                className="text-xs py-1 text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white cursor-pointer"
               >
                 Change Avatar
               </Button>
@@ -257,6 +257,7 @@ export function SettingsPage() {
               type="submit"
               leftIcon={isSavingProfile ? Loader2 : Save}
               disabled={isSavingProfile}
+              className="cursor-pointer font-medium"
             >
               {isSavingProfile ? 'Saving Changes…' : 'Save Profile Changes'}
             </Button>
@@ -265,10 +266,10 @@ export function SettingsPage() {
       </Panel>
 
       {/* Security & Password */}
-      <Panel>
+      <Panel className="p-5 sm:p-6">
         <PanelTitle icon={Lock}>Security & Password</PanelTitle>
         <form onSubmit={handleChangePassword} className="space-y-4">
-          <div className="max-w-md space-y-3">
+          <div className="max-w-md space-y-3.5">
             <div>
               <FieldLabel htmlFor="curr-pass">Current Password</FieldLabel>
               <input
@@ -303,11 +304,11 @@ export function SettingsPage() {
               />
             </div>
 
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-1.5">
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5"
+                className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 cursor-pointer"
               >
                 {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                 {showPassword ? 'Hide password text' : 'Show password text'}
@@ -317,6 +318,7 @@ export function SettingsPage() {
                 size="sm"
                 type="submit"
                 disabled={isSavingPassword}
+                className="cursor-pointer font-medium"
               >
                 {isSavingPassword ? 'Updating…' : 'Update Password'}
               </Button>
@@ -326,7 +328,7 @@ export function SettingsPage() {
       </Panel>
 
       {/* Notifications & Studio Preferences */}
-      <Panel>
+      <Panel className="p-5 sm:p-6">
         <PanelTitle icon={Bell}>Notification Preferences</PanelTitle>
         <div className="divide-y divide-neutral-800">
           <Toggle

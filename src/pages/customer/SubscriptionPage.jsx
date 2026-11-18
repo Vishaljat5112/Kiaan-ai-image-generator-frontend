@@ -46,7 +46,7 @@ export function SubscriptionPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 pt-1.5 sm:pt-2">
       <StudioPageHeader
         icon={CreditCard}
         section="Account & Billing"
@@ -64,13 +64,13 @@ export function SubscriptionPage() {
               <Zap className="w-3.5 h-3.5 text-cyan-400" /> Active Plan
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white">{currentPlan.name} Tier</h2>
-            <p className="text-neutral-400 text-sm mt-1 max-w-xl">
+            <p className="text-neutral-300 text-sm mt-1 max-w-xl">
               Includes {currentPlan.credits} credits refreshed monthly, priority queue scheduling, and full commercial license.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-            <div className="text-right sm:pr-4 sm:border-r border-neutral-700">
+            <div className="text-left sm:text-right sm:pr-4 sm:border-r border-neutral-700">
               <p className="text-xs text-neutral-400">Next renewal</p>
               <p className="text-base font-bold text-white">01 Dec 2026</p>
             </div>
@@ -81,7 +81,7 @@ export function SubscriptionPage() {
                 const starter = MOCK_PLANS[0]
                 setConfirmModalPlan(starter)
               }}
-              className="bg-[#080B14] text-neutral-300 hover:text-white border border-neutral-700 shadow-sm"
+              className="bg-[#080B14] text-neutral-300 hover:text-white border border-neutral-700 shadow-sm cursor-pointer"
             >
               Cancel / Downgrade
             </Button>
@@ -146,18 +146,18 @@ export function SubscriptionPage() {
                 <h4 className="text-base font-bold text-white">{plan.name}</h4>
                 <div className="mt-3 flex items-baseline gap-1">
                   <span className="text-3xl font-extrabold text-white">${price}</span>
-                  <span className="text-xs text-neutral-400">/ month</span>
+                  <span className="text-xs text-neutral-300">/ month</span>
                 </div>
                 <p className="text-xs font-semibold text-cyan-400 mt-1">
                   {plan.credits.toLocaleString()} Credits / mo
                 </p>
 
                 <div className="mt-6 pt-5 border-t border-neutral-800 space-y-2.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 block mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-300 block mb-2">
                     Included Capabilities
                   </span>
                   {plan.features.map((f, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-neutral-300">
+                    <div key={idx} className="flex items-start gap-2 text-xs text-neutral-200">
                       <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </div>
@@ -171,7 +171,7 @@ export function SubscriptionPage() {
                   size="sm"
                   disabled={isCurrent}
                   onClick={() => handleSelectPlan(plan)}
-                  className="w-full text-xs py-2"
+                  className="w-full text-xs py-2 cursor-pointer"
                 >
                   {isCurrent ? 'Active Plan' : plan.price === 0 ? 'Downgrade' : 'Upgrade Plan'}
                 </Button>
@@ -182,7 +182,7 @@ export function SubscriptionPage() {
       </div>
 
       {/* Invoice & Billing History Table */}
-      <Panel className="space-y-4">
+      <Panel className="p-5 sm:p-6 space-y-4">
         <div>
           <h3 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
             <FileText className="w-4 h-4 text-cyan-400" />
@@ -195,7 +195,7 @@ export function SubscriptionPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400 border-b border-neutral-800">
+            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wider text-neutral-300 font-semibold border-b border-neutral-800">
               <tr>
                 <th className="text-left font-semibold px-4 py-3">Invoice</th>
                 <th className="text-left font-semibold px-4 py-3">Date</th>
@@ -209,13 +209,13 @@ export function SubscriptionPage() {
               {invoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-[#161F30]/40 transition-colors">
                   <td className="px-4 py-3 text-xs font-bold font-mono text-white">{inv.id}</td>
-                  <td className="px-4 py-3 text-xs text-neutral-400">{formatDateTime(inv.date).split(',')[0]}</td>
-                  <td className="px-4 py-3 text-xs text-neutral-300 hidden sm:table-cell">{inv.description}</td>
+                  <td className="px-4 py-3 text-xs text-neutral-300 font-medium">{formatDateTime(inv.date).split(',')[0]}</td>
+                  <td className="px-4 py-3 text-xs text-neutral-200 hidden sm:table-cell">{inv.description}</td>
                   <td className="px-4 py-3 text-xs font-bold text-white">{formatUSD(inv.amount)}</td>
                   <td className="px-4 py-3">
                     <span className={cn(
                       'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase',
-                      inv.status === 'Paid' ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/60' : 'bg-neutral-800 text-neutral-400'
+                      inv.status === 'Paid' ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/60' : 'bg-neutral-800 text-neutral-300 border border-neutral-700/60'
                     )}>
                       {inv.status}
                     </span>
@@ -224,7 +224,7 @@ export function SubscriptionPage() {
                     <button
                       type="button"
                       onClick={() => setToast({ message: `Downloaded mock receipt ${inv.id}.pdf` })}
-                      className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
+                      className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" /> PDF
                     </button>

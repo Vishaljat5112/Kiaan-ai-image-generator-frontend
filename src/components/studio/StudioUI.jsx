@@ -24,25 +24,25 @@ export function DemoBadge({ label = 'Demo data', className = '' }) {
 
 export function StudioPageHeader({ icon: Icon, section, crumb, title, description, actions }) {
   return (
-    <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
-      <div>
+    <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
+      <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2 mb-1.5">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
             {Icon && <Icon className="w-3.5 h-3.5 text-cyan-400" />}
             {section}
           </span>
           {crumb && (
             <>
               <span className="text-xs text-neutral-500 font-medium">/</span>
-              <span className="text-xs text-neutral-400 font-medium">{crumb}</span>
+              <span className="text-xs text-neutral-400 font-medium truncate">{crumb}</span>
             </>
           )}
           <DemoBadge />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{title}</h1>
-        {description && <p className="text-sm text-neutral-400 mt-1">{description}</p>}
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">{title}</h1>
+        {description && <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>}
     </div>
   )
 }
@@ -170,17 +170,17 @@ export function FieldLabel({ htmlFor, children }) {
 export const lightInputClass =
   'w-full rounded-xl px-3 py-2 text-sm bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 disabled:opacity-60 transition-colors'
 
-export function LightEmptyState({ icon: Icon, title, description, action }) {
+export function LightEmptyState({ icon: Icon, title, description, action, className = '' }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center p-10 rounded-2xl border-2 border-dashed border-neutral-800 bg-[#080B14]/40">
+    <div className={cn("flex flex-col items-center justify-center text-center py-8 sm:py-10 px-5 sm:px-6 rounded-2xl border-2 border-dashed border-neutral-800/90 bg-[#080B14]/40", className)}>
       {Icon && (
-        <div className="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 mb-3">
-          <Icon className="w-6 h-6" />
+        <div className="w-11 h-11 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 mb-2.5 shadow-sm">
+          <Icon className="w-5 h-5 text-neutral-400" />
         </div>
       )}
       <p className="text-sm font-bold text-neutral-100">{title}</p>
-      {description && <p className="text-xs text-neutral-400 mt-1 max-w-sm">{description}</p>}
-      {action && <div className="mt-4">{action}</div>}
+      {description && <p className="text-xs text-neutral-400 mt-1 max-w-sm leading-relaxed">{description}</p>}
+      {action && <div className="mt-3.5">{action}</div>}
     </div>
   )
 }
@@ -188,9 +188,9 @@ export function LightEmptyState({ icon: Icon, title, description, action }) {
 export function Toggle({ checked, onChange, label, description }) {
   return (
     <label className="flex items-start justify-between gap-4 py-3 cursor-pointer select-none">
-      <span>
+      <span className="min-w-0 flex-1 pr-2">
         <span className="block text-sm font-semibold text-neutral-200">{label}</span>
-        {description && <span className="block text-xs text-neutral-400 mt-0.5">{description}</span>}
+        {description && <span className="block text-xs text-neutral-400 mt-0.5 leading-relaxed">{description}</span>}
       </span>
       <button
         type="button"
@@ -199,7 +199,7 @@ export function Toggle({ checked, onChange, label, description }) {
         aria-label={label}
         onClick={() => onChange(!checked)}
         className={cn(
-          'relative w-10 h-6 rounded-full transition-colors shrink-0 cursor-pointer',
+          'relative w-10 h-6 rounded-full transition-colors shrink-0 mt-0.5 cursor-pointer',
           checked ? 'bg-cyan-500' : 'bg-neutral-800 border border-neutral-700'
         )}
       >

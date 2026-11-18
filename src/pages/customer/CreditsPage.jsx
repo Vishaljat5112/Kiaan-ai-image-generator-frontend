@@ -132,7 +132,7 @@ export function CreditsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 pt-1.5 sm:pt-2">
       <StudioPageHeader
         icon={Coins}
         section="Account & Billing"
@@ -140,7 +140,7 @@ export function CreditsPage() {
         title="Credits & Usage"
         description="Monitor real-time generative wallet balance, consumption trends and ledger history."
         actions={
-          <Button variant="gradient" leftIcon={Plus} onClick={() => setTopUpModalOpen(true)}>
+          <Button variant="gradient" leftIcon={Plus} onClick={() => setTopUpModalOpen(true)} className="cursor-pointer">
             Top Up Credits
           </Button>
         }
@@ -179,7 +179,7 @@ export function CreditsPage() {
       </div>
 
       {/* Visual Usage Breakdown Chart */}
-      <Panel>
+      <Panel className="p-5 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
@@ -201,40 +201,42 @@ export function CreditsPage() {
         </div>
 
         {/* CSS Flex Bar Chart */}
-        <div className="h-44 flex items-end gap-2 pt-4 border-b border-neutral-800">
-          {(DEMO_USAGE_DAILY || []).map((day, idx) => {
-            const dateLabel = day.date || day.day || `Day ${idx + 1}`
-            const imgPct = (day.image / maxDaily) * 100
-            const vidPct = (day.video / maxDaily) * 100
-            return (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
-                <div className="w-full max-w-[28px] flex flex-col justify-end h-full gap-0.5">
-                  {day.video > 0 && (
-                    <div
-                      style={{ height: `${vidPct}%` }}
-                      className="w-full bg-cyan-400/80 rounded-t-sm group-hover:bg-cyan-300 transition-colors"
-                      title={`${dateLabel}: ${day.video} video credits`}
-                    />
-                  )}
-                  {day.image > 0 && (
-                    <div
-                      style={{ height: `${imgPct}%` }}
-                      className="w-full bg-pink-500/80 rounded-t-sm group-hover:bg-pink-400 transition-colors"
-                      title={`${dateLabel}: ${day.image} image credits`}
-                    />
-                  )}
+        <div className="overflow-x-auto pb-1">
+          <div className="h-44 min-w-[500px] flex items-end gap-2 sm:gap-2.5 pt-4 border-b border-neutral-800">
+            {(DEMO_USAGE_DAILY || []).map((day, idx) => {
+              const dateLabel = day.date || day.day || `Day ${idx + 1}`
+              const imgPct = (day.image / maxDaily) * 100
+              const vidPct = (day.video / maxDaily) * 100
+              return (
+                <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
+                  <div className="w-full max-w-[28px] sm:max-w-[32px] flex flex-col justify-end h-full gap-0.5">
+                    {day.video > 0 && (
+                      <div
+                        style={{ height: `${vidPct}%` }}
+                        className="w-full bg-cyan-400/80 rounded-t-sm group-hover:bg-cyan-300 transition-colors shadow-[0_0_8px_rgba(34,211,238,0.25)]"
+                        title={`${dateLabel}: ${day.video} video credits`}
+                      />
+                    )}
+                    {day.image > 0 && (
+                      <div
+                        style={{ height: `${imgPct}%` }}
+                        className="w-full bg-pink-500/80 rounded-t-sm group-hover:bg-pink-400 transition-colors shadow-[0_0_8px_rgba(236,72,153,0.25)]"
+                        title={`${dateLabel}: ${day.image} image credits`}
+                      />
+                    )}
+                  </div>
+                  <span className="text-[11px] font-medium text-neutral-300 font-mono group-hover:text-cyan-300 transition-colors pt-1">
+                    {dateLabel.split(' ')[0] || dateLabel}
+                  </span>
                 </div>
-                <span className="text-[10px] text-neutral-400 font-mono group-hover:text-white transition-colors">
-                  {dateLabel.split(' ')[0] || dateLabel}
-                </span>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       </Panel>
 
       {/* Transaction History Ledger */}
-      <Panel>
+      <Panel className="p-5 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
@@ -260,7 +262,7 @@ export function CreditsPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
+            <thead className="bg-[#080B14] text-[11px] uppercase tracking-wider text-neutral-300 font-semibold border-b border-neutral-800">
               <tr>
                 <th className="text-left font-semibold px-4 py-3">Transaction</th>
                 <th className="text-left font-semibold px-4 py-3 hidden sm:table-cell">Type</th>
@@ -276,18 +278,18 @@ export function CreditsPage() {
                     <td className="px-4 py-3">
                       <div>
                         <p className="text-xs font-bold text-white">{tx.description}</p>
-                        <p className="text-[10px] text-neutral-400 font-mono">{tx.id}</p>
+                        <p className="text-[11px] text-neutral-400 font-mono mt-0.5">{tx.id}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
                       <span className={cn(
                         'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase',
-                        tx.type === 'debit' ? 'bg-neutral-800 text-neutral-300' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
+                        tx.type === 'debit' ? 'bg-neutral-800 text-neutral-200 border border-neutral-700/60' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
                       )}>
                         {tx.type}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-neutral-400 hidden md:table-cell">
+                    <td className="px-4 py-3 text-xs text-neutral-300 font-medium hidden md:table-cell">
                       {formatDateTime(tx.date || tx.createdAt)}
                     </td>
                     <td className="px-4 py-3 text-right">

@@ -202,28 +202,28 @@ export function ImageToImagePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6">
       {/* Header (Eye-friendly Dark Slate Studio Theme) */}
-      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
               <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
               Creation Studio
             </span>
             <span className="text-xs text-neutral-500 font-medium">/</span>
-            <span className="text-xs text-neutral-400 font-medium">Image-to-Image Interactive Demo</span>
+            <span className="text-xs text-neutral-400 font-medium truncate">Image-to-Image Interactive Demo</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
             Image-to-Image Restyling
           </h1>
-          <p className="text-sm text-neutral-400 mt-1">
+          <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">
             Transform, restyle, and remix source imagery while controlling compositional fidelity with denoising strength.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-[#080B14] border border-neutral-800 text-left">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="px-3.5 sm:px-4 py-2 rounded-xl bg-[#080B14] border border-neutral-800 text-left">
             <div className="text-[11px] font-medium text-neutral-400 flex items-center gap-1">
               <Coins className="w-3 h-3 text-amber-400" />
               Available Credits
@@ -239,11 +239,11 @@ export function ImageToImagePage() {
       </div>
 
       {/* Main Studio Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
         {/* Left Side: Controls (7 cols) */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-5 sm:space-y-6">
           {/* Reference Image Upload Card */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Upload className="w-4 h-4 text-cyan-400" />
@@ -273,7 +273,7 @@ export function ImageToImagePage() {
                 <img
                   src={sourceImage.url}
                   alt="Source"
-                  className="w-20 h-20 object-cover rounded-lg border border-neutral-700"
+                  className="w-20 h-20 object-cover rounded-lg border border-neutral-700 shrink-0"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
@@ -311,7 +311,7 @@ export function ImageToImagePage() {
           </div>
 
           {/* Transformation Prompt Card */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <label htmlFor="img2img-prompt" className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-cyan-400" />
@@ -340,6 +340,30 @@ export function ImageToImagePage() {
               )}
             </div>
 
+            {/* Toggle Negative Prompt */}
+            <div className="pt-2 border-t border-neutral-800">
+              <button
+                type="button"
+                onClick={() => setShowNegative(!showNegative)}
+                className="text-xs font-semibold text-neutral-400 hover:text-white flex items-center gap-1.5"
+              >
+                {showNegative ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                {showNegative ? 'Hide Negative Prompt' : 'Add Negative Prompt (Avoid specific artifacts)'}
+              </button>
+
+              {showNegative && (
+                <div className="mt-2.5">
+                  <textarea
+                    rows={2}
+                    value={negativePrompt}
+                    onChange={(e) => setNegativePrompt(e.target.value)}
+                    placeholder="e.g. low quality, blurry, distorted anatomy, oversaturated, watermark, bad proportions..."
+                    className="w-full rounded-xl p-3 text-xs bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition-all resize-none"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Transformation Strength Slider */}
             <div className="p-4 rounded-xl bg-[#080B14] border border-neutral-800 space-y-2">
               <div className="flex justify-between items-center text-xs">
@@ -365,6 +389,20 @@ export function ImageToImagePage() {
                 <span>0.65 (Balanced Restyle)</span>
                 <span>1.0 (Complete Overhaul)</span>
               </div>
+            </div>
+
+            {/* Generate Action Button (In Normal Flow) */}
+            <div className="pt-3 border-t border-neutral-800/80">
+              <Button
+                variant="gradient"
+                size="lg"
+                onClick={handleGenerate}
+                isLoading={isGenerating}
+                leftIcon={Sparkles}
+                className="w-full justify-center font-bold text-sm sm:text-base py-3 shadow-md shadow-indigo-950/50 hover:shadow-lg hover:shadow-indigo-950/70 transition-all cursor-pointer"
+              >
+                {isGenerating ? 'Synthesizing...' : `Generate (${currentModelObj.creditCost} Credit)`}
+              </Button>
             </div>
           </div>
 
@@ -445,33 +483,12 @@ export function ImageToImagePage() {
               })}
             </div>
           </div>
-
-          {/* Sticky Generate Bar */}
-          <div className="bg-[#0D111C]/95 backdrop-blur-md rounded-2xl p-5 border border-neutral-800/90 shadow-xl flex items-center justify-between gap-4 sticky bottom-4 z-20">
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-neutral-400">Model:</span>
-              <span className="font-bold text-white">{currentModelObj.name}</span>
-              <span className="text-neutral-700">|</span>
-              <span className="font-mono text-neutral-400">Denoise: {transformationStrength}</span>
-            </div>
-
-            <Button
-              variant="gradient"
-              size="lg"
-              onClick={handleGenerate}
-              isLoading={isGenerating}
-              leftIcon={Sparkles}
-              className="px-8 shadow-md hover:shadow-lg transition-all"
-            >
-              {isGenerating ? 'Synthesizing...' : `Generate (${currentModelObj.creditCost} Credit)`}
-            </Button>
-          </div>
         </div>
 
         {/* Right Side: Before/After Comparison Slider & Results (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-5 sm:space-y-6">
           {/* Interactive Comparison Card */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Split className="w-4 h-4 text-cyan-400" />
@@ -577,7 +594,7 @@ export function ImageToImagePage() {
           </div>
 
           {/* Sample Results History */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">

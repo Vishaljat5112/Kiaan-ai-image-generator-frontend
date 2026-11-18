@@ -186,7 +186,7 @@ export function ProjectsPage() {
   const getAssetsForProject = (pid) => generations.filter((g) => g.projectId === pid)
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 pt-1.5 sm:pt-2">
       <StudioPageHeader
         icon={FolderKanban}
         section="Asset Management"
@@ -194,16 +194,16 @@ export function ProjectsPage() {
         title="My Projects"
         description="Organize generations into dedicated client and campaign workspaces."
         actions={
-          <Button variant="gradient" leftIcon={Plus} onClick={openCreate}>
+          <Button variant="gradient" leftIcon={Plus} onClick={openCreate} className="cursor-pointer">
             Create Project
           </Button>
         }
       />
 
-      <Panel className="space-y-4">
+      <Panel className="p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <SearchField value={query} onChange={setQuery} placeholder="Search projects by name, client, description…" className="flex-1 max-w-md" />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <LightSelect
               label="Status"
               value={statusFilter}
@@ -230,8 +230,9 @@ export function ProjectsPage() {
           icon={FolderOpen}
           title="No projects found"
           description={projects.length === 0 ? 'Create your first project to organize your visual assets.' : 'No projects match your current filters.'}
+          className="py-7 sm:py-8"
           action={
-            <Button variant="gradient" size="sm" leftIcon={Plus} onClick={openCreate}>
+            <Button variant="gradient" size="sm" leftIcon={Plus} onClick={openCreate} className="cursor-pointer">
               Create Project
             </Button>
           }

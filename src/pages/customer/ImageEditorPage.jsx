@@ -191,61 +191,38 @@ export function ImageEditorPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6">
       {/* Header (Eye-friendly Dark Slate Studio Theme) */}
-      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
               <Edit3 className="w-3.5 h-3.5 text-cyan-400" />
               Creation Studio
             </span>
             <span className="text-xs text-neutral-500 font-medium">/</span>
-            <span className="text-xs text-neutral-400 font-medium">Interactive Studio Canvas Editor</span>
+            <span className="text-xs text-neutral-400 font-medium truncate">Interactive Studio Canvas Editor</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
             Image Canvas Editor
           </h1>
-          <p className="text-sm text-neutral-400 mt-1">
+          <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">
             Perform client-side editing: crop, rotate, brightness, contrast, stylistic photo filters, and context-aware generative inpainting.
           </p>
-        </div>
-
-        {/* Global Toolbar Buttons */}
-        <div className="flex items-center gap-2.5">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetAdjustments}
-            leftIcon={RotateCcw}
-            className="text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white"
-          >
-            Reset
-          </Button>
-
-          <Button
-            variant="gradient"
-            size="sm"
-            onClick={handleDownloadEdited}
-            leftIcon={Download}
-            className="shadow-sm"
-          >
-            Download Edited
-          </Button>
         </div>
       </div>
 
       {notification && (
         <div className="p-3 bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs font-semibold rounded-xl flex items-center justify-between animate-fade-in">
           <span>✓ {notification}</span>
-          <button onClick={() => setNotification('')} className="text-emerald-400 hover:text-white font-bold">×</button>
+          <button onClick={() => setNotification('')} className="text-emerald-400 hover:text-white font-bold cursor-pointer">×</button>
         </div>
       )}
 
       {/* Editor Main Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
         {/* Left Side: Interactive Tools Panel (4 cols) */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-5 sm:space-y-6">
           {/* Tool Navigation Tabs */}
           <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-2 border border-neutral-800/90 shadow-sm grid grid-cols-4 gap-1 text-center">
             {[
@@ -277,7 +254,7 @@ export function ImageEditorPage() {
 
           {/* TAB 1: Adjustments (Brightness, Contrast, Saturation) */}
           {activeTab === 'adjust' && (
-            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-5 text-neutral-100">
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-5 text-neutral-100">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-cyan-400" />
                 Color & Tone Adjustments
@@ -355,7 +332,7 @@ export function ImageEditorPage() {
 
           {/* TAB 2: Photographic Filters */}
           {activeTab === 'filter' && (
-            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Palette className="w-4 h-4 text-cyan-400" />
                 Color Grading Presets
@@ -386,7 +363,7 @@ export function ImageEditorPage() {
 
           {/* TAB 3: Crop & Rotate */}
           {activeTab === 'crop' && (
-            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-5 text-neutral-100">
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-5 text-neutral-100">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Crop className="w-4 h-4 text-cyan-400" />
                 Orientation & Framing
@@ -435,7 +412,7 @@ export function ImageEditorPage() {
 
           {/* TAB 4: Inpaint & Generative Fill */}
           {activeTab === 'brush' && (
-            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+            <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-cyan-400" />
                 Generative Inpainting Brush
@@ -523,8 +500,8 @@ export function ImageEditorPage() {
         </div>
 
         {/* Right Side: Interactive Editing Canvas (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+        <div className="lg:col-span-8 space-y-5 sm:space-y-6">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-neutral-100">Live Studio Viewport</span>
@@ -555,17 +532,17 @@ export function ImageEditorPage() {
                 }
               }}
               className={cn(
-                'relative w-full rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center min-h-[460px] max-h-[580px] cursor-crosshair',
+                'relative w-full rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center min-h-[380px] sm:min-h-[440px] max-h-[500px] p-4 sm:p-6 cursor-crosshair',
                 cropRatio === '1:1' && 'aspect-square',
                 cropRatio === '16:9' && 'aspect-video',
                 cropRatio === '4:3' && 'aspect-[4/3]'
               )}
             >
-              {/* Working Image with live CSS transformations & rotation */}
+              {/* Working Image with live CSS transformations & rotation (reduced to ~65-70% size, centered) */}
               <img
                 src={imageSrc}
                 alt="Working Canvas"
-                className="max-h-[520px] max-w-full object-contain transition-all duration-300 select-none pointer-events-none"
+                className="max-h-[340px] sm:max-h-[360px] max-w-[70%] sm:max-w-[68%] object-contain transition-all duration-300 select-none pointer-events-none"
                 style={{
                   filter: getFilterStyle(),
                   transform: `rotate(${rotation}deg)`
@@ -576,8 +553,8 @@ export function ImageEditorPage() {
               {activeTab === 'brush' && maskPixelsDrawn && (
                 <div className="absolute inset-0 bg-transparent flex items-center justify-center pointer-events-none">
                   <div
-                    className="w-32 h-32 rounded-full bg-cyan-500/30 border-2 border-dashed border-cyan-400 animate-pulse"
-                    style={{ width: `${brushSize * 4}px`, height: `${brushSize * 4}px` }}
+                    className="rounded-full bg-cyan-500/30 border-2 border-dashed border-cyan-400 animate-pulse"
+                    style={{ width: `${brushSize * 3}px`, height: `${brushSize * 3}px` }}
                   />
                   <span className="absolute text-[11px] font-bold text-white bg-cyan-950/90 px-2 py-0.5 rounded border border-cyan-500">
                     Masked Region
@@ -596,10 +573,31 @@ export function ImageEditorPage() {
               )}
             </div>
 
-            {/* Quick Status Bar */}
-            <div className="flex items-center justify-between text-xs text-neutral-400 pt-1">
-              <span>Zoom: 100% (Fit)</span>
-              <span>Click Download Edited above to export final graphic</span>
+            {/* Viewport Action Bar: Reset (Left) & Download Edited (Right) inside Live Studio Viewport */}
+            <div className="flex items-center justify-between gap-3 pt-3 border-t border-neutral-800/80">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetAdjustments}
+                leftIcon={RotateCcw}
+                className="text-neutral-300 border-neutral-700 hover:bg-neutral-800 hover:text-white cursor-pointer"
+              >
+                Reset
+              </Button>
+
+              <span className="text-xs text-neutral-400 hidden sm:inline-block">
+                Zoom: 100% (Fit)
+              </span>
+
+              <Button
+                variant="gradient"
+                size="sm"
+                onClick={handleDownloadEdited}
+                leftIcon={Download}
+                className="shadow-sm font-semibold cursor-pointer"
+              >
+                Download Edited
+              </Button>
             </div>
           </div>
         </div>

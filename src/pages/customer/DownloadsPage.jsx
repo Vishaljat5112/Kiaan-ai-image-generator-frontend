@@ -77,7 +77,7 @@ export function DownloadsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 pt-1.5 sm:pt-2">
       <StudioPageHeader
         icon={Download}
         section="Asset Management"
@@ -124,7 +124,7 @@ export function DownloadsPage() {
         />
       </div>
 
-      <Panel className="space-y-4">
+      <Panel className="p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <SearchField
             value={query}
@@ -132,7 +132,7 @@ export function DownloadsPage() {
             placeholder="Search exports by filename, tool source…"
             className="flex-1 max-w-md"
           />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <LightSelect
               label="Format"
               value={formatFilter}
@@ -158,13 +158,14 @@ export function DownloadsPage() {
           icon={Download}
           title="No download history"
           description={downloads.length === 0 ? 'Exports from the studio tools will appear here.' : 'No files match your search criteria.'}
+          className="py-7 sm:py-8"
           action={
             downloads.length > 0 && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => { setQuery(''); setTypeFilter('all'); setFormatFilter('all'); }}
-                className="text-neutral-300 border-neutral-700 hover:bg-neutral-800"
+                className="text-neutral-300 border-neutral-700 hover:bg-neutral-800 cursor-pointer"
               >
                 Reset Filters
               </Button>

@@ -272,29 +272,29 @@ export function ImageToVideoPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6">
       {/* Header Banner (Eye-friendly Dark Slate Studio Theme) */}
-      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
               <Film className="w-3.5 h-3.5 text-cyan-400" />
               Creation Studio
             </span>
             <span className="text-xs text-neutral-500 font-medium">/</span>
-            <span className="text-xs text-neutral-400 font-medium">Image-to-Video Animation Demo</span>
+            <span className="text-xs text-neutral-400 font-medium truncate">Image-to-Video Animation Demo</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
             Image-to-Video Animation Studio
           </h1>
-          <p className="text-sm text-neutral-400 mt-1">
+          <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">
             Transform still photographs and conceptual stills into fluid cinematic motion clips with Wan 2.1 3D DiT.
           </p>
         </div>
 
         {/* Balance & Cost Info */}
-        <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-[#080B14] border border-neutral-800 text-left">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="px-3.5 sm:px-4 py-2 rounded-xl bg-[#080B14] border border-neutral-800 text-left">
             <div className="text-[11px] font-medium text-neutral-400 flex items-center gap-1">
               <Coins className="w-3 h-3 text-amber-400" />
               Available Credits
@@ -310,11 +310,11 @@ export function ImageToVideoPage() {
       </div>
 
       {/* Main Grid: Controls (7 cols) + Video Preview (5 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
         {/* Left Side: Controls */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-5 sm:space-y-6">
           {/* Step 1: Keyframe Image Upload */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Upload className="w-4 h-4 text-cyan-400" />
@@ -409,7 +409,7 @@ export function ImageToVideoPage() {
           </div>
 
           {/* Step 2: Motion Prompt & Presets */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <label htmlFor="motion-prompt" className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-cyan-400" />
@@ -452,6 +452,20 @@ export function ImageToVideoPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Generate Video Action Button (In Normal Flow) */}
+            <div className="pt-3 border-t border-neutral-800/80">
+              <Button
+                variant="gradient"
+                size="lg"
+                onClick={handleGenerate}
+                isLoading={isGenerating}
+                leftIcon={Film}
+                className="w-full justify-center font-bold text-sm sm:text-base py-3 shadow-md shadow-indigo-950/50 hover:shadow-lg hover:shadow-indigo-950/70 transition-all cursor-pointer"
+              >
+                {isGenerating ? 'Synthesizing Video...' : `Generate Video (${currentModelObj.creditCost} Credits)`}
+              </Button>
             </div>
           </div>
 
@@ -613,35 +627,12 @@ export function ImageToVideoPage() {
               </div>
             </div>
           </div>
-
-          {/* Sticky Generate Bar */}
-          <div className="bg-[#0D111C]/95 backdrop-blur-md rounded-2xl p-5 border border-neutral-800/90 shadow-xl flex items-center justify-between gap-4 sticky bottom-4 z-20">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-neutral-400">Model:</span>
-              <span className="text-xs font-bold text-white">{currentModelObj.name.split(' ')[0]} {currentModelObj.name.split(' ')[1]}</span>
-              <span className="text-neutral-700">|</span>
-              <span className="text-xs font-semibold text-cyan-400">{duration}</span>
-              <span className="text-neutral-700">|</span>
-              <span className="text-xs font-mono text-neutral-400">{resolution}</span>
-            </div>
-
-            <Button
-              variant="gradient"
-              size="lg"
-              onClick={handleGenerate}
-              isLoading={isGenerating}
-              leftIcon={Film}
-              className="px-8 shadow-md hover:shadow-lg transition-all"
-            >
-              {isGenerating ? 'Synthesizing Video...' : `Generate Video (${currentModelObj.creditCost} Credits)`}
-            </Button>
-          </div>
         </div>
 
         {/* Right Side: Video Player & Gallery */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-5 sm:space-y-6">
           {/* Active Video Player Card */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Play className="w-4 h-4 text-cyan-400" />
@@ -762,7 +753,7 @@ export function ImageToVideoPage() {
           </div>
 
           {/* Sample Video Gallery */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">

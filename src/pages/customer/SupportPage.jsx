@@ -155,7 +155,7 @@ export function SupportPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 pt-1.5 sm:pt-2">
       <StudioPageHeader
         icon={HelpCircle}
         section="Account & Billing"
@@ -163,7 +163,7 @@ export function SupportPage() {
         title="Help & Support Desk"
         description="Search documentation, find answers to common questions or submit a ticket."
         actions={
-          <Button variant="gradient" leftIcon={Plus} onClick={() => setNewTicketModalOpen(true)}>
+          <Button variant="gradient" leftIcon={Plus} onClick={() => setNewTicketModalOpen(true)} className="cursor-pointer">
             Open Support Ticket
           </Button>
         }
@@ -183,15 +183,15 @@ export function SupportPage() {
       {/* Knowledge Base Tab */}
       {activeTab === 'kb' && (
         <div className="space-y-5">
-          <Panel className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <Panel className="p-4 sm:p-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
               <SearchField
                 value={searchQuery}
                 onChange={setSearchQuery}
                 placeholder="Search tutorials, prompt engineering guides, model latency…"
-                className="flex-1 max-w-lg"
+                className="flex-1 min-w-0 max-w-lg"
               />
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 shrink-0">
                 <button
                   type="button"
                   onClick={() => setSelectedCategory('all')}
