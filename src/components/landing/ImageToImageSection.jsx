@@ -69,15 +69,10 @@ export function ImageToImageSection() {
               Generate Images Using A Reference Image
             </h2>
             <p className="text-sm sm:text-base text-neutral-300 leading-relaxed">
-              Kiaan Studio photo generator allows creators to upload a reference image to guide
-              your creation. Whether it&apos;s for capturing a specific pose, color palette, or visual
-              structure, the image to image AI intelligently interprets your reference to deliver
-              accurate and enhanced results.
+              Kiaan Studio transforms your reference images into stunning AI-generated visuals. Upload a photo to preserve its composition, style, or subject while enhancing details, lighting, and overall quality.
             </p>
             <p className="text-sm text-neutral-300/90 leading-relaxed">
-              It&apos;s a great way to fine-tune your AI generated image while still enjoying the freedom
-              of creativity. When you&apos;re ready to animate images, Kiaan Studio AI video generator turns
-              the same ideas into motion.
+              From product photography to creative transformations, turn ordinary images into professional results in just a few clicks.
             </p>
           </div>
 
@@ -92,15 +87,15 @@ export function ImageToImageSection() {
         </div>
 
         {/* Right Column: Interactive Before/After Comparison Showcase */}
-        <div className="lg:col-span-6">
-          <div className="relative rounded-[24px] sm:rounded-[28px] p-4 sm:p-5 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800/90 shadow-2xl overflow-hidden max-w-[490px] xl:max-w-[510px] lg:ml-auto w-full">
+        <div className="lg:col-span-6 flex flex-col justify-center items-center lg:items-end w-full">
+          <div className="relative rounded-[20px] sm:rounded-[24px] p-3 sm:p-3.5 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800/90 shadow-2xl overflow-hidden max-w-[400px] sm:max-w-[415px] lg:max-w-[420px] xl:max-w-[430px] w-full mx-auto lg:ml-auto lg:mr-0">
             {/* Subtle Dotted Background Pattern */}
             <div
               className="absolute inset-0 opacity-30 pointer-events-none bg-studio-dots"
             />
 
             {/* Interactive Image Container */}
-            <div className="relative z-10 space-y-3.5">
+            <div className="relative z-10 space-y-2.5 sm:space-y-3">
               {/* Before/After Dual Frame with Draggable Divider */}
               <div
                 ref={sliderContainerRef}
@@ -116,7 +111,7 @@ export function ImageToImageSection() {
                 onPointerCancel={handlePointerUp}
                 onKeyDown={handleKeyDown}
                 style={{ touchAction: 'none' }}
-                className="relative rounded-2xl sm:rounded-[20px] overflow-hidden shadow-2xl bg-neutral-900 aspect-[4/3] group/slider border border-white/15 select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/60"
+                className="relative rounded-xl sm:rounded-[18px] overflow-hidden shadow-2xl bg-neutral-900 aspect-[4/3] group/slider border border-white/15 select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/60"
               >
                 {/* AFTER Image (Full Base Layer: AI Output) */}
                 <img
@@ -144,7 +139,7 @@ export function ImageToImageSection() {
                 >
                   {/* Centered Circular Handle */}
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-neutral-950/95 border-2 border-cyan-400 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.7)] flex items-center justify-center cursor-pointer pointer-events-auto hover:scale-115 active:scale-95 transition-transform duration-150 ring-2 ring-cyan-500/30"
+                    className="absolute top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-neutral-950/95 border-2 border-cyan-400 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.7)] flex items-center justify-center cursor-pointer pointer-events-auto hover:scale-115 active:scale-95 transition-transform duration-150 ring-2 ring-cyan-500/30"
                     style={{
                       transform:
                         sliderPosition >= 96
@@ -155,7 +150,7 @@ export function ImageToImageSection() {
                     }}
                   >
                     <svg
-                      className="w-4 h-4 text-cyan-300"
+                      className="w-3.5 h-3.5 text-cyan-300"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -169,155 +164,55 @@ export function ImageToImageSection() {
                   </div>
                 </div>
 
-                {/* Top Corner Quick Preset Snap Chips */}
-                <div
-                  className="absolute top-3 inset-x-3 z-30 flex items-center justify-between pointer-events-auto"
-                  onPointerDown={(e) => e.stopPropagation()}
-                >
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSliderPosition(100)
-                    }}
-                    onPointerDown={(e) => e.stopPropagation()}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold backdrop-blur-xl border transition-all cursor-pointer shadow-md select-none ${
-                      sliderPosition === 100
-                        ? 'bg-cyan-950/90 text-cyan-300 border-cyan-400 shadow-cyan-500/30'
-                        : 'bg-black/70 text-neutral-200 border-white/20 hover:border-white/40'
-                    }`}
-                  >
-                    BEFORE: Reference
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSliderPosition(0)
-                    }}
-                    onPointerDown={(e) => e.stopPropagation()}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold backdrop-blur-xl border transition-all cursor-pointer shadow-md select-none ${
-                      sliderPosition === 0
-                        ? 'bg-cyan-950/90 text-cyan-300 border-cyan-400 shadow-cyan-500/30'
-                        : 'bg-black/70 text-cyan-300 border-cyan-400/50 hover:border-cyan-400'
-                    }`}
-                  >
-                    AFTER: AI Output
-                  </button>
+                {/* Subtle BEFORE Badge (Top Left) */}
+                <div className="absolute top-2.5 left-2.5 z-20 pointer-events-none select-none">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-black/65 backdrop-blur-md text-white/90 border border-white/20 shadow-sm">
+                    BEFORE
+                  </span>
                 </div>
 
-                {/* Bottom Center Hint Overlay with Working Before, 50/50, and After Buttons */}
-                <div
-                  className="absolute bottom-3 inset-x-3 z-30 flex items-center justify-between pointer-events-auto"
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onPointerMove={(e) => e.stopPropagation()}
-                  onPointerUp={(e) => e.stopPropagation()}
-                >
-                  <div
-                    className="flex items-center gap-1.5 bg-black/80 backdrop-blur-xl rounded-full p-1 border border-white/20 text-[11px] font-medium text-neutral-300 shadow-xl"
-                    onPointerDown={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        setSliderPosition(100)
-                      }}
-                      onPointerDown={(e) => {
-                        e.stopPropagation()
-                      }}
-                      className={`px-2.5 py-1 rounded-full transition-all cursor-pointer select-none font-semibold ${
-                        sliderPosition === 100
-                          ? 'bg-cyan-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/40 ring-1 ring-cyan-300'
-                          : 'text-neutral-300 hover:text-white hover:bg-white/10'
-                      }`}
-                      aria-label="Show Before image on right"
-                    >
-                      Before
-                    </button>
-                    <span className="text-neutral-500">&bull;</span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        setSliderPosition(50)
-                      }}
-                      onPointerDown={(e) => {
-                        e.stopPropagation()
-                      }}
-                      className={`px-2.5 py-1 rounded-full transition-all cursor-pointer select-none font-semibold ${
-                        sliderPosition === 50
-                          ? 'bg-cyan-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/40 ring-1 ring-cyan-300'
-                          : 'text-neutral-300 hover:text-white hover:bg-white/10'
-                      }`}
-                      aria-label="Show 50/50 comparison in between"
-                    >
-                      50/50
-                    </button>
-                    <span className="text-neutral-500">&bull;</span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        setSliderPosition(0)
-                      }}
-                      onPointerDown={(e) => {
-                        e.stopPropagation()
-                      }}
-                      className={`px-2.5 py-1 rounded-full transition-all cursor-pointer select-none font-semibold ${
-                        sliderPosition === 0
-                          ? 'bg-cyan-500 text-neutral-950 font-bold shadow-md shadow-cyan-500/40 ring-1 ring-cyan-300'
-                          : 'text-neutral-300 hover:text-white hover:bg-white/10'
-                      }`}
-                      aria-label="Show After image on left"
-                    >
-                      After
-                    </button>
-                  </div>
-
-                  <span className="text-[10px] text-neutral-400 bg-black/70 backdrop-blur-xl px-2.5 py-1 rounded-full border border-white/15 hidden sm:inline-block shadow-sm">
-                    Drag or use &larr; &rarr; keys
+                {/* Subtle AFTER Badge (Top Right) */}
+                <div className="absolute top-2.5 right-2.5 z-20 pointer-events-none select-none">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-cyan-950/80 backdrop-blur-md text-cyan-300 border border-cyan-400/40 shadow-sm">
+                    AFTER
                   </span>
                 </div>
               </div>
 
               {/* Bottom Dark Floating Prompt Bar */}
-              <div className="rounded-xl sm:rounded-2xl bg-black/80 backdrop-blur-xl text-white p-3 sm:p-3.5 shadow-2xl border border-white/10 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
+              <div className="rounded-xl sm:rounded-2xl bg-black/80 backdrop-blur-xl text-white p-2.5 sm:p-3 shadow-2xl border border-white/10 flex items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   {/* Thumbnail */}
                   <img
                     src="/images/landing/img2img-ref-burger.jpg"
                     alt="Ref thumbnail"
-                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover border border-cyan-500/40 ring-1 ring-white/15 shrink-0 shadow-sm"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-cover border border-cyan-500/40 ring-1 ring-white/15 shrink-0 shadow-sm"
                   />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm font-mono text-neutral-100 truncate">
-                      create a gourmet burger shot with melting cheddar, macro commercial lighting
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <p className="text-[11px] sm:text-xs font-mono text-neutral-100 font-medium truncate sm:whitespace-normal sm:line-clamp-1 leading-snug">
+                      Create a premium gourmet burger product photo
                     </p>
-                    <div className="flex items-center gap-2 mt-0.5 text-xs text-neutral-300">
-                      <span>FLUX.2 Klein / 1:1</span>
-                      <span>&bull;</span>
+                    <div className="flex items-center gap-2 text-[10px] sm:text-[11px] text-neutral-400 whitespace-nowrap">
+                      <span className="text-neutral-300">FLUX.2 Klein / 1:1</span>
+                      <span className="text-neutral-600">&bull;</span>
                       <span className="text-cyan-400 font-medium">Reference: 85% fidelity</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     type="button"
                     onClick={() => setSliderPosition(50)}
-                    className="p-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-700/80 transition-colors cursor-pointer"
+                    className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-700/80 transition-colors cursor-pointer"
                     title="Reset to 50/50 comparison"
                     aria-label="Reset to 50/50 comparison"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw className="w-3.5 h-3.5" />
                   </button>
                   <Link
                     to="/dashboard/image-editor"
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md shadow-pink-500/20 transition-all hover:scale-105 active:scale-95"
+                    className="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md shadow-pink-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
                   >
                     Create
                   </Link>
