@@ -60,7 +60,7 @@ export function AdminPlansPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -77,7 +77,7 @@ export function AdminPlansPage() {
 
         <button
           onClick={fetchPlans}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -88,24 +88,24 @@ export function AdminPlansPage() {
         {plans.map((plan) => (
           <div
             key={plan.id}
-            className="p-6 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg space-y-5 flex flex-col justify-between"
+            className="p-6 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg space-y-5 flex flex-col justify-between h-full"
           >
             <div>
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-extrabold text-lg text-white">{plan.name}</h3>
-                  <div className="text-[11px] font-mono text-neutral-400 mt-0.5">{plan.slug}</div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-extrabold text-lg text-white leading-tight truncate" title={plan.name}>{plan.name}</h3>
+                  <div className="text-[11px] font-mono text-neutral-400 mt-0.5 truncate" title={plan.slug}>{plan.slug}</div>
                 </div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shrink-0 whitespace-nowrap">
                   <Users className="w-3 h-3" />
                   {plan.activeSubscribers || 0} active
                 </span>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-neutral-800/80 space-y-2">
-                <div className="text-2xl font-extrabold text-white">
-                  {formatCurrency(plan.priceMonthly)}
-                  <span className="text-xs font-normal text-neutral-400"> / month</span>
+              <div className="mt-4 pt-4 border-t border-neutral-800/80 space-y-1">
+                <div className="flex items-baseline gap-1 text-2xl font-extrabold text-white">
+                  <span>{formatCurrency(plan.priceMonthly)}</span>
+                  <span className="text-xs font-normal text-neutral-400">/ month</span>
                 </div>
                 <div className="text-xs text-neutral-400">
                   Annual billing: {formatCurrency(plan.priceAnnual)} / yr
@@ -113,16 +113,16 @@ export function AdminPlansPage() {
               </div>
 
               <div className="mt-4 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-neutral-400">
-                  <span>Monthly Allowance</span>
-                  <span className="font-semibold text-cyan-400 flex items-center gap-1">
+                <div className="flex items-center justify-between gap-3 text-neutral-400">
+                  <span className="shrink-0">Monthly Allowance</span>
+                  <span className="font-semibold text-cyan-400 flex items-center gap-1 shrink-0">
                     <Coins className="w-3.5 h-3.5" />
                     {formatNumber(plan.monthlyCredits)} credits
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-neutral-400">
-                  <span>Concurrency Limit</span>
-                  <span className="text-neutral-200 font-medium">{plan.maxConcurrentJobs} parallel jobs</span>
+                <div className="flex items-center justify-between gap-3 text-neutral-400">
+                  <span className="shrink-0">Concurrency Limit</span>
+                  <span className="text-neutral-200 font-medium text-right shrink-0">{plan.maxConcurrentJobs} parallel jobs</span>
                 </div>
               </div>
             </div>
@@ -131,7 +131,7 @@ export function AdminPlansPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full text-xs text-neutral-200 border-neutral-700 hover:bg-neutral-800"
+                className="w-full text-xs text-neutral-200 border-neutral-700 hover:bg-neutral-800 cursor-pointer"
                 leftIcon={Edit2}
                 onClick={() => {
                   setEditingPlan(plan)

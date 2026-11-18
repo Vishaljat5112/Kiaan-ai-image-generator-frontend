@@ -52,7 +52,7 @@ export function AdminFailedJobsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -69,7 +69,7 @@ export function AdminFailedJobsPage() {
 
         <button
           onClick={() => fetchFailed(pagination.page)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh List</span>
@@ -78,14 +78,14 @@ export function AdminFailedJobsPage() {
 
       <div className="rounded-2xl border border-neutral-800/80 bg-[#0D111C]/90 shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[760px]">
             <thead>
-              <tr className="border-b border-neutral-800/80 bg-neutral-900/40 text-neutral-400 font-semibold">
-                <th className="py-3 px-4">Job ID / User</th>
-                <th className="py-3 px-4">Type / Model</th>
-                <th className="py-3 px-4">Error Diagnostics</th>
-                <th className="py-3 px-4">Failed At</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+              <tr className="border-b border-neutral-800/80 bg-neutral-900/40 text-neutral-400 font-semibold select-none">
+                <th className="py-3 px-4 w-[22%]">Job ID / User</th>
+                <th className="py-3 px-4 w-[18%]">Type / Model</th>
+                <th className="py-3 px-4 w-[36%]">Error Diagnostics</th>
+                <th className="py-3 px-4 w-[14%]">Failed At</th>
+                <th className="py-3 px-4 w-[10%] text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
@@ -96,7 +96,7 @@ export function AdminFailedJobsPage() {
                       <span className="text-xs font-medium">{error}</span>
                       <button
                         onClick={() => fetchFailed(pagination.page)}
-                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
+                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors cursor-pointer"
                       >
                         Retry
                       </button>
@@ -105,32 +105,32 @@ export function AdminFailedJobsPage() {
                 </tr>
               ) : failedJobs.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-12 text-center text-neutral-400">
-                    <CheckCircle className="w-8 h-8 text-emerald-500/60 mx-auto mb-2" />
-                    Zero failed generation tasks. Cluster inference is running smoothly!
+                  <td colSpan="5" className="py-14 text-center text-xs text-neutral-300">
+                    <CheckCircle className="w-8 h-8 text-emerald-400/80 mx-auto mb-2" />
+                    <span className="font-medium">Zero failed generation tasks. Cluster inference is running smoothly!</span>
                   </td>
                 </tr>
               ) : (
                 failedJobs.map((job) => (
                   <tr key={job.id} className="hover:bg-neutral-900/40 transition-colors">
                     <td className="py-3 px-4">
-                      <div className="font-mono text-[11px] text-rose-300">{job.id.slice(0, 8)}...</div>
-                      <div className="text-[11px] text-neutral-400">{job.user?.email || 'System'}</div>
+                      <div className="font-mono text-[11px] text-rose-300 truncate" title={job.id}>{job.id.slice(0, 8)}...</div>
+                      <div className="text-[11px] text-neutral-300/80 truncate" title={job.user?.email || 'System'}>{job.user?.email || 'System'}</div>
                     </td>
                     <td className="py-3 px-4">
-                      <div className="font-medium text-white">{job.type}</div>
-                      <div className="text-[10px] text-cyan-400">{job.modelId}</div>
+                      <div className="font-medium text-white truncate" title={job.type}>{job.type}</div>
+                      <div className="text-[10px] text-cyan-400 font-mono truncate" title={job.modelId}>{job.modelId}</div>
                     </td>
-                    <td className="py-3 px-4 max-w-md">
-                      <div className="p-2 rounded-lg bg-rose-950/30 border border-rose-900/50 text-[11px] text-rose-300 font-mono leading-tight">
+                    <td className="py-3 px-4">
+                      <div className="p-2 rounded-lg bg-rose-950/30 border border-rose-900/50 text-[11px] text-rose-300 font-mono leading-tight break-words max-h-24 overflow-y-auto">
                         {job.errorMessage || 'Unknown inference runtime failure'}
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-neutral-400">{formatDateTime(job.updatedAt || job.createdAt)}</td>
-                    <td className="py-3 px-4 text-right">
+                    <td className="py-3 px-4 text-neutral-400 whitespace-nowrap">{formatDateTime(job.updatedAt || job.createdAt)}</td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
                       <button
                         onClick={() => handleRetry(job.id)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-cyan-400 border border-neutral-700 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-neutral-800 hover:bg-neutral-700 text-cyan-400 border border-neutral-700 transition-colors cursor-pointer shrink-0"
                       >
                         <RotateCcw className="w-3 h-3" />
                         <span>Retry</span>
@@ -143,7 +143,7 @@ export function AdminFailedJobsPage() {
           </table>
         </div>
 
-        <div className="p-3 border-t border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between text-xs text-neutral-400">
+        <div className="p-4 border-t border-neutral-800/80 bg-neutral-900/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-400 select-none">
           <div>
             Showing {failedJobs.length} of {pagination.total} failed jobs
           </div>
@@ -151,7 +151,7 @@ export function AdminFailedJobsPage() {
             <button
               disabled={pagination.page <= 1}
               onClick={() => fetchFailed(pagination.page - 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -161,7 +161,7 @@ export function AdminFailedJobsPage() {
             <button
               disabled={pagination.page >= pagination.totalPages}
               onClick={() => fetchFailed(pagination.page + 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

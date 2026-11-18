@@ -71,7 +71,7 @@ export function AdminModelsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -89,7 +89,7 @@ export function AdminModelsPage() {
 
         <button
           onClick={fetchModels}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -104,13 +104,13 @@ export function AdminModelsPage() {
             className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg space-y-4 flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h3 className="font-bold text-sm text-white">{model.name}</h3>
-                  <div className="text-[11px] font-mono text-neutral-400 mt-0.5">{model.id}</div>
+              <div className="flex items-start justify-between gap-2.5">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-sm text-white truncate" title={model.name}>{model.name}</h3>
+                  <div className="text-[11px] font-mono text-neutral-300/80 mt-0.5 truncate" title={model.id}>{model.id}</div>
                 </div>
                 <span
-                  className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                  className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide shrink-0 ${
                     model.type === 'VIDEO'
                       ? 'bg-pink-500/10 text-pink-400 border border-pink-500/20'
                       : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
@@ -124,8 +124,8 @@ export function AdminModelsPage() {
                 <div className="flex items-center justify-between text-neutral-400">
                   <span>Base Credit Tariff</span>
                   <span className="font-semibold text-cyan-400 flex items-center gap-1">
-                    <Coins className="w-3.5 h-3.5" />
-                    {model.baseCreditCost} credits
+                    <Coins className="w-3.5 h-3.5 shrink-0" />
+                    <span>{model.baseCreditCost} credits</span>
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-neutral-400">
@@ -143,16 +143,16 @@ export function AdminModelsPage() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs">
+            <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs select-none">
               <button
                 onClick={() => handleToggleActive(model)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold border transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold border transition-colors cursor-pointer ${
                   model.isActive
                     ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
                     : 'bg-neutral-800 text-neutral-400 border-neutral-700 hover:bg-neutral-700'
                 }`}
               >
-                <Power className="w-3 h-3" />
+                <Power className="w-3 h-3 shrink-0" />
                 <span>{model.isActive ? 'Active' : 'Disabled'}</span>
               </button>
 
@@ -163,9 +163,9 @@ export function AdminModelsPage() {
                   setStepsInput(String(model.defaultSteps))
                   setVramInput(String(model.vramRequiredGb))
                 }}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors cursor-pointer"
               >
-                <Edit2 className="w-3 h-3 text-neutral-400" />
+                <Edit2 className="w-3 h-3 text-neutral-400 shrink-0" />
                 <span>Configure</span>
               </button>
             </div>

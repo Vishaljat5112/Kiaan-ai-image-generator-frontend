@@ -58,7 +58,7 @@ export function AdminSettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 pt-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -76,9 +76,9 @@ export function AdminSettingsPage() {
 
         <button
           onClick={fetchSettings}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0 whitespace-nowrap"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
         </button>
       </div>
@@ -87,10 +87,10 @@ export function AdminSettingsPage() {
         {/* Banner Notice */}
         <div className="p-6 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-xl space-y-4">
           <div className="flex items-center gap-2 text-white font-semibold text-sm">
-            <Bell className="w-4 h-4 text-cyan-400" />
+            <Bell className="w-4 h-4 text-cyan-400 shrink-0" />
             <span>Platform Broadcast Notice</span>
           </div>
-          <div>
+          <div className="space-y-1.5">
             <FieldLabel htmlFor="s-notice">Public Notice (Shows on customer dashboard banner)</FieldLabel>
             <input
               id="s-notice"
@@ -106,12 +106,12 @@ export function AdminSettingsPage() {
         {/* User Registration & Starter Credits */}
         <div className="p-6 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-xl space-y-4">
           <div className="flex items-center gap-2 text-white font-semibold text-sm">
-            <Coins className="w-4 h-4 text-pink-400" />
+            <Coins className="w-4 h-4 text-pink-400 shrink-0" />
             <span>Starter Credits & Registration</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-1.5">
               <FieldLabel htmlFor="s-credits">New Account Starter Credits</FieldLabel>
               <input
                 id="s-credits"
@@ -121,7 +121,7 @@ export function AdminSettingsPage() {
                 className={lightInputClass}
               />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <FieldLabel htmlFor="s-conc">Default Max Parallel Concurrency</FieldLabel>
               <input
                 id="s-conc"
@@ -133,16 +133,21 @@ export function AdminSettingsPage() {
             </div>
           </div>
 
-          <div className="pt-2 flex items-center justify-between">
-            <div>
-              <div className="text-xs font-semibold text-white">Allow Public Customer Registration</div>
-              <div className="text-[11px] text-neutral-400">Permit new visitors to sign up without an invite code</div>
+          <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <label htmlFor="s-reg" className="text-xs font-semibold text-white block cursor-pointer">
+                Allow Public Customer Registration
+              </label>
+              <p className="text-[11px] text-neutral-400 mt-0.5">
+                Permit new visitors to sign up without an invite code
+              </p>
             </div>
             <input
+              id="s-reg"
               type="checkbox"
               checked={settings.allowRegistration}
               onChange={(e) => setSettings({ ...settings, allowRegistration: e.target.checked })}
-              className="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-400"
+              className="w-4 h-4 rounded border-neutral-700 bg-neutral-900 text-cyan-500 focus:ring-cyan-400/30 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer shrink-0 accent-cyan-500"
             />
           </div>
         </div>
@@ -150,11 +155,11 @@ export function AdminSettingsPage() {
         {/* Worker Telemetry */}
         <div className="p-6 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-xl space-y-4">
           <div className="flex items-center gap-2 text-white font-semibold text-sm">
-            <Shield className="w-4 h-4 text-emerald-400" />
+            <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>GPU Worker Node Telemetry</span>
           </div>
 
-          <div>
+          <div className="space-y-1.5">
             <FieldLabel htmlFor="s-heartbeat">Heartbeat Stale Threshold (Seconds)</FieldLabel>
             <input
               id="s-heartbeat"
@@ -163,14 +168,14 @@ export function AdminSettingsPage() {
               onChange={(e) => setSettings({ ...settings, workerHeartbeatTimeoutSec: parseInt(e.target.value, 10) })}
               className={lightInputClass}
             />
-            <p className="text-[11px] text-neutral-500 mt-1">
+            <p className="text-[11px] text-neutral-400 mt-1.5 leading-relaxed">
               Nodes without RPC heartbeats within this interval are marked OFFLINE.
             </p>
           </div>
         </div>
 
         <div className="flex justify-end pt-2">
-          <Button variant="gradient" size="md" type="submit" disabled={saving} leftIcon={Save}>
+          <Button variant="gradient" size="md" type="submit" disabled={saving} leftIcon={Save} className="cursor-pointer shrink-0 whitespace-nowrap">
             {saving ? 'Saving...' : 'Save Global Settings'}
           </Button>
         </div>

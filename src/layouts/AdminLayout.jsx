@@ -152,7 +152,7 @@ export function AdminLayout() {
         </div>
 
         {/* System Status Indicator (Clean, non-misleading) */}
-        <div className="px-4 py-2 bg-[#0D111C]/60 border-b border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400">
+        <div className="px-4 py-2 bg-[#0D111C]/60 border-b border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400 shrink-0">
           <div className="flex items-center gap-1.5 truncate">
             <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-xs shadow-cyan-400/50 shrink-0" />
             {!sidebarCollapsed && <span className="text-neutral-300 font-medium">System Ready</span>}
@@ -161,7 +161,7 @@ export function AdminLayout() {
         </div>
 
         {/* Admin Navigation Groups */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <div className="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-6">
           {adminNavGroups.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
               {!sidebarCollapsed && (
@@ -206,11 +206,11 @@ export function AdminLayout() {
         </div>
 
         {/* Footer: Logout */}
-        <div className="p-3 border-t border-neutral-800/80 shrink-0">
+        <div className="p-3 border-t border-neutral-800/80 shrink-0 bg-[#0B0F19]/95">
           <button
             onClick={handleLogout}
             className={cn(
-              'w-full flex items-center gap-2 p-2 rounded-lg text-xs text-rose-400/90 hover:text-rose-300 hover:bg-rose-950/20 transition-colors font-medium',
+              'w-full flex items-center gap-2 p-2 rounded-lg text-xs text-rose-400/90 hover:text-rose-300 hover:bg-rose-950/20 transition-colors font-medium cursor-pointer',
               sidebarCollapsed && 'justify-center'
             )}
             title="Log Out"

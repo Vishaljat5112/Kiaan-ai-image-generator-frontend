@@ -72,7 +72,7 @@ export function AdminImageJobsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -90,7 +90,7 @@ export function AdminImageJobsPage() {
 
         <button
           onClick={() => fetchJobs(pagination.page)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -98,22 +98,22 @@ export function AdminImageJobsPage() {
       </div>
 
       {/* Filter bar */}
-      <div className="p-4 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-md flex items-center justify-between gap-3">
-        <div className="relative w-72">
+      <div className="p-4 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="relative w-full sm:w-72">
           <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search prompt, job ID, user..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none"
+          className="w-full sm:w-auto px-3 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-cyan-500/50 cursor-pointer"
         >
           <option value="">All Statuses</option>
           <option value="QUEUED">Queued</option>
@@ -126,28 +126,28 @@ export function AdminImageJobsPage() {
 
       {/* Jobs Table */}
       <div className="rounded-2xl border border-neutral-800/80 bg-[#0D111C]/90 shadow-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-neutral-800/80 bg-neutral-900/40 text-neutral-400 font-semibold">
-                <th className="py-3 px-4">Job / Prompt</th>
-                <th className="py-3 px-4">Model</th>
-                <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Credits</th>
-                <th className="py-3 px-4">Created</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+        <div className="overflow-x-auto min-w-full">
+          <table className="w-full text-left text-xs min-w-[800px]">
+            <thead className="border-b border-neutral-800/80 bg-neutral-900/40 text-neutral-400 font-semibold select-none">
+              <tr>
+                <th className="py-3.5 px-4 w-[28%] min-w-[220px]">Job / Prompt</th>
+                <th className="py-3.5 px-4 w-[14%] min-w-[120px]">Model</th>
+                <th className="py-3.5 px-4 w-[16%] min-w-[150px]">User</th>
+                <th className="py-3.5 px-4 w-[12%] min-w-[110px]">Status</th>
+                <th className="py-3.5 px-4 w-[10%] min-w-[90px]">Credits</th>
+                <th className="py-3.5 px-4 w-[12%] min-w-[130px] whitespace-nowrap">Created</th>
+                <th className="py-3.5 px-4 text-right whitespace-nowrap w-[8%] min-w-[90px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
               {error ? (
                 <tr>
-                  <td colSpan="7" className="py-12 text-center text-rose-400">
+                  <td colSpan="7" className="py-14 text-center text-rose-400">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <span className="text-xs font-medium">{error}</span>
                       <button
                         onClick={() => fetchJobs(pagination.page)}
-                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
+                        className="px-3 py-1 text-xs rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors cursor-pointer"
                       >
                         Retry
                       </button>
@@ -156,22 +156,26 @@ export function AdminImageJobsPage() {
                 </tr>
               ) : jobs.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="py-12 text-center text-neutral-400">
-                    No image generation jobs found.
+                  <td colSpan="7" className="py-16 text-center">
+                    <p className="text-xs text-neutral-300 font-medium">
+                      No image generation jobs found.
+                    </p>
                   </td>
                 </tr>
               ) : (
                 jobs.map((job) => (
                   <tr key={job.id} className="hover:bg-neutral-900/40 transition-colors">
-                    <td className="py-3 px-4 max-w-xs truncate">
-                      <div className="font-medium text-neutral-200 truncate">{job.prompt || 'No prompt specified'}</div>
-                      <div className="text-[10px] text-neutral-500 font-mono mt-0.5">{job.id}</div>
+                    <td className="py-3.5 px-4 max-w-[220px] sm:max-w-[280px]">
+                      <div className="font-medium text-neutral-200 truncate" title={job.prompt}>{job.prompt || 'No prompt specified'}</div>
+                      <div className="text-[10px] text-neutral-400 font-mono mt-0.5 truncate">{job.id}</div>
                     </td>
-                    <td className="py-3 px-4 text-cyan-400 font-medium">{job.modelId}</td>
-                    <td className="py-3 px-4 text-neutral-400">{job.user?.email || 'N/A'}</td>
-                    <td className="py-3 px-4">
+                    <td className="py-3.5 px-4 text-cyan-400 font-medium whitespace-nowrap">{job.modelId}</td>
+                    <td className="py-3.5 px-4 max-w-[160px] truncate">
+                      <span className="text-neutral-300/80 truncate" title={job.user?.email}>{job.user?.email || 'N/A'}</span>
+                    </td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide ${
                           job.status === 'COMPLETED'
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                             : job.status === 'FAILED'
@@ -184,13 +188,13 @@ export function AdminImageJobsPage() {
                         {job.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-neutral-300 font-semibold">{job.creditCost}</td>
-                    <td className="py-3 px-4 text-neutral-400">{formatDateTime(job.createdAt)}</td>
-                    <td className="py-3 px-4 text-right space-x-1.5">
+                    <td className="py-3.5 px-4 text-neutral-300 font-semibold whitespace-nowrap">{job.creditCost}</td>
+                    <td className="py-3.5 px-4 text-neutral-400 whitespace-nowrap">{formatDateTime(job.createdAt)}</td>
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap space-x-1.5">
                       {['QUEUED', 'PROCESSING'].includes(job.status) && (
                         <button
                           onClick={() => handleCancel(job.id)}
-                          className="px-2 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-rose-950/40 text-rose-400 border border-neutral-700"
+                          className="px-2 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-rose-950/40 text-rose-400 border border-neutral-700 cursor-pointer"
                         >
                           Cancel
                         </button>
@@ -198,7 +202,7 @@ export function AdminImageJobsPage() {
                       {['FAILED', 'CANCELED'].includes(job.status) && (
                         <button
                           onClick={() => handleRetry(job.id)}
-                          className="px-2 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-neutral-700 text-cyan-400 border border-neutral-700"
+                          className="px-2 py-1 rounded-lg text-[11px] font-medium bg-neutral-800 hover:bg-neutral-700 text-cyan-400 border border-neutral-700 cursor-pointer"
                         >
                           Retry
                         </button>
@@ -212,25 +216,29 @@ export function AdminImageJobsPage() {
         </div>
 
         {/* Pagination Bar */}
-        <div className="p-3 border-t border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between text-xs text-neutral-400">
-          <div>
+        <div className="p-3.5 border-t border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between text-xs text-neutral-400 select-none">
+          <div className="font-medium">
             Showing {jobs.length} of {pagination.total} jobs
           </div>
           <div className="flex items-center gap-1.5">
             <button
               disabled={pagination.page <= 1}
               onClick={() => fetchJobs(pagination.page - 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
+              title="Previous page"
+              aria-label="Previous page"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="px-2 py-0.5 text-neutral-300 font-medium">
+            <span className="px-2.5 py-0.5 text-neutral-300 font-medium">
               Page {pagination.page} of {pagination.totalPages || 1}
             </span>
             <button
               disabled={pagination.page >= pagination.totalPages}
               onClick={() => fetchJobs(pagination.page + 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
+              title="Next page"
+              aria-label="Next page"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

@@ -159,7 +159,7 @@ export function AdminUsersPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -177,7 +177,7 @@ export function AdminUsersPage() {
 
         <button
           onClick={() => fetchUsers(pagination.page)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -193,7 +193,7 @@ export function AdminUsersPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search email, full name..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
 
@@ -201,7 +201,7 @@ export function AdminUsersPage() {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-1/2 sm:w-auto px-3 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-cyan-500/50 cursor-pointer"
           >
             <option value="">All Roles</option>
             <option value="CREATOR">Creator</option>
@@ -212,7 +212,7 @@ export function AdminUsersPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-1/2 sm:w-auto px-3 py-2 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-cyan-500/50 cursor-pointer"
           >
             <option value="">All Statuses</option>
             <option value="ACTIVE">Active</option>
@@ -224,17 +224,17 @@ export function AdminUsersPage() {
 
       {/* Users Table */}
       <div className="rounded-2xl border border-neutral-800/80 bg-[#0D111C]/90 shadow-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-neutral-800/80 bg-neutral-900/40 text-neutral-400 font-semibold">
-                <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Role</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Active Plan</th>
-                <th className="py-3 px-4">Credit Balance</th>
-                <th className="py-3 px-4">Joined</th>
-                <th className="py-3 px-4 text-right whitespace-nowrap w-[90px]">Actions</th>
+        <div className="overflow-x-auto min-w-full">
+          <table className="w-full text-left text-xs min-w-[760px]">
+            <thead className="border-b border-neutral-800/80 bg-neutral-900/40 text-neutral-400 font-semibold select-none">
+              <tr>
+                <th className="py-3.5 px-4 w-[28%] min-w-[220px]">User</th>
+                <th className="py-3.5 px-4 w-[12%] min-w-[110px]">Role</th>
+                <th className="py-3.5 px-4 w-[12%] min-w-[100px]">Status</th>
+                <th className="py-3.5 px-4 w-[14%] min-w-[110px]">Active Plan</th>
+                <th className="py-3.5 px-4 w-[14%] min-w-[120px]">Credit Balance</th>
+                <th className="py-3.5 px-4 w-[12%] min-w-[110px]">Joined</th>
+                <th className="py-3.5 px-4 text-right whitespace-nowrap w-[8%] min-w-[70px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
@@ -253,13 +253,13 @@ export function AdminUsersPage() {
               ) : (
                 users.map((u) => (
                   <tr key={u.id} className="hover:bg-neutral-900/40 transition-colors">
-                    <td className="py-3 px-4">
-                      <div className="font-semibold text-neutral-200">{u.fullName || 'No Name'}</div>
-                      <div className="text-[11px] text-neutral-400">{u.email}</div>
+                    <td className="py-3.5 px-4 max-w-[240px] sm:max-w-[280px]">
+                      <div className="font-semibold text-neutral-200 truncate">{u.fullName || 'No Name'}</div>
+                      <div className="text-[11px] text-neutral-300/80 truncate mt-0.5" title={u.email}>{u.email}</div>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3.5 px-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide ${
                           u.role === 'SUPER_ADMIN'
                             ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                             : u.role === 'ADMIN'
@@ -267,13 +267,13 @@ export function AdminUsersPage() {
                             : 'bg-neutral-800 text-neutral-300 border border-neutral-700'
                         }`}
                       >
-                        <Shield className="w-2.5 h-2.5" />
-                        {u.role}
+                        <Shield className="w-2.5 h-2.5 shrink-0" />
+                        <span>{u.role}</span>
                       </span>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3.5 px-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide ${
                           u.status === 'ACTIVE'
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                             : u.status === 'SUSPENDED'
@@ -284,15 +284,15 @@ export function AdminUsersPage() {
                         {u.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-neutral-300">{u.activePlan || 'Free Tier'}</td>
-                    <td className="py-3 px-4">
-                      <span className="font-semibold text-cyan-400 flex items-center gap-1">
-                        <Coins className="w-3 h-3 text-cyan-400" />
-                        {formatNumber(u.creditBalance)}
+                    <td className="py-3.5 px-4 text-neutral-300 whitespace-nowrap">{u.activePlan || 'Free Tier'}</td>
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span className="font-semibold text-cyan-400 flex items-center gap-1.5">
+                        <Coins className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <span>{formatNumber(u.creditBalance)}</span>
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-neutral-400">{formatDateTime(u.createdAt)}</td>
-                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-neutral-400 whitespace-nowrap">{formatDateTime(u.createdAt)}</td>
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end">
                         {/* Edit Button (Icon Only) */}
                         <button
@@ -314,25 +314,29 @@ export function AdminUsersPage() {
         </div>
 
         {/* Pagination Bar */}
-        <div className="p-3 border-t border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between text-xs text-neutral-400">
-          <div>
+        <div className="p-3.5 border-t border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between text-xs text-neutral-400 select-none">
+          <div className="font-medium">
             Showing {users.length} of {pagination.total} users
           </div>
           <div className="flex items-center gap-1.5">
             <button
               disabled={pagination.page <= 1}
               onClick={() => fetchUsers(pagination.page - 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
+              title="Previous page"
+              aria-label="Previous page"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="px-2 py-0.5 text-neutral-300 font-medium">
+            <span className="px-2.5 py-0.5 text-neutral-300 font-medium">
               Page {pagination.page} of {pagination.totalPages || 1}
             </span>
             <button
               disabled={pagination.page >= pagination.totalPages}
               onClick={() => fetchUsers(pagination.page + 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
+              title="Next page"
+              aria-label="Next page"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

@@ -96,7 +96,7 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
   return (
     <div
       className={`relative w-full h-full overflow-hidden bg-[#06080F] flex flex-col justify-end select-none group ${
-        compact ? 'min-h-[460px] md:min-h-full rounded-2xl md:rounded-none md:rounded-l-3xl' : 'min-h-[580px] lg:min-h-[720px] rounded-[32px] shadow-2xl border border-neutral-800/80'
+        compact ? 'min-h-[420px] md:min-h-full rounded-2xl md:rounded-none md:rounded-l-2xl' : 'min-h-[580px] lg:min-h-[720px] rounded-[32px] shadow-2xl border border-neutral-800/80'
       } ${className}`}
     >
       {/* Scoped CSS Keyframe for smooth left-to-right filling video progress bar */}
@@ -138,31 +138,31 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
       <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none z-20" />
 
       {/* Bottom Content Overlay */}
-      <div className={`relative z-30 space-y-3 text-white ${compact ? 'p-5 sm:p-6' : 'p-6 sm:p-8 lg:p-10 space-y-5'}`}>
+      <div className={`relative z-30 space-y-2.5 text-white ${compact ? 'p-4 sm:p-4.5' : 'p-6 sm:p-8 lg:p-10 space-y-5'}`}>
         {/* Pills / Badges */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/80 backdrop-blur-md border border-cyan-500/40 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
-            <Sparkles className="w-3 h-3 text-cyan-400" />
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-950/80 backdrop-blur-md border border-cyan-500/40 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+            <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
             <span>{slides[activeSlide].tag}</span>
           </span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-neutral-300 bg-black/60 backdrop-blur-md border border-white/10">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-mono text-neutral-300 bg-black/60 backdrop-blur-md border border-white/10">
             <Layers className="w-2.5 h-2.5 text-pink-400" />
             <span>{slides[activeSlide].badge}</span>
           </span>
         </div>
 
         {/* Slide Title & Subtitle */}
-        <div className="space-y-1">
-          <h2 className={`font-extrabold tracking-tight text-white leading-tight ${compact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl lg:text-4xl'}`}>
+        <div className="space-y-0.5">
+          <h2 className={`font-extrabold tracking-tight text-white leading-tight ${compact ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl lg:text-4xl'}`}>
             {slides[activeSlide].title}
           </h2>
-          <p className="text-xs text-neutral-300 max-w-sm leading-relaxed line-clamp-2">
+          <p className="text-[11px] text-neutral-300 max-w-sm leading-relaxed line-clamp-2">
             {slides[activeSlide].desc}
           </p>
         </div>
 
         {/* 4 Interactive Video-Style Progress Indicators */}
-        <div className="pt-1 space-y-1.5">
+        <div className="pt-0.5 space-y-1">
           <div className="grid grid-cols-4 gap-1.5">
             {slides.map((slide, index) => {
               const isActive = activeSlide === index
@@ -173,7 +173,7 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
                   key={slide.id}
                   type="button"
                   onClick={() => selectSlide(index)}
-                  className="group/bar py-1.5 flex flex-col gap-1 text-left focus:outline-none cursor-pointer"
+                  className="group/bar py-1 flex flex-col gap-1 text-left focus:outline-none cursor-pointer"
                   aria-label={`Switch to slide ${index + 1}: ${slide.title}`}
                 >
                   {/* Progress Bar Line Track */}
@@ -203,7 +203,7 @@ export function AuthImageCarousel({ compact = false, className = '' }) {
 
                   {/* Slide Label */}
                   <span
-                    className={`text-[9px] font-bold uppercase tracking-wider transition-all truncate hidden sm:block ${
+                    className={`text-[8.5px] font-bold uppercase tracking-wider transition-all truncate hidden sm:block ${
                       isActive
                         ? 'text-cyan-400 drop-shadow-[0_0_6px_rgba(6,182,212,0.6)] font-extrabold'
                         : isPast

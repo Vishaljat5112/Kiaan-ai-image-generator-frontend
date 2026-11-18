@@ -137,36 +137,30 @@ export function AdminInquiriesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* 1. Header Banner */}
-      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 text-white">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
+      {/* 1. Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex flex-wrap items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 font-mono">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-400">
               <Building2 className="w-3.5 h-3.5" />
-              <span>Commercial Pipeline</span>
+              Commercial Pipeline
             </span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            Enterprise Architecture Inquiries
-          </h1>
-          <p className="text-sm text-neutral-400 mt-1">
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Enterprise Architecture Inquiries</h1>
+          <p className="text-xs text-neutral-400 mt-0.5">
             Review custom GPU cluster sizing, private VPC requests, and volume consultation leads.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchInquiries(pagination.page)}
-            disabled={loading}
-            className="flex items-center gap-1.5 border-neutral-700 bg-neutral-900 text-neutral-300 hover:text-white cursor-pointer"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
-          </Button>
-        </div>
+        <button
+          onClick={() => fetchInquiries(pagination.page)}
+          disabled={loading}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0 whitespace-nowrap disabled:opacity-50"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${loading ? 'animate-spin' : ''}`} />
+          <span>Refresh</span>
+        </button>
       </div>
 
       {/* Mock Session Warning & 1-Click Live Reconnect Banner */}
@@ -195,56 +189,64 @@ export function AdminInquiriesPage() {
 
       {/* 2. Metric KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 font-mono">
-              Total Inquiries
-            </span>
-            <Building2 className="w-4 h-4 text-neutral-400" />
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-sm flex flex-col justify-between h-full">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 font-mono">
+                Total Inquiries
+              </span>
+              <Building2 className="w-4 h-4 text-neutral-400 shrink-0" />
+            </div>
+            <div className="text-2xl font-black text-white font-mono mt-2 truncate" title={String(counts.total)}>
+              {counts.total}
+            </div>
           </div>
-          <div className="text-2xl font-black text-white font-mono mt-2">
-            {counts.total}
-          </div>
-          <p className="text-[11px] text-neutral-500 mt-1">All recorded consultation requests</p>
+          <p className="text-[11px] text-neutral-400 mt-1.5">All recorded consultation requests</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-pink-500/30 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-pink-400 font-mono">
-              Action Required (New)
-            </span>
-            <Sparkles className="w-4 h-4 text-pink-400" />
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-pink-500/30 shadow-sm flex flex-col justify-between h-full">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-pink-400 font-mono">
+                Action Required (New)
+              </span>
+              <Sparkles className="w-4 h-4 text-pink-400 shrink-0" />
+            </div>
+            <div className="text-2xl font-black text-pink-300 font-mono mt-2 truncate" title={String(counts.new)}>
+              {counts.new}
+            </div>
           </div>
-          <div className="text-2xl font-black text-pink-300 font-mono mt-2">
-            {counts.new}
-          </div>
-          <p className="text-[11px] text-pink-400/70 mt-1">Uncontacted leads requiring triage</p>
+          <p className="text-[11px] text-pink-400/80 mt-1.5">Uncontacted leads requiring triage</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-cyan-500/30 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-mono">
-              In Contact
-            </span>
-            <Clock className="w-4 h-4 text-cyan-400" />
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-cyan-500/30 shadow-sm flex flex-col justify-between h-full">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-mono">
+                In Contact
+              </span>
+              <Clock className="w-4 h-4 text-cyan-400 shrink-0" />
+            </div>
+            <div className="text-2xl font-black text-cyan-300 font-mono mt-2 truncate" title={String(counts.contacted)}>
+              {counts.contacted}
+            </div>
           </div>
-          <div className="text-2xl font-black text-cyan-300 font-mono mt-2">
-            {counts.contacted}
-          </div>
-          <p className="text-[11px] text-cyan-400/70 mt-1">Architecture discussions in progress</p>
+          <p className="text-[11px] text-cyan-400/80 mt-1.5">Architecture discussions in progress</p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 font-mono">
-              Closed / Deployed
-            </span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-sm flex flex-col justify-between h-full">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 font-mono">
+                Closed / Deployed
+              </span>
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            </div>
+            <div className="text-2xl font-black text-neutral-300 font-mono mt-2 truncate" title={String(counts.closed)}>
+              {counts.closed}
+            </div>
           </div>
-          <div className="text-2xl font-black text-neutral-300 font-mono mt-2">
-            {counts.closed}
-          </div>
-          <p className="text-[11px] text-neutral-500 mt-1">Completed enterprise consultations</p>
+          <p className="text-[11px] text-neutral-400 mt-1.5">Completed enterprise consultations</p>
         </div>
       </div>
 
@@ -252,13 +254,13 @@ export function AdminInquiriesPage() {
       <div className="p-4 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Search Field */}
         <div className="relative w-full md:w-96">
-          <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, company, email, phone..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs placeholder-neutral-500 focus:outline-none focus:border-cyan-500/60"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs placeholder:text-neutral-400 focus:outline-none focus:border-cyan-500/60"
           />
         </div>
 
@@ -288,32 +290,33 @@ export function AdminInquiriesPage() {
       {/* 4. Inquiries Data Table */}
       <div className="rounded-2xl border border-neutral-800/80 bg-[#0D111C]/90 overflow-hidden shadow-sm">
         {fetchError ? (
-          <div className="p-8 text-center space-y-3">
-            <AlertCircle className="w-8 h-8 text-rose-400 mx-auto" />
+          <div className="p-8 text-center flex flex-col items-center justify-center space-y-3">
+            <AlertCircle className="w-8 h-8 text-rose-400 shrink-0" />
             <h3 className="text-sm font-bold text-white">Database Inquiries Offline</h3>
-            <p className="text-xs text-rose-300/90 max-w-md mx-auto leading-relaxed">{fetchError}</p>
-            <Button
-              variant="outline"
-              size="sm"
+            <p className="text-xs text-rose-300/80 max-w-md mx-auto leading-relaxed break-words font-mono">
+              {fetchError}
+            </p>
+            <button
               onClick={() => fetchInquiries(1)}
-              className="border-rose-500/50 text-rose-200 hover:text-white inline-flex items-center gap-1.5 mt-2"
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-neutral-900 border border-rose-500/40 text-rose-200 hover:text-white hover:border-rose-500/70 transition-colors cursor-pointer mt-1 whitespace-nowrap shrink-0 disabled:opacity-50"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${loading ? 'animate-spin' : ''}`} />
               <span>Retry Fetch</span>
-            </Button>
+            </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-neutral-300 border-collapse">
+            <table className="w-full text-left text-xs text-neutral-300 border-collapse min-w-[800px]">
               <thead>
-                <tr className="border-b border-neutral-800 bg-neutral-900/60 text-neutral-400 font-mono uppercase text-[11px]">
-                  <th className="py-3.5 px-4 font-semibold">Lead & Company</th>
-                  <th className="py-3.5 px-4 font-semibold">Contact Channels</th>
-                  <th className="py-3.5 px-4 font-semibold">Interested Track</th>
-                  <th className="py-3.5 px-4 font-semibold">Volume</th>
-                  <th className="py-3.5 px-4 font-semibold">Status</th>
-                  <th className="py-3.5 px-4 font-semibold">Submitted</th>
-                  <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
+                <tr className="border-b border-neutral-800 bg-neutral-900/60 text-neutral-400 font-mono uppercase text-[11px] select-none">
+                  <th className="py-3.5 px-4 font-semibold w-[22%]">Lead & Company</th>
+                  <th className="py-3.5 px-4 font-semibold w-[20%]">Contact Channels</th>
+                  <th className="py-3.5 px-4 font-semibold w-[16%]">Interested Track</th>
+                  <th className="py-3.5 px-4 font-semibold w-[10%]">Volume</th>
+                  <th className="py-3.5 px-4 font-semibold w-[12%]">Status</th>
+                  <th className="py-3.5 px-4 font-semibold w-[10%]">Submitted</th>
+                  <th className="py-3.5 px-4 font-semibold w-[10%] text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-800/60">

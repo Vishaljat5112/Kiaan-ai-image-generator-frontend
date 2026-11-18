@@ -47,7 +47,7 @@ export function AdminCreditsPage() {
   const transactions = data?.transactions || []
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -64,7 +64,7 @@ export function AdminCreditsPage() {
 
         <button
           onClick={() => fetchCredits(pagination.page)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer self-start sm:self-auto shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -72,41 +72,47 @@ export function AdminCreditsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg">
-          <div className="text-xs text-neutral-400 font-medium">In Circulation</div>
-          <div className="text-2xl font-extrabold text-cyan-400 mt-1 flex items-center gap-1">
-            <Coins className="w-5 h-5 text-cyan-400" />
-            {formatNumber(metrics.totalCirculating || 0)}
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg flex flex-col justify-between">
+          <div>
+            <div className="text-xs text-neutral-400 font-medium">In Circulation</div>
+            <div className="text-2xl font-extrabold text-cyan-400 mt-1 flex items-center gap-1.5">
+              <Coins className="w-5 h-5 text-cyan-400 shrink-0" />
+              <span>{formatNumber(metrics.totalCirculating || 0)}</span>
+            </div>
           </div>
-          <div className="text-[11px] text-neutral-500 mt-1">Sum of active customer wallet balances</div>
+          <div className="text-[11px] text-neutral-400 mt-1.5">Sum of active customer wallet balances</div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg">
-          <div className="text-xs text-neutral-400 font-medium">Burned on Inference</div>
-          <div className="text-2xl font-extrabold text-pink-400 mt-1 flex items-center gap-1">
-            <TrendingDown className="w-5 h-5 text-pink-400" />
-            {formatNumber(metrics.totalConsumed || 0)}
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg flex flex-col justify-between">
+          <div>
+            <div className="text-xs text-neutral-400 font-medium">Burned on Inference</div>
+            <div className="text-2xl font-extrabold text-pink-400 mt-1 flex items-center gap-1.5">
+              <TrendingDown className="w-5 h-5 text-pink-400 shrink-0" />
+              <span>{formatNumber(metrics.totalConsumed || 0)}</span>
+            </div>
           </div>
-          <div className="text-[11px] text-neutral-500 mt-1">Deducted on completed generation jobs</div>
+          <div className="text-[11px] text-neutral-400 mt-1.5">Deducted on completed generation jobs</div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg">
-          <div className="text-xs text-neutral-400 font-medium">Platform Grants & Top-Ups</div>
-          <div className="text-2xl font-extrabold text-emerald-400 mt-1 flex items-center gap-1">
-            <Gift className="w-5 h-5 text-emerald-400" />
-            {formatNumber(metrics.totalGranted || 0)}
+        <div className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg flex flex-col justify-between">
+          <div>
+            <div className="text-xs text-neutral-400 font-medium">Platform Grants & Top-Ups</div>
+            <div className="text-2xl font-extrabold text-emerald-400 mt-1 flex items-center gap-1.5">
+              <Gift className="w-5 h-5 text-emerald-400 shrink-0" />
+              <span>{formatNumber(metrics.totalGranted || 0)}</span>
+            </div>
           </div>
-          <div className="text-[11px] text-neutral-500 mt-1">Welcome bonuses, top-ups & plan allowances</div>
+          <div className="text-[11px] text-neutral-400 mt-1.5">Welcome bonuses, top-ups & plan allowances</div>
         </div>
       </div>
 
       <div className="rounded-2xl border border-neutral-800/80 bg-[#0D111C]/90 shadow-xl overflow-hidden">
-        <div className="p-4 border-b border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between">
+        <div className="p-4 border-b border-neutral-800/80 bg-neutral-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <h3 className="font-semibold text-xs text-white">System-Wide Transaction Ledger</h3>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none"
+            className="px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs text-neutral-200 focus:outline-none cursor-pointer self-start sm:self-auto shrink-0"
           >
             <option value="">All Categories</option>
             <option value="IMAGE_GENERATION">Image Generation</option>
@@ -119,21 +125,21 @@ export function AdminCreditsPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[800px]">
             <thead>
-              <tr className="border-b border-neutral-800/80 bg-neutral-900/20 text-neutral-400 font-semibold">
-                <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Category</th>
-                <th className="py-3 px-4">Amount</th>
-                <th className="py-3 px-4">Type</th>
-                <th className="py-3 px-4">Description</th>
-                <th className="py-3 px-4">Timestamp</th>
+              <tr className="border-b border-neutral-800/80 bg-neutral-900/20 text-neutral-400 font-semibold select-none">
+                <th className="py-3 px-4 w-[22%]">User</th>
+                <th className="py-3 px-4 w-[15%]">Category</th>
+                <th className="py-3 px-4 w-[12%]">Amount</th>
+                <th className="py-3 px-4 w-[10%]">Type</th>
+                <th className="py-3 px-4 w-[27%]">Description</th>
+                <th className="py-3 px-4 w-[14%]">Timestamp</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800/60">
               {transactions.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-neutral-400">
+                  <td colSpan="6" className="py-12 text-center text-xs text-neutral-400">
                     No transactions recorded matching filter.
                   </td>
                 </tr>
@@ -141,13 +147,19 @@ export function AdminCreditsPage() {
                 transactions.map((tx) => (
                   <tr key={tx.id} className="hover:bg-neutral-900/40 transition-colors">
                     <td className="py-3 px-4">
-                      <div className="font-medium text-neutral-200">{tx.user?.fullName || tx.user?.email || 'N/A'}</div>
-                      <div className="text-[10px] text-neutral-500">{tx.user?.email}</div>
+                      <div className="font-medium text-neutral-200 truncate" title={tx.user?.fullName || tx.user?.email || 'N/A'}>
+                        {tx.user?.fullName || tx.user?.email || 'N/A'}
+                      </div>
+                      <div className="text-[11px] text-neutral-300/80 truncate mt-0.5" title={tx.user?.email}>
+                        {tx.user?.email}
+                      </div>
                     </td>
                     <td className="py-3 px-4">
-                      <span className="font-medium text-cyan-300">{tx.category}</span>
+                      <span className="font-medium text-cyan-300 font-mono text-[11px] truncate block" title={tx.category}>
+                        {tx.category}
+                      </span>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 whitespace-nowrap">
                       <span
                         className={`font-extrabold flex items-center gap-0.5 ${
                           tx.type === 'CREDIT' ? 'text-emerald-400' : 'text-rose-400'
@@ -157,9 +169,9 @@ export function AdminCreditsPage() {
                         {formatNumber(tx.amount)}
                       </span>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${
                           tx.type === 'CREDIT'
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                             : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
@@ -168,8 +180,14 @@ export function AdminCreditsPage() {
                         {tx.type}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-neutral-300">{tx.description}</td>
-                    <td className="py-3 px-4 text-neutral-400">{formatDateTime(tx.createdAt)}</td>
+                    <td className="py-3 px-4 text-neutral-300">
+                      <div className="truncate" title={tx.description}>
+                        {tx.description}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-neutral-400 whitespace-nowrap">
+                      {formatDateTime(tx.createdAt)}
+                    </td>
                   </tr>
                 ))
               )}
@@ -177,7 +195,7 @@ export function AdminCreditsPage() {
           </table>
         </div>
 
-        <div className="p-3 border-t border-neutral-800/80 bg-neutral-900/40 flex items-center justify-between text-xs text-neutral-400">
+        <div className="p-4 border-t border-neutral-800/80 bg-neutral-900/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-400 select-none">
           <div>
             Showing {transactions.length} of {pagination.total} transactions
           </div>
@@ -185,7 +203,7 @@ export function AdminCreditsPage() {
             <button
               disabled={pagination.page <= 1}
               onClick={() => fetchCredits(pagination.page - 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -195,7 +213,7 @@ export function AdminCreditsPage() {
             <button
               disabled={pagination.page >= pagination.totalPages}
               onClick={() => fetchCredits(pagination.page + 1)}
-              className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300"
+              className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-300 transition-colors cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

@@ -95,7 +95,7 @@ export function AdminGpuPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 pt-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -111,15 +111,15 @@ export function AdminGpuPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
           <button
             onClick={fetchNodes}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 border border-neutral-700 hover:border-neutral-600 text-neutral-300 hover:text-white transition-colors cursor-pointer shrink-0"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </button>
-          <Button variant="gradient" size="sm" leftIcon={Plus} onClick={() => setModalOpen(true)}>
+          <Button variant="gradient" size="sm" leftIcon={Plus} onClick={() => setModalOpen(true)} className="cursor-pointer shrink-0">
             Register Node
           </Button>
         </div>
@@ -143,18 +143,18 @@ export function AdminGpuPage() {
             return (
               <div
                 key={node.id}
-                className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg space-y-4 flex flex-col justify-between"
+                className="p-5 rounded-2xl bg-[#0D111C]/90 border border-neutral-800/80 shadow-lg space-y-4 flex flex-col justify-between h-full"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="font-bold text-sm text-white flex items-center gap-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-sm text-white leading-snug">
                         <span>{node.name}</span>
                       </div>
-                      <div className="text-[11px] text-neutral-400 font-mono mt-0.5">{node.id}</div>
+                      <div className="text-[11px] text-neutral-300/80 font-mono mt-0.5 truncate" title={node.id}>{node.id}</div>
                     </div>
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold shrink-0 whitespace-nowrap ${
                         isOnline
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                           : node.status === 'DRAINING'
@@ -167,22 +167,22 @@ export function AdminGpuPage() {
                     </span>
                   </div>
 
-                  <div className="mt-3 space-y-2 text-xs">
-                    <div className="flex items-center justify-between text-neutral-400">
-                      <span>GPU Hardware</span>
-                      <span className="text-neutral-200 font-medium">{node.gpuModel}</span>
+                  <div className="mt-3.5 space-y-2 text-xs">
+                    <div className="flex items-start justify-between gap-3 text-neutral-400">
+                      <span className="shrink-0">GPU Hardware</span>
+                      <span className="text-neutral-200 font-medium text-right min-w-0 break-words">{node.gpuModel}</span>
                     </div>
-                    <div className="flex items-center justify-between text-neutral-400">
-                      <span>Cluster IP</span>
-                      <span className="text-neutral-300 font-mono text-[11px]">{node.ipAddress}</span>
+                    <div className="flex items-center justify-between gap-3 text-neutral-400">
+                      <span className="shrink-0">Cluster IP</span>
+                      <span className="text-neutral-300 font-mono text-[11px] text-right">{node.ipAddress}</span>
                     </div>
                   </div>
 
                   {/* VRAM Gauge */}
                   <div className="mt-4 pt-3 border-t border-neutral-800/80 space-y-1.5">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-neutral-400">VRAM Allocation</span>
-                      <span className="text-cyan-400 font-semibold">
+                      <span className="text-neutral-400 shrink-0">VRAM Allocation</span>
+                      <span className="text-cyan-400 font-semibold text-right whitespace-nowrap">
                         {node.usedVramGb} / {node.totalVramGb} GB ({vramPercent}%)
                       </span>
                     </div>
@@ -197,23 +197,23 @@ export function AdminGpuPage() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-500">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-neutral-500" />
-                    <span>Heartbeat: {formatDateTime(node.lastHeartbeatAt)}</span>
+                <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between gap-2 text-[11px] select-none">
+                  <div className="flex items-center gap-1.5 text-neutral-400 min-w-0">
+                    <Clock className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                    <span className="truncate">Heartbeat: {formatDateTime(node.lastHeartbeatAt)}</span>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       onClick={() => handleStatusToggle(node)}
-                      className="p-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-colors"
+                      className="p-1.5 rounded-lg bg-neutral-800/90 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-colors cursor-pointer"
                       title="Toggle node lifecycle state"
                     >
                       <Power className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDeleteNode(node.id)}
-                      className="p-1 rounded-lg bg-neutral-800 hover:bg-rose-950/40 text-neutral-400 hover:text-rose-400 transition-colors"
+                      className="p-1.5 rounded-lg bg-neutral-800/90 hover:bg-rose-950/40 text-neutral-400 hover:text-rose-400 transition-colors cursor-pointer"
                       title="Remove node from fleet"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

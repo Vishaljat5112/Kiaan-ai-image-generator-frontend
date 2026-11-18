@@ -58,7 +58,7 @@ export function DemoAccess({ onSelect, compact = false }) {
 
   if (compact) {
     return (
-      <div className="pt-2 border-t border-neutral-800 space-y-2 select-none">
+      <div className="pt-2 border-t border-neutral-800/80 space-y-1.5 select-none">
         <div className="flex items-center justify-between text-[11px] font-semibold text-neutral-400">
           <div className="flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-cyan-400" />
@@ -70,7 +70,7 @@ export function DemoAccess({ onSelect, compact = false }) {
         </div>
 
         {feedback && (
-          <div className="p-2 rounded-lg bg-cyan-950/60 border border-cyan-800/80 text-[11px] font-medium text-cyan-300 flex items-center gap-1.5 animate-in fade-in duration-150">
+          <div className="p-1.5 rounded-lg bg-cyan-950/60 border border-cyan-800/80 text-[11px] font-medium text-cyan-300 flex items-center gap-1.5 animate-in fade-in duration-150">
             <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span>{feedback}</span>
           </div>
@@ -80,7 +80,7 @@ export function DemoAccess({ onSelect, compact = false }) {
           <button
             type="button"
             onClick={handleCustomerDemo}
-            className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border border-neutral-800 hover:border-cyan-500/50 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white text-xs font-bold shadow-2xs transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-neutral-800 hover:border-cyan-500/50 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white text-xs font-bold shadow-2xs transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
           >
             <User className="w-3.5 h-3.5 text-cyan-400" />
             <span>User Demo &rarr;</span>
@@ -89,7 +89,7 @@ export function DemoAccess({ onSelect, compact = false }) {
           <button
             type="button"
             onClick={handleAdminDemo}
-            className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border border-neutral-800 hover:border-pink-500/50 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white text-xs font-bold shadow-2xs transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-neutral-800 hover:border-pink-500/50 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white text-xs font-bold shadow-2xs transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
           >
             <Shield className="w-3.5 h-3.5 text-pink-400" />
             <span>Admin Demo &rarr;</span>
