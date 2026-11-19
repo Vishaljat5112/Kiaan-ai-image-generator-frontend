@@ -44,13 +44,10 @@ export function AuthProvider({ children }) {
         // Refresh failed, check for offline mock session fallback below
       }
 
-      if (typeof window !== 'undefined' && localStorage.getItem('kiaan_is_mock_session') === 'true') {
-        const savedMock = sessionStorage.getItem('kiaan_mock_user')
-        if (savedMock) {
-          setUser(JSON.parse(savedMock))
-          setLoading(false)
-          return
-        }
+      // Clear any legacy mock storage flags
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('kiaan_is_mock_session')
+        sessionStorage.removeItem('kiaan_mock_user')
       }
 
       setUser(null)
@@ -76,56 +73,27 @@ export function AuthProvider({ children }) {
   }, [checkAuth])
 
   /**
-   * Real Customer / Admin Login with resilient demo credentials fallback
+   * Real Customer / Admin Login (Live Database Authenticated)
    */
   const login = async (email, password, requestedRole = 'customer') => {
-    try {
-      const res = await api.post('/auth/login', {
-        email,
-        password,
-        requestedAdmin: requestedRole === 'admin'
-      })
+    const res = await api.post('/auth/login', {
+      email,
+      password,
+      requestedAdmin: requestedRole === 'admin'
+    })
 
-      if (res.data?.success && res.data?.data) {
-        const { user: authUser, accessToken } = res.data.data
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('kiaan_is_mock_session')
-          sessionStorage.removeItem('kiaan_mock_user')
-        }
-        setAccessToken(accessToken)
-        setUser(authUser)
-        return authUser
+    if (res.data?.success && res.data?.data) {
+      const { user: authUser, accessToken } = res.data.data
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('kiaan_is_mock_session')
+        sessionStorage.removeItem('kiaan_mock_user')
       }
-
-      throw new Error(res.data?.error?.message || 'Login failed')
-    } catch (err) {
-      // If backend is offline (Network Error) or database not seeded, fallback gracefully for demo access
-      const isUserDemo = email === 'user@gmail.com' && password === '12345678'
-      const isAdminDemo = email === 'admin@gmail.com' && password === '12345678'
-
-      if (isUserDemo || isAdminDemo) {
-        // Enforce strict tab matching in demo fallback
-        if (requestedRole === 'customer' && isAdminDemo) {
-          throw new Error('This account has administrator privileges. Please switch to Admin Login.')
-        }
-        if (requestedRole === 'admin' && isUserDemo) {
-          throw new Error('Access denied: Administrative privileges required. Please use User Login.')
-        }
-
-        const targetRole = isAdminDemo ? 'SUPER_ADMIN' : 'CREATOR'
-        const fallbackUser = {
-          id: isAdminDemo ? 'usr_admin_demo' : 'usr_customer_demo',
-          fullName: isAdminDemo ? 'System Administrator' : 'Demo Creator',
-          email,
-          role: targetRole,
-          creditBalance: isAdminDemo ? 99999 : 250,
-          status: 'ACTIVE'
-        }
-        return loginAsMockUser(targetRole, fallbackUser)
-      }
-
-      throw err
+      setAccessToken(accessToken)
+      setUser(authUser)
+      return authUser
     }
+
+    throw new Error(res.data?.error?.message || 'Login failed')
   }
 
   /**
@@ -169,30 +137,16 @@ export function AuthProvider({ children }) {
   }
 
   /**
-   * Demo Access Utility (preserves 1-click preview without tampering real auth)
+   * Offline mock authentication is permanently disabled
    */
-  const loginAsMockUser = (role = 'creator', customData = {}) => {
-    const isSuperAdmin = role === 'super_admin' || role === 'SUPER_ADMIN' || role === 'admin'
-    const mockUser = {
-      id: customData.id || (isSuperAdmin ? 'usr_admin_mock' : 'usr_creator_mock'),
-      fullName: customData.fullName || (isSuperAdmin ? 'System Administrator' : 'Demo Creator'),
-      email: customData.email || (isSuperAdmin ? 'admin@gmail.com' : 'user@gmail.com'),
-      role: isSuperAdmin ? 'SUPER_ADMIN' : 'CREATOR',
-      tier: customData.tier || (isSuperAdmin ? 'Super Admin' : 'Free Tier'),
-      creditBalance: customData.creditBalance !== undefined ? customData.creditBalance : (isSuperAdmin ? 99999 : 250),
-      isMock: true
+  const loginAsMockUser = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('kiaan_is_mock_session')
+      sessionStorage.removeItem('kiaan_mock_user')
     }
-    try {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('kiaan_is_mock_session', 'true')
-        sessionStorage.setItem('kiaan_mock_user', JSON.stringify(mockUser))
-      }
-    } catch {
-      // ignore storage errors
-    }
-    setAccessToken('mock_preview_token')
-    setUser(mockUser)
-    return mockUser
+    clearAccessToken()
+    setUser(null)
+    throw new Error('Offline mock authentication is disabled. Please authenticate using real credentials.')
   }
 
   // Role validation helpers
