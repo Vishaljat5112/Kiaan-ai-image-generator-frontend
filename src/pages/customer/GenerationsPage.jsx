@@ -1,12 +1,12 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Clock, Image as ImageIcon, Video, Heart, Download, Trash2, Grid3x3, List, Copy, Check, Wand2, Sparkles, Play
+  Clock, Image as ImageIcon, Video, Heart, Download, Trash2, Grid3x3, List, Copy, Check, Wand2, Sparkles, Play, ChevronDown
 } from 'lucide-react'
 import { Modal } from '../../components/ui/Modal'
 import { Button } from '../../components/ui/Button'
 import {
-  StudioPageHeader, Panel, SearchField, SegmentedTabs, LightSelect, LightEmptyState, MediaThumb, Toast
+  StudioPageHeader, Panel, SearchField, LightEmptyState, MediaThumb, Toast
 } from '../../components/studio/StudioUI'
 import { formatBytes, formatDateTime } from '../../utils/format'
 import { cn } from '../../utils/cn'
@@ -17,6 +17,13 @@ const SORTS = [
   { value: 'oldest', label: 'Oldest first' },
   { value: 'credits', label: 'Most credits' },
   { value: 'title', label: 'Title A–Z' }
+]
+
+const PROJECT_MODELS = [
+  'FLUX.2 Klein 4B',
+  'Z-Image Turbo',
+  'Wan 2.1 Video (Draft 480p)',
+  'Wan 2.1 Video (Cinema 720p)'
 ]
 
 export function GenerationsPage() {
@@ -54,7 +61,10 @@ export function GenerationsPage() {
     return () => { isMounted = false }
   }, [])
 
-  const models = useMemo(() => Array.from(new Set(items.map((i) => i.model).filter(Boolean))), [items])
+  const models = useMemo(() => {
+    const dynamic = items.map((i) => i.model).filter(Boolean)
+    return Array.from(new Set([...PROJECT_MODELS, ...dynamic]))
+  }, [items])
 
   const counts = useMemo(() => ({
     all: items.length,
@@ -62,6 +72,50 @@ export function GenerationsPage() {
     video: items.filter((i) => i.type === 'video').length,
     favorite: items.filter((i) => i.favorite || i.isFavorite).length
   }), [items])
+
+  const [isModelMenuOpen, setIsModelMenuOpen] = useState(false)
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false)
+  const modelMenuRef = useRef(null)
+  const sortMenuRef = useRef(null)
+  const categoryMenuRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modelMenuRef.current && !modelMenuRef.current.contains(event.target)) {
+        setIsModelMenuOpen(false)
+      }
+      if (sortMenuRef.current && !sortMenuRef.current.contains(event.target)) {
+        setIsSortMenuOpen(false)
+      }
+      if (categoryMenuRef.current && !categoryMenuRef.current.contains(event.target)) {
+        setIsCategoryMenuOpen(false)
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setIsModelMenuOpen(false)
+        setIsSortMenuOpen(false)
+        setIsCategoryMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  const categoryOptions = [
+    { value: 'all', label: 'All', icon: null },
+    { value: 'image', label: 'Images', icon: ImageIcon },
+    { value: 'video', label: 'Videos', icon: Video },
+    { value: 'favorite', label: 'Favorites', icon: Heart }
+  ]
+
+  const selectedCategory = categoryOptions.find((c) => c.value === typeFilter) || categoryOptions[0]
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -151,36 +205,262 @@ export function GenerationsPage() {
         }
       />
 
-      <Panel className="p-4 sm:p-5 space-y-3 sm:space-y-3.5">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-2.5 sm:gap-3">
-          <SearchField value={query} onChange={setQuery} placeholder="Search by title, prompt or tool…" className="flex-1 min-w-0" />
+      <Panel className="p-3.5 sm:p-4 space-y-2.5">
+        {/* ROW 1: Search bar + "All models" dropdown + "Sort by" dropdown + Icon-only Grid/List buttons */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2.5">
+          <SearchField
+            value={query}
+            onChange={setQuery}
+            placeholder="Search by title, prompt or tool..."
+            className="flex-1 min-w-0 [&>input]:h-[42px]"
+          />
+
           <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <LightSelect
-              label="Filter by model"
-              value={modelFilter}
-              onChange={setModelFilter}
-              options={[{ value: 'all', label: 'All models' }, ...models.map((m) => ({ value: m, label: m }))]}
-            />
-            <LightSelect label="Sort" value={sort} onChange={setSort} options={SORTS} />
-            <SegmentedTabs
-              size="sm"
-              value={view}
-              onChange={setView}
-              options={[{ value: 'grid', label: 'Grid', icon: Grid3x3 }, { value: 'list', label: 'List', icon: List }]}
-            />
+            {/* 1. All models Dropdown */}
+            <div className="relative" ref={modelMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsModelMenuOpen((prev) => !prev)
+                  setIsSortMenuOpen(false)
+                  setIsCategoryMenuOpen(false)
+                }}
+                className={cn(
+                  "h-[42px] px-3.5 rounded-xl bg-[#080B14] border text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-500/30",
+                  isModelMenuOpen
+                    ? "border-cyan-500 text-white"
+                    : "border-neutral-700/80 hover:border-cyan-500/50 text-neutral-200 hover:text-white"
+                )}
+                aria-expanded={isModelMenuOpen}
+                aria-haspopup="true"
+              >
+                <span className="truncate max-w-[130px]">{modelFilter === 'all' ? 'All models' : modelFilter}</span>
+                <ChevronDown className={cn("w-3.5 h-3.5 text-neutral-400 transition-transform duration-200", isModelMenuOpen && "rotate-180")} />
+              </button>
+
+              {isModelMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 sm:left-0 top-full mt-1.5 w-60 rounded-xl bg-[#0D111C] border border-neutral-800 shadow-2xl py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100 max-h-80 overflow-y-auto"
+                >
+                  <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                    MODEL FILTER
+                  </div>
+                  <div className="space-y-0.5 px-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setModelFilter('all')
+                        setIsModelMenuOpen(false)
+                      }}
+                      className={cn(
+                        "w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between text-xs transition-colors cursor-pointer",
+                        modelFilter === 'all'
+                          ? "bg-cyan-950/60 text-cyan-300 font-semibold border border-cyan-800/40"
+                          : "text-neutral-300 hover:bg-neutral-800/70 hover:text-white"
+                      )}
+                    >
+                      <span>All models</span>
+                      {modelFilter === 'all' && <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+                    </button>
+                    {models.map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => {
+                          setModelFilter(m)
+                          setIsModelMenuOpen(false)
+                        }}
+                        className={cn(
+                          "w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between text-xs transition-colors cursor-pointer",
+                          modelFilter === m
+                            ? "bg-cyan-950/60 text-cyan-300 font-semibold border border-cyan-800/40"
+                            : "text-neutral-300 hover:bg-neutral-800/70 hover:text-white"
+                        )}
+                      >
+                        <span className="truncate">{m}</span>
+                        {modelFilter === m && <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 2. Separate Sort By Dropdown (to the right of all models) */}
+            <div className="relative" ref={sortMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSortMenuOpen((prev) => !prev)
+                  setIsModelMenuOpen(false)
+                  setIsCategoryMenuOpen(false)
+                }}
+                className={cn(
+                  "h-[42px] px-3.5 rounded-xl bg-[#080B14] border text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-500/30",
+                  isSortMenuOpen
+                    ? "border-cyan-500 text-white"
+                    : "border-neutral-700/80 hover:border-cyan-500/50 text-neutral-200 hover:text-white"
+                )}
+                aria-expanded={isSortMenuOpen}
+                aria-haspopup="true"
+              >
+                <span>Sort by</span>
+                <ChevronDown className={cn("w-3.5 h-3.5 text-neutral-400 transition-transform duration-200", isSortMenuOpen && "rotate-180")} />
+              </button>
+
+              {isSortMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-[#0D111C] border border-neutral-800 shadow-2xl py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100"
+                >
+                  <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                    SORT BY
+                  </div>
+                  <div className="space-y-0.5 px-1">
+                    {SORTS.map((s) => (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => {
+                          setSort(s.value)
+                          setIsSortMenuOpen(false)
+                        }}
+                        className={cn(
+                          "w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between text-xs transition-colors cursor-pointer",
+                          sort === s.value
+                            ? "bg-cyan-950/60 text-cyan-300 font-semibold border border-cyan-800/40"
+                            : "text-neutral-300 hover:bg-neutral-800/70 hover:text-white"
+                        )}
+                      >
+                        <span>{s.label}</span>
+                        {sort === s.value && <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 3. Icon-Only Grid / List Controls */}
+            <div
+              className="inline-flex p-1 rounded-xl bg-[#080B14] border border-neutral-700/80 h-[42px] items-center gap-1 shrink-0"
+              role="group"
+              aria-label="View layout"
+            >
+              {/* Grid Button */}
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setView('grid')}
+                  aria-label="Grid"
+                  title="Grid"
+                  className={cn(
+                    'w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/50',
+                    view === 'grid'
+                      ? 'bg-neutral-800 text-cyan-300 shadow-sm border border-cyan-500/30'
+                      : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/40'
+                  )}
+                >
+                  <Grid3x3 className="w-4 h-4" />
+                </button>
+                {/* Tooltip on hover / keyboard focus */}
+                <div
+                  role="tooltip"
+                  className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-900 text-neutral-200 border border-neutral-700 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 whitespace-nowrap z-30"
+                >
+                  Grid
+                </div>
+              </div>
+
+              {/* List Button */}
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setView('list')}
+                  aria-label="List"
+                  title="List"
+                  className={cn(
+                    'w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/50',
+                    view === 'list'
+                      ? 'bg-neutral-800 text-cyan-300 shadow-sm border border-cyan-500/30'
+                      : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/40'
+                  )}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+                {/* Tooltip on hover / keyboard focus */}
+                <div
+                  role="tooltip"
+                  className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-900 text-neutral-200 border border-neutral-700 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 whitespace-nowrap z-30"
+                >
+                  List
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="pt-3 border-t border-neutral-800/60 flex flex-wrap items-center justify-between gap-2">
-          <SegmentedTabs
-            value={typeFilter}
-            onChange={setTypeFilter}
-            options={[
-              { value: 'all', label: 'All', count: counts.all },
-              { value: 'image', label: 'Images', icon: ImageIcon, count: counts.image },
-              { value: 'video', label: 'Videos', icon: Video, count: counts.video },
-              { value: 'favorite', label: 'Favorites', icon: Heart, count: counts.favorite }
-            ]}
-          />
+
+        {/* ROW 2: Category Dropdown (without 0 count pills) */}
+        <div className="pt-2 border-t border-neutral-800/60 flex items-center justify-between">
+          <div className="relative inline-block" ref={categoryMenuRef}>
+            <button
+              type="button"
+              onClick={() => {
+                setIsCategoryMenuOpen((prev) => !prev)
+                setIsModelMenuOpen(false)
+                setIsSortMenuOpen(false)
+              }}
+              className={cn(
+                "h-[38px] px-3.5 rounded-xl bg-[#080B14] border text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500/30",
+                isCategoryMenuOpen
+                  ? "border-cyan-500 text-white"
+                  : "border-neutral-700/80 hover:border-cyan-500/50 text-neutral-200 hover:text-white"
+              )}
+              aria-expanded={isCategoryMenuOpen}
+              aria-haspopup="true"
+            >
+              {selectedCategory.icon && <selectedCategory.icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+              <span>{selectedCategory.label}</span>
+              <ChevronDown className={cn("w-3.5 h-3.5 text-neutral-400 transition-transform duration-200 ml-0.5", isCategoryMenuOpen && "rotate-180")} />
+            </button>
+
+            {isCategoryMenuOpen && (
+              <div
+                role="menu"
+                className="absolute left-0 top-full mt-1.5 w-44 rounded-xl bg-[#0D111C] border border-neutral-800 shadow-2xl py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100"
+              >
+                <div className="space-y-0.5 px-1">
+                  {categoryOptions.map((cat) => {
+                    const Icon = cat.icon
+                    const isSelected = typeFilter === cat.value
+                    return (
+                      <button
+                        key={cat.value}
+                        type="button"
+                        onClick={() => {
+                          setTypeFilter(cat.value)
+                          setIsCategoryMenuOpen(false)
+                        }}
+                        className={cn(
+                          "w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between text-xs transition-colors cursor-pointer",
+                          isSelected
+                            ? "bg-cyan-950/60 text-cyan-300 font-semibold border border-cyan-800/40"
+                            : "text-neutral-300 hover:bg-neutral-800/70 hover:text-white"
+                        )}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          {Icon ? <Icon className={cn("w-3.5 h-3.5 shrink-0", isSelected ? "text-cyan-400" : "text-neutral-400")} /> : <span className="w-3.5" />}
+                          <span className="truncate">{cat.label}</span>
+                        </div>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-cyan-400 ml-0.5 shrink-0" />}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </Panel>
 

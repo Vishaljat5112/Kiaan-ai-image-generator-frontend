@@ -1,8 +1,9 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import { api } from '../../services/api'
 import {
   HelpCircle, Search, MessageSquare, Plus, FileText, ChevronDown,
-  ChevronUp, CheckCircle, Clock, Send, Sparkles, LifeBuoy, AlertCircle
+  ChevronUp, CheckCircle, Clock, Send, Sparkles, LifeBuoy, AlertCircle,
+  Check, BookOpen, Video, Shield
 } from 'lucide-react'
 import { Modal } from '../../components/ui/Modal'
 import { Button } from '../../components/ui/Button'
@@ -18,6 +19,36 @@ export function SupportPage() {
   const [activeTab, setActiveTab] = useState('kb') // 'kb' | 'faq' | 'tickets'
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false)
+  const categoryMenuRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (categoryMenuRef.current && !categoryMenuRef.current.contains(event.target)) {
+        setIsCategoryMenuOpen(false)
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setIsCategoryMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  const categoryOptions = [
+    { id: 'all', label: 'All Categories', icon: BookOpen },
+    { id: 'getting-started', label: 'Getting Started', icon: Sparkles },
+    { id: 'generation', label: 'Image & Video Generation', icon: Video },
+    { id: 'credits', label: 'Credits & Billing', icon: HelpCircle },
+    { id: 'account', label: 'Account & Security', icon: Shield }
+  ]
+  const selectedCategoryObj = categoryOptions.find((c) => c.id === selectedCategory) || categoryOptions[0]
 
   // FAQ accordion
   const [expandedFaq, setExpandedFaq] = useState(null)
@@ -183,47 +214,102 @@ export function SupportPage() {
       {/* Knowledge Base Tab */}
       {activeTab === 'kb' && (
         <div className="space-y-5">
-          <Panel className="p-4 sm:p-5">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <Panel className="p-4 sm:p-5 relative z-30">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <SearchField
                 value={searchQuery}
                 onChange={setSearchQuery}
                 placeholder="Search tutorials, prompt engineering guides, model latency…"
-                className="flex-1 min-w-0 max-w-lg"
+                className="flex-1 min-w-0 max-w-xl"
               />
-              <div className="flex flex-wrap gap-1.5 shrink-0">
+
+              {/* Category Filter Dropdown */}
+              <div className="relative shrink-0 z-30" ref={categoryMenuRef}>
                 <button
                   type="button"
-                  onClick={() => setSelectedCategory('all')}
+                  onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
                   className={cn(
-                    'text-xs px-3 py-1.5 rounded-lg border font-semibold transition-all',
-                    selectedCategory === 'all'
-                      ? 'bg-cyan-950/70 text-cyan-300 border-cyan-800/60'
-                      : 'bg-[#080B14] text-neutral-400 border-neutral-800 hover:text-white hover:bg-neutral-800'
+                    "h-[38px] px-3.5 rounded-xl bg-[#080B14] border text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-500/30",
+                    isCategoryMenuOpen
+                      ? "border-cyan-500 text-white shadow-sm shadow-cyan-500/10"
+                      : "border-neutral-700/80 hover:border-cyan-500/50 text-neutral-200 hover:text-white"
                   )}
+                  aria-expanded={isCategoryMenuOpen}
+                  aria-haspopup="true"
                 >
-                  All Categories
-                </button>
-                {HELP_CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.id)}
+                  {selectedCategoryObj.icon && (
+                    <selectedCategoryObj.icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  )}
+                  <span>{selectedCategoryObj.label}</span>
+                  <ChevronDown
                     className={cn(
-                      'text-xs px-3 py-1.5 rounded-lg border font-semibold transition-all',
-                      selectedCategory === cat.id
-                        ? 'bg-cyan-950/70 text-cyan-300 border-cyan-800/60'
-                        : 'bg-[#080B14] text-neutral-400 border-neutral-800 hover:text-white hover:bg-neutral-800'
+                      "w-3.5 h-3.5 text-neutral-400 transition-transform duration-200 ml-0.5",
+                      isCategoryMenuOpen && "rotate-180"
                     )}
+                  />
+                </button>
+
+                {isCategoryMenuOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 top-full mt-1.5 w-56 rounded-xl bg-[#0D111C] border border-neutral-800 shadow-2xl py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100"
                   >
-                    {cat.label}
-                  </button>
-                ))}
+                    <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                      CATEGORY FILTER
+                    </div>
+                    <div className="space-y-0.5 px-1">
+                      {categoryOptions.map((opt) => {
+                        const Icon = opt.icon
+                        const isSelected = selectedCategory === opt.id
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedCategory(opt.id)
+                              setIsCategoryMenuOpen(false)
+                            }}
+                            className={cn(
+                              "w-full px-2.5 py-2 rounded-lg text-left flex items-center justify-between text-xs transition-colors cursor-pointer",
+                              isSelected
+                                ? "bg-cyan-950/60 text-cyan-300 font-semibold border border-cyan-800/40"
+                                : "text-neutral-300 hover:bg-neutral-800/70 hover:text-white"
+                            )}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              {Icon && (
+                                <Icon
+                                  className={cn(
+                                    "w-3.5 h-3.5 shrink-0",
+                                    isSelected ? "text-cyan-400" : "text-neutral-400"
+                                  )}
+                                />
+                              )}
+                              <span className="truncate">{opt.label}</span>
+                            </div>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0 ml-1.5" />
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Panel>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredArticles.length === 0 ? (
+            <Panel className="p-8 text-center">
+              <LightEmptyState
+                icon={BookOpen}
+                title="No articles found"
+                description={`No articles found for "${selectedCategoryObj.label}". Try a different search query or category.`}
+              />
+            </Panel>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredArticles.map((art) => (
               <div
                 key={art.id}
@@ -248,6 +334,7 @@ export function SupportPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
       )}
 

@@ -1,12 +1,13 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import {
   Coins, TrendingUp, Sparkles, Video, ArrowUpRight, ArrowDownLeft,
-  Calendar, Clock, AlertCircle, Info, RefreshCw, Plus, Check, Loader2
+  Calendar, Clock, AlertCircle, Info, RefreshCw, Plus, Check, Loader2,
+  ChevronDown
 } from 'lucide-react'
 import { Modal } from '../../components/ui/Modal'
 import { Button } from '../../components/ui/Button'
 import {
-  StudioPageHeader, Panel, SearchField, SegmentedTabs, LightSelect, LightEmptyState,
+  StudioPageHeader, Panel, SearchField, LightSelect, LightEmptyState,
   StatCard, Toast
 } from '../../components/studio/StudioUI'
 import { DEMO_USAGE_DAILY, DEMO_TRANSACTIONS } from '../../mocks/customerDemoData'
@@ -26,6 +27,35 @@ export function CreditsPage() {
   const [balance, setBalance] = useState(user?.creditBalance ?? 25)
   const [transactions, setTransactions] = useState([])
   const [categoryFilter, setCategoryFilter] = useState('all')
+  const [isActivityMenuOpen, setIsActivityMenuOpen] = useState(false)
+  const activityMenuRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (activityMenuRef.current && !activityMenuRef.current.contains(event.target)) {
+        setIsActivityMenuOpen(false)
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setIsActivityMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  const activityOptions = [
+    { value: 'all', label: 'All Activities', icon: Clock },
+    { value: 'image', label: 'Image Activities', icon: Sparkles },
+    { value: 'video', label: 'Video Activities', icon: Video },
+    { value: 'topup', label: 'Credit Added', icon: Plus }
+  ]
+  const selectedActivity = activityOptions.find((a) => a.value === categoryFilter) || activityOptions[0]
   const [topUpModalOpen, setTopUpModalOpen] = useState(false)
   const [selectedPack, setSelectedPack] = useState(TOP_UP_PACKS[1].id)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -457,17 +487,80 @@ export function CreditsPage() {
               Transparent record of all debit reserves, refunds and pack allocations.
             </p>
           </div>
-          <SegmentedTabs
-            size="sm"
-            value={categoryFilter}
-            onChange={setCategoryFilter}
-            options={[
-              { value: 'all', label: 'All Activity' },
-              { value: 'image', label: 'Image Jobs' },
-              { value: 'video', label: 'Video Jobs' },
-              { value: 'topup', label: 'Credits Added' }
-            ]}
-          />
+          {/* Activity Filter Dropdown */}
+          <div className="relative shrink-0" ref={activityMenuRef}>
+            <button
+              type="button"
+              onClick={() => setIsActivityMenuOpen((prev) => !prev)}
+              className={cn(
+                "h-[38px] px-3.5 rounded-xl bg-[#080B14] border text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-500/30",
+                isActivityMenuOpen
+                  ? "border-cyan-500 text-white shadow-sm shadow-cyan-500/10"
+                  : "border-neutral-700/80 hover:border-cyan-500/50 text-neutral-200 hover:text-white"
+              )}
+              aria-expanded={isActivityMenuOpen}
+              aria-haspopup="true"
+            >
+              {selectedActivity.icon && (
+                <selectedActivity.icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              )}
+              <span>{selectedActivity.label}</span>
+              <ChevronDown
+                className={cn(
+                  "w-3.5 h-3.5 text-neutral-400 transition-transform duration-200 ml-0.5",
+                  isActivityMenuOpen && "rotate-180"
+                )}
+              />
+            </button>
+
+            {isActivityMenuOpen && (
+              <div
+                role="menu"
+                className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-[#0D111C] border border-neutral-800 shadow-2xl py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100"
+              >
+                <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">
+                  ACTIVITY FILTER
+                </div>
+                <div className="space-y-0.5 px-1">
+                  {activityOptions.map((opt) => {
+                    const Icon = opt.icon
+                    const isSelected = categoryFilter === opt.value
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => {
+                          setCategoryFilter(opt.value)
+                          setIsActivityMenuOpen(false)
+                        }}
+                        className={cn(
+                          "w-full px-2.5 py-2 rounded-lg text-left flex items-center justify-between text-xs transition-colors cursor-pointer",
+                          isSelected
+                            ? "bg-cyan-950/60 text-cyan-300 font-semibold border border-cyan-800/40"
+                            : "text-neutral-300 hover:bg-neutral-800/70 hover:text-white"
+                        )}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          {Icon && (
+                            <Icon
+                              className={cn(
+                                "w-3.5 h-3.5 shrink-0",
+                                isSelected ? "text-cyan-400" : "text-neutral-400"
+                              )}
+                            />
+                          )}
+                          <span className="truncate">{opt.label}</span>
+                        </div>
+                        {isSelected && (
+                          <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0 ml-1.5" />
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="overflow-x-auto">

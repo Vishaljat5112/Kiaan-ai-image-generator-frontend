@@ -7,7 +7,7 @@ import {
 import { Modal } from '../../components/ui/Modal'
 import { Button } from '../../components/ui/Button'
 import {
-  StudioPageHeader, Panel, SearchField, SegmentedTabs, LightSelect, LightEmptyState,
+  StudioPageHeader, Panel, SearchField, LightSelect, LightEmptyState,
   MediaThumb, Toast, FieldLabel, lightInputClass
 } from '../../components/studio/StudioUI'
 import { PROJECT_COLORS } from '../../mocks/customerDemoData'
@@ -215,12 +215,62 @@ export function ProjectsPage() {
                 { value: 'Archived', label: 'Archived' }
               ]}
             />
-            <SegmentedTabs
-              size="sm"
-              value={view}
-              onChange={setView}
-              options={[{ value: 'grid', label: 'Grid', icon: Grid3x3 }, { value: 'list', label: 'List', icon: List }]}
-            />
+            {/* Icon-Only Grid / List Controls */}
+            <div
+              className="inline-flex p-1 rounded-xl bg-[#080B14] border border-neutral-700/80 items-center gap-1 shrink-0"
+              role="group"
+              aria-label="View layout"
+            >
+              {/* Grid Button */}
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setView('grid')}
+                  aria-label="Grid"
+                  title="Grid"
+                  className={cn(
+                    'w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/50',
+                    view === 'grid'
+                      ? 'bg-neutral-800 text-cyan-300 shadow-sm border border-cyan-500/30'
+                      : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/40'
+                  )}
+                >
+                  <Grid3x3 className="w-4 h-4" />
+                </button>
+                {/* Tooltip on hover / keyboard focus */}
+                <div
+                  role="tooltip"
+                  className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-900 text-neutral-200 border border-neutral-700 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 whitespace-nowrap z-30"
+                >
+                  Grid
+                </div>
+              </div>
+
+              {/* List Button */}
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setView('list')}
+                  aria-label="List"
+                  title="List"
+                  className={cn(
+                    'w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/50',
+                    view === 'list'
+                      ? 'bg-neutral-800 text-cyan-300 shadow-sm border border-cyan-500/30'
+                      : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/40'
+                  )}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+                {/* Tooltip on hover / keyboard focus */}
+                <div
+                  role="tooltip"
+                  className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-900 text-neutral-200 border border-neutral-700 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 whitespace-nowrap z-30"
+                >
+                  List
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Panel>
