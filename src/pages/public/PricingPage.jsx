@@ -297,22 +297,20 @@ export function PricingPage() {
                 <button
                   type="button"
                   onClick={() => setBillingCycle('monthly')}
-                  className={`px-3.5 sm:px-4 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    billingCycle === 'monthly'
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-sm'
-                      : 'text-neutral-400 hover:text-white'
-                  }`}
+                  className={`px-3.5 sm:px-4 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${billingCycle === 'monthly'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-sm'
+                    : 'text-neutral-400 hover:text-white'
+                    }`}
                 >
                   Monthly Billing
                 </button>
                 <button
                   type="button"
                   onClick={() => setBillingCycle('yearly')}
-                  className={`px-3.5 sm:px-4 py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    billingCycle === 'yearly'
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-sm'
-                      : 'text-neutral-400 hover:text-white'
-                  }`}
+                  className={`px-3.5 sm:px-4 py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${billingCycle === 'yearly'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-sm'
+                    : 'text-neutral-400 hover:text-white'
+                    }`}
                 >
                   <span>Yearly Billing</span>
                   <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-pink-950/60 border border-pink-500/40 text-pink-300 tracking-wide font-mono">
@@ -345,11 +343,10 @@ export function PricingPage() {
               return (
                 <div
                   key={plan.id}
-                  className={`rounded-xl sm:rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 relative h-full ${
-                    plan.featured
-                      ? 'bg-gradient-to-br from-[#0E1322] via-[#141B2D] to-[#0E1322] text-white border-2 border-pink-500 shadow-xl shadow-pink-500/20 scale-[1.01] xl:scale-[1.02] z-10'
-                      : 'bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] text-white border border-neutral-800 shadow-md hover:border-cyan-500/40'
-                  }`}
+                  className={`rounded-xl sm:rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 relative h-full ${plan.featured
+                    ? 'bg-gradient-to-br from-[#0E1322] via-[#141B2D] to-[#0E1322] text-white border-2 border-pink-500 shadow-xl shadow-pink-500/20 scale-[1.01] xl:scale-[1.02] z-10'
+                    : 'bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] text-white border border-neutral-800 shadow-md hover:border-cyan-500/40'
+                    }`}
                 >
                   {plan.featured && (
                     <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[8.5px] font-black uppercase tracking-wider bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/30 border border-pink-400/40 font-mono whitespace-nowrap">
@@ -623,11 +620,10 @@ export function PricingPage() {
               return (
                 <div
                   key={index}
-                  className={`rounded-lg sm:rounded-xl border transition-all overflow-hidden ${
-                    isOpen
-                      ? 'bg-[#0D111C] border-cyan-500/60 shadow-[0_0_20px_rgba(6,182,212,0.12)]'
-                      : 'bg-[#0B0F19]/90 border-neutral-800 hover:border-neutral-700'
-                  }`}
+                  className={`rounded-lg sm:rounded-xl border transition-all overflow-hidden ${isOpen
+                    ? 'bg-[#0D111C] border-cyan-500/60 shadow-[0_0_20px_rgba(6,182,212,0.12)]'
+                    : 'bg-[#0B0F19]/90 border-neutral-800 hover:border-neutral-700'
+                    }`}
                 >
                   <button
                     type="button"
@@ -638,11 +634,10 @@ export function PricingPage() {
                     <span className="text-xs sm:text-[13px] font-semibold text-white">
                       {faq.q}
                     </span>
-                    <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 transition-transform ${
-                      isOpen
-                        ? 'bg-cyan-950/60 text-cyan-400 rotate-180 border border-cyan-500/40'
-                        : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
-                    }`}>
+                    <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 transition-transform ${isOpen
+                      ? 'bg-cyan-950/60 text-cyan-400 rotate-180 border border-cyan-500/40'
+                      : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
+                      }`}>
                       <ChevronDown className="w-3 h-3" />
                     </span>
                   </button>
