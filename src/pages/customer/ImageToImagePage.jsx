@@ -146,53 +146,7 @@ export function ImageToImagePage() {
   }
 
   const handleGenerate = () => {
-    if (!prompt.trim()) {
-      setPrompt('Transform into a futuristic glowing neon cyberpunk gourmet burger with holographic garnish')
-    }
-
-    setIsGenerating(true)
-    setGenerationProgress(15)
-    setGenerationStepText('Encoding source image into latent tensor representation...')
-
-    setTimeout(() => {
-      setGenerationProgress(45)
-      setGenerationStepText(`Injecting noise at ${(transformationStrength * 100).toFixed(0)}% strength and applying ${currentModelObj.name}...`)
-    }, 500)
-
-    setTimeout(() => {
-      setGenerationProgress(80)
-      setGenerationStepText('Synthesizing cross-attention feature map & guided restyling...')
-    }, 1000)
-
-    setTimeout(() => {
-      setGenerationProgress(100)
-      setGenerationStepText('Decoding VAE latents into transformed image...')
-
-      const pool = [
-        '/images/landing/img2img-result-burger.jpg',
-        '/images/landing/img2img-result-watch.jpg',
-        '/images/landing/img2img-result-villa.jpg',
-        '/images/landing/edit-cyberpunk.jpg',
-        '/images/landing/edit-relighting.jpg'
-      ]
-      const chosen = pool[Math.floor(Math.random() * pool.length)]
-
-      const newComp = {
-        id: `comp-${Date.now()}`,
-        title: prompt.slice(0, 32) || 'Remixed Variation',
-        prompt: prompt.trim() || 'Custom visual restyling',
-        beforeImage: sourceImage.url,
-        afterImage: chosen,
-        model: currentModelObj.name,
-        strength: transformationStrength,
-        timestamp: 'Just now'
-      }
-
-      setActiveResult(newComp)
-      setHistoryList(prev => [newComp, ...prev])
-      setIsGenerating(false)
-      setSliderPosition(50)
-    }, 1500)
+    alert('Neural Image-to-Image restyling pipeline is currently in integration. Cloud GPU inference and multipart image ingestion will be activated in an upcoming release. No credits have been deducted.')
   }
 
   const handleCopyPrompt = (text) => {

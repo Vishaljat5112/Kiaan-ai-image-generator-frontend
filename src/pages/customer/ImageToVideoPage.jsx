@@ -188,60 +188,7 @@ export function ImageToVideoPage() {
 
   // Handle Video Generation Simulation
   const handleGenerate = () => {
-    if (!sourceImage) {
-      alert('Please upload or select a source image keyframe first.')
-      return
-    }
-
-    setIsGenerating(true)
-    setProgress(8)
-    setProgressStep('Encoding source keyframe with 3D Causal VAE...')
-
-    const randomSeedVal = isRandomSeed ? Math.floor(Math.random() * 900000000 + 100000000).toString() : (seed || '42')
-
-    setTimeout(() => {
-      setProgress(30)
-      setProgressStep(`Conditioning ${currentModelObj.name} with trajectory: ${cameraMotion.toUpperCase()}...`)
-    }, 800)
-
-    setTimeout(() => {
-      setProgress(68)
-      setProgressStep('Diffusing 81 continuous frames in spatio-temporal latent space...')
-    }, 1800)
-
-    setTimeout(() => {
-      setProgress(95)
-      setProgressStep('Packaging H.264 MP4 cinematic stream...')
-    }, 2800)
-
-    setTimeout(() => {
-      setProgress(100)
-      setProgressStep('Complete!')
-
-      const newVideo = {
-        id: `i2v-${Date.now()}`,
-        title: 'Animated Keyframe ' + (cameraMotion.charAt(0).toUpperCase() + cameraMotion.slice(1)),
-        prompt: motionPrompt.trim() || 'Dynamic motion animation',
-        model: currentModelObj.name,
-        duration: duration,
-        resolution: resolution === '720p' ? '720p (1280×720)' : '480p (854×480)',
-        camera: CAMERA_PRESETS.find(c => c.id === cameraMotion)?.label || 'Dynamic',
-        motionBucket: motionBucket,
-        sourceImage: sourceImage.url,
-        videoUrl: '/videos/sample-video.mp4',
-        thumbnail: sourceImage.url,
-        timestamp: 'Just now'
-      }
-
-      setCurrentVideoResult(newVideo)
-      setGallery(prev => [newVideo, ...prev])
-      setIsGenerating(false)
-      setIsPlaying(true)
-      if (videoPlayerRef.current) {
-        videoPlayerRef.current.currentTime = 0
-        videoPlayerRef.current.play().catch(() => {})
-      }
-    }, 3400)
+    alert('Neural Image-to-Video motion synthesis pipeline is currently in integration. Cloud GPU spatio-temporal video generation will be activated in an upcoming release. No credits have been deducted.')
   }
 
   // Toggle Video Play/Pause

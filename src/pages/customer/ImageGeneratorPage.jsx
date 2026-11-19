@@ -263,18 +263,6 @@ export function ImageGeneratorPage() {
 
     const randomSeedVal = isRandomSeed ? Math.floor(Math.random() * 900000000 + 100000000).toString() : (seed || '42')
 
-    const pool = [
-      '/images/landing/gallery-architecture.jpg',
-      '/images/landing/hero-astronaut.jpg',
-      '/images/landing/gallery-fantasy.jpg',
-      '/images/landing/gallery-fashion.jpg',
-      '/images/landing/gallery-dandelion.jpg',
-      '/images/landing/gallery-product.jpg',
-      '/images/landing/gallery-motocross.jpg',
-      '/images/landing/gallery-motorsport.jpg'
-    ]
-    const chosenSample = pool[Math.floor(Math.random() * pool.length)]
-
     try {
       const res = await api.post('/generation/jobs', {
         type: 'TEXT_TO_IMAGE',
@@ -296,9 +284,13 @@ export function ImageGeneratorPage() {
         const backendJob = res.data.data
         const jobId = backendJob.id
 
-        if (setUser) {
-          setUser((prev) => (prev ? { ...prev, creditBalance: Math.max(0, (prev.creditBalance || 25) - (backendJob.creditCost || 1)) } : prev))
-        }
+        // Synchronize real credit balance from server after reservation
+        try {
+          const balRes = await api.get('/credits/balance')
+          if (balRes.data?.data && setUser) {
+            setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
+          }
+        } catch {}
 
         setGenerationProgress(20)
         setGenerationStepText(`Job #${jobId.slice(0, 8)} enqueued (Queue pos #${backendJob.queuePosition || 1}) - waiting for AI engine...`)
@@ -314,11 +306,20 @@ export function ImageGeneratorPage() {
               setGenerationStepText(`AI Engine synthesizing latents on ${currentModelObj.name}...`)
             } else if (jobData.status === 'COMPLETED') {
               clearInterval(pollInterval)
+
+              const asset = jobData.assets?.[0]
+              const rawSrc = asset?.src || asset?.storagePath
+
+              if (!asset || !rawSrc) {
+                setIsGenerating(false)
+                setGenerationStepText('Job completed but no valid asset was returned.')
+                alert('AI worker reported completion but no valid asset output was received.')
+                return
+              }
+
               setGenerationProgress(100)
               setGenerationStepText('AI Generation completed successfully!')
 
-              const asset = jobData.assets?.[0]
-              const rawSrc = asset?.src || asset?.storagePath || chosenSample
               const finalImageUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
                 ? rawSrc
                 : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
@@ -354,7 +355,17 @@ export function ImageGeneratorPage() {
             } else if (jobData.status === 'FAILED' || jobData.status === 'CANCELED') {
               clearInterval(pollInterval)
               setIsGenerating(false)
-              alert(`Generation failed: ${jobData.errorMessage || 'AI inference error'}`)
+              setGenerationProgress(0)
+              setGenerationStepText(`Generation ${jobData.status.toLowerCase()}: ${jobData.errorMessage || 'AI inference error'}`)
+              alert(`Generation failed: ${jobData.errorMessage || 'AI inference error'}. Any reserved credits have been refunded.`)
+
+              // Refresh user credit balance after refund
+              try {
+                const balRes = await api.get('/credits/balance')
+                if (balRes.data?.data && setUser) {
+                  setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
+                }
+              } catch {}
             }
           } catch (pollErr) {
             console.warn('[AI Poll Warning]', pollErr)
@@ -366,7 +377,7 @@ export function ImageGeneratorPage() {
           clearInterval(pollInterval)
           setIsGenerating((prev) => {
             if (prev) {
-              setGenerationStepText('AI worker processing in background. View under My Generations.')
+              setGenerationStepText('AI job is still queued or processing on the engine. View status under My Generations.')
               return false
             }
             return false
@@ -376,48 +387,22 @@ export function ImageGeneratorPage() {
         return
       }
     } catch (err) {
+      setIsGenerating(false)
+      setGenerationProgress(0)
+      setGenerationStepText('')
+
       if (err.response?.status === 402) {
-        setIsGenerating(false)
         alert('Insufficient credits! Please add credits to your account.')
         return
       }
-    }
-
-    // Timeline fallback simulation
-    setTimeout(() => {
-      setGenerationProgress(35)
-      setGenerationStepText(`Compiling graph on ${currentModelObj.name} with ${steps} rectified steps...`)
-    }, 450)
-
-    setTimeout(() => {
-      setGenerationProgress(75)
-      setGenerationStepText('Synthesizing high-frequency latents & decoding VAE...')
-    }, 900)
-
-    setTimeout(() => {
-      setGenerationProgress(100)
-      setGenerationStepText('Post-processing WebP artifact...')
-
-      const newGen = {
-        id: `gen-${Date.now()}`,
-        prompt: finalPrompt,
-        negativePrompt: negativePrompt.trim() || undefined,
-        model: currentModelObj.name,
-        aspect: currentAspectObj.id,
-        dimensions: `${currentAspectObj.width}×${currentAspectObj.height}`,
-        seed: randomSeedVal,
-        steps,
-        cfg: guidanceScale,
-        sampler,
-        timestamp: 'Just now',
-        image: chosenSample,
-        refImage: referenceImage ? referenceImage.url : null
+      if (err.response?.status === 503) {
+        const msg = err.response?.data?.error || 'AI inference service is currently offline. No credits were deducted.'
+        alert(`Service Unavailable: ${msg}`)
+        return
       }
-
-      setGeneratedResults([newGen])
-      setHistoryGallery((prev) => [newGen, ...prev])
-      setIsGenerating(false)
-    }, 1400)
+      const errMsg = err.response?.data?.error || err.response?.data?.message || err.message || 'Generation request failed.'
+      alert(`Generation Error: ${errMsg}`)
+    }
   }
 
   // Copy prompt to clipboard

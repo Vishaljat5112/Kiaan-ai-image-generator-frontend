@@ -211,15 +211,6 @@ export function VideoGeneratorPage() {
 
     const randomSeedVal = isRandomSeed ? Math.floor(Math.random() * 900000000 + 100000000).toString() : (seed || '8192')
 
-    const pool = [
-      '/images/landing/gallery-motorsport.jpg',
-      '/images/landing/gallery-motocross.jpg',
-      '/images/landing/gallery-fantasy.jpg',
-      '/images/landing/hero-astronaut.jpg',
-      '/images/landing/gallery-architecture.jpg'
-    ]
-    const chosenThumbnail = pool[Math.floor(Math.random() * pool.length)]
-
     try {
       const res = await api.post('/generation/jobs', {
         type: 'TEXT_TO_VIDEO',
@@ -239,9 +230,13 @@ export function VideoGeneratorPage() {
         const backendJob = res.data.data
         const jobId = backendJob.id
 
-        if (setUser) {
-          setUser((prev) => (prev ? { ...prev, creditBalance: Math.max(0, (prev.creditBalance || 25) - (backendJob.creditCost || 25)) } : prev))
-        }
+        // Synchronize real credit balance from server after reservation
+        try {
+          const balRes = await api.get('/credits/balance')
+          if (balRes.data?.data && setUser) {
+            setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
+          }
+        } catch {}
 
         setGenerationProgress(20)
         setGenerationStepText(`Job #${jobId.slice(0, 8)} enqueued (Queue pos #${backendJob.queuePosition || 1}) - waiting for Wan 2.1 video worker...`)
@@ -257,11 +252,20 @@ export function VideoGeneratorPage() {
               setGenerationStepText(`Synthesizing spatio-temporal video latents on ${currentModelObj.name}...`)
             } else if (jobData.status === 'COMPLETED') {
               clearInterval(pollInterval)
+
+              const asset = jobData.assets?.[0]
+              const rawSrc = asset?.src || asset?.storagePath
+
+              if (!asset || !rawSrc) {
+                setIsGenerating(false)
+                setGenerationStepText('Video worker reported completion, but no valid video asset was returned.')
+                alert('Video worker reported completion, but no valid video asset output was received.')
+                return
+              }
+
               setGenerationProgress(100)
               setGenerationStepText('Video sequence ready!')
 
-              const asset = jobData.assets?.[0]
-              const rawSrc = asset?.src || asset?.storagePath || chosenThumbnail
               const finalVideoUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
                 ? rawSrc
                 : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
@@ -277,7 +281,7 @@ export function VideoGeneratorPage() {
                 cameraMotion: cameraMotion,
                 seed: randomSeedVal,
                 timestamp: 'Just now',
-                thumbnail: finalVideoUrl,
+                thumbnail: asset.thumbnailPath || finalVideoUrl,
                 videoUrl: finalVideoUrl,
                 badge: `${resolution} ${aspectRatio}`,
                 status: 'COMPLETED'
@@ -299,7 +303,17 @@ export function VideoGeneratorPage() {
             } else if (jobData.status === 'FAILED' || jobData.status === 'CANCELED') {
               clearInterval(pollInterval)
               setIsGenerating(false)
-              alert(`Video generation error: ${jobData.errorMessage || 'AI inference error'}`)
+              setGenerationProgress(0)
+              setGenerationStepText(`Video job ${jobData.status.toLowerCase()}: ${jobData.errorMessage || 'AI inference error'}`)
+              alert(`Video generation failed: ${jobData.errorMessage || 'AI inference error'}. Any reserved credits have been refunded.`)
+
+              // Refresh credits after refund
+              try {
+                const balRes = await api.get('/credits/balance')
+                if (balRes.data?.data && setUser) {
+                  setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
+                }
+              } catch {}
             }
           } catch (pollErr) {
             console.warn('[AI Video Poll Warning]', pollErr)
@@ -310,7 +324,7 @@ export function VideoGeneratorPage() {
           clearInterval(pollInterval)
           setIsGenerating((prev) => {
             if (prev) {
-              setGenerationStepText('Video worker processing in background. View under My Generations.')
+              setGenerationStepText('Video job is still queued or processing on the AI engine. View under My Generations.')
               return false
             }
             return false
@@ -320,54 +334,22 @@ export function VideoGeneratorPage() {
         return
       }
     } catch (err) {
+      setIsGenerating(false)
+      setGenerationProgress(0)
+      setGenerationStepText('')
+
       if (err.response?.status === 402) {
-        setIsGenerating(false)
         alert('Insufficient credits! You need at least 25 credits to run a 3D DiT video job.')
         return
       }
-    }
-
-    // Timeline fallback simulation
-    setTimeout(() => {
-      setGenerationProgress(30)
-      setGenerationStepText(`Generating 81 temporal latent frames on ${currentModelObj.name}...`)
-    }, 600)
-
-    setTimeout(() => {
-      setGenerationProgress(65)
-      setGenerationStepText('Synthesizing spatio-temporal coherence and motion vectors...')
-    }, 1200)
-
-    setTimeout(() => {
-      setGenerationProgress(90)
-      setGenerationStepText('Decoding 3D VAE and rendering H.264 video stream...')
-    }, 1800)
-
-    setTimeout(() => {
-      setGenerationProgress(100)
-      setGenerationStepText('Video sequence ready!')
-
-      const newVideo = {
-        id: `vid-${Date.now()}`,
-        title: finalPrompt.slice(0, 30) || 'Custom Motion Sequence',
-        prompt: finalPrompt,
-        model: currentModelObj.name,
-        resolution: `${resolution === '720p' ? '1280×720' : '854×480'} (${aspectRatio})`,
-        duration: duration,
-        fps: fps,
-        cameraMotion: cameraMotion,
-        seed: randomSeedVal,
-        timestamp: 'Just now',
-        thumbnail: chosenThumbnail,
-        badge: `${resolution} ${aspectRatio}`
+      if (err.response?.status === 503) {
+        const msg = err.response?.data?.error || 'AI video inference service is currently offline. No credits were deducted.'
+        alert(`Service Unavailable: ${msg}`)
+        return
       }
-
-      setCurrentVideo(newVideo)
-      setVideoHistory(prev => [newVideo, ...prev])
-      setIsGenerating(false)
-      setIsPlaying(true)
-      setPlayerProgress(0)
-    }, 2400)
+      const errMsg = err.response?.data?.error || err.response?.data?.message || err.message || 'Video generation request failed.'
+      alert(`Generation Error: ${errMsg}`)
+    }
   }
 
   const handleCopyPrompt = (text) => {
