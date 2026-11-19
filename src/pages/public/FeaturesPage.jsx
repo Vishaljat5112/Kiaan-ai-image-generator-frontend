@@ -173,48 +173,48 @@ export function FeaturesPage() {
       </div>
 
       {/* 1. HERO HEADER */}
-      <section className="relative pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-neutral-800/80 z-10">
+      <section className="relative pt-8 pb-10 sm:pt-10 sm:pb-12 lg:pt-12 lg:pb-12 border-b border-neutral-800/80 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-cyan-400 text-xs font-mono tracking-wider uppercase shadow-sm">
+          <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-cyan-400 text-xs font-mono tracking-wider uppercase shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
               <span>Platform Capabilities & Engine Specs</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1]">
+            <h1 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-white tracking-tight leading-[1.15]">
               Sovereign Generative <span className="bg-gradient-to-r from-cyan-400 via-pink-500 to-amber-300 bg-clip-text text-transparent">Visual Intelligence</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-neutral-300 leading-relaxed max-w-2xl mx-auto">
               Inspect the state-of-the-art open-weight diffusion models, cinematic 3D video engines, and self-hosted infrastructure powering Kiaan Studio.
             </p>
 
             {/* Quick-Jump Section Navigator Pills */}
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+            <div className="pt-1 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
               <a
                 href="#models"
-                className="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-cyan-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-cyan-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
               >
                 <Cpu className="w-3.5 h-3.5 text-cyan-400" />
                 <span>AI Models Suite</span>
               </a>
               <a
                 href="#video-specs"
-                className="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-pink-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-pink-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
               >
                 <Video className="w-3.5 h-3.5 text-pink-400" />
                 <span>AI Video Engine</span>
               </a>
               <a
                 href="#creative-tools"
-                className="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-purple-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-purple-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
               >
                 <Layers className="w-3.5 h-3.5 text-purple-400" />
                 <span>Studio Tooling</span>
               </a>
               <a
                 href="#architecture"
-                className="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-emerald-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
+                className="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-[#0B0F19] border border-neutral-800 hover:border-emerald-500/60 text-neutral-300 hover:text-white transition-all inline-flex items-center gap-1.5 shadow-sm"
               >
                 <Server className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Platform Architecture</span>
@@ -222,17 +222,17 @@ export function FeaturesPage() {
             </div>
 
             {/* Main Action CTAs */}
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 to="/dashboard/image-generator"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2"
               >
                 <span>Launch Studio Generator</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/pricing"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full text-sm font-semibold border border-neutral-700 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-200 hover:text-white transition-colors inline-flex items-center justify-center gap-1.5 shadow-sm"
+                className="w-full sm:w-auto px-6 py-3 rounded-full text-xs sm:text-sm font-semibold border border-neutral-700 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-200 hover:text-white transition-colors inline-flex items-center justify-center gap-1.5 shadow-sm"
               >
                 <span>View Pricing & Credits</span>
               </Link>
@@ -242,85 +242,82 @@ export function FeaturesPage() {
       </section>
 
       {/* 2. SECTION 1: AI MODEL SUITE (#models) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="models">
+      <section className="py-6 sm:py-8 lg:py-9 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="models">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12 space-y-3">
+          <div className="max-w-3xl mb-5 sm:mb-6 space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 text-cyan-400 text-xs font-mono uppercase tracking-wider border border-cyan-500/40">
               <Cpu className="w-3.5 h-3.5" />
               <span>Section 01 • Neural Models Catalog</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               State-of-the-Art Open Model Weights
             </h2>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
               Kiaan Studio runs exclusively on permissive Apache 2.0 open-weight foundations. Zero per-prompt vendor markups, zero cloud lock-in, and full commercial usage rights.
             </p>
           </div>
 
           {/* Model Switcher Tabs */}
-          <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 rounded-2xl bg-[#0B0F19] border border-neutral-800 max-w-fit shadow-md">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-4 sm:mb-5 p-1 rounded-xl bg-[#0B0F19] border border-neutral-800 max-w-fit shadow-md">
             <button
               onClick={() => setSelectedModelTab('flux')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                selectedModelTab === 'flux'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
-                  : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
-              }`}
+              className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedModelTab === 'flux'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
+                : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+                }`}
             >
               FLUX.2 Klein 4B
             </button>
             <button
               onClick={() => setSelectedModelTab('zimage')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                selectedModelTab === 'zimage'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
-                  : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
-              }`}
+              className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedModelTab === 'zimage'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
+                : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+                }`}
             >
               Z-Image Turbo
             </button>
             <button
               onClick={() => setSelectedModelTab('wan')}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                selectedModelTab === 'wan'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
-                  : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
-              }`}
+              className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedModelTab === 'wan'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
+                : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+                }`}
             >
               Wan 2.2 / 2.1 Video
             </button>
           </div>
 
           {/* Active Model Showcase Card */}
-          <div className="rounded-[32px] p-6 sm:p-10 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-2xl relative overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative z-10">
+          <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-xl relative overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start relative z-10">
               {/* Left Column: Model Specs & Capabilities */}
-              <div className="lg:col-span-7 space-y-6">
+              <div className="lg:col-span-7 space-y-4 sm:space-y-5">
                 <div>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider border mb-3 ${activeModel.badgeColor}`}>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider border mb-2 ${activeModel.badgeColor}`}>
                     {activeModel.badge}
                   </span>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white">
                     {activeModel.name}
                   </h3>
-                  <p className="text-sm sm:text-base font-semibold text-cyan-400 mt-1">
+                  <p className="text-xs sm:text-sm font-semibold text-cyan-400 mt-0.5">
                     {activeModel.headline}
                   </p>
-                  <p className="text-neutral-300 text-sm leading-relaxed mt-3">
+                  <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed mt-2">
                     {activeModel.description}
                   </p>
                 </div>
 
                 {/* Technical Specifications Grid */}
                 <div>
-                  <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-3 font-mono">
+                  <h4 className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-2 font-mono">
                     Technical Specifications
                   </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
                     {activeModel.specs.map((spec) => (
-                      <div key={spec.label} className="p-3 rounded-xl bg-neutral-900/90 border border-neutral-800">
-                        <span className="text-[11px] font-medium text-neutral-400 block">{spec.label}</span>
-                        <span className="text-xs sm:text-sm font-bold text-white mt-0.5 block truncate font-mono">
+                      <div key={spec.label} className="p-2 sm:p-2.5 rounded-lg bg-neutral-900/90 border border-neutral-800 flex flex-col justify-between">
+                        <span className="text-[10px] sm:text-[11px] font-medium text-neutral-400 block">{spec.label}</span>
+                        <span className="text-xs sm:text-sm font-bold text-white mt-0.5 block font-mono leading-snug break-words">
                           {spec.value}
                         </span>
                       </div>
@@ -330,13 +327,13 @@ export function FeaturesPage() {
 
                 {/* Key Strengths & Capabilities */}
                 <div>
-                  <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-3 font-mono">
+                  <h4 className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider mb-2 font-mono">
                     Core Strengths & Use Cases
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5">
                     {activeModel.capabilities.map((cap, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-neutral-300">
-                        <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                      <li key={i} className="flex items-start gap-2 text-xs text-neutral-200">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
                         <span>{cap}</span>
                       </li>
                     ))}
@@ -344,17 +341,17 @@ export function FeaturesPage() {
                 </div>
 
                 {/* Launch Button */}
-                <div className="pt-2 flex items-center gap-3">
+                <div className="pt-1 flex flex-wrap items-center gap-2 sm:gap-2.5">
                   <Link
                     to={selectedModelTab === 'wan' ? '/dashboard/video-generator' : '/dashboard/image-generator'}
-                    className="px-6 py-3 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all inline-flex items-center gap-2"
+                    className="px-5 py-2.5 rounded-full text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all inline-flex items-center gap-1.5"
                   >
                     <span>Generate with {activeModel.name}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                   <Link
                     to="/about#evaluation"
-                    className="px-5 py-3 rounded-full text-xs sm:text-sm font-semibold border border-neutral-700 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-white transition-colors inline-flex items-center gap-1.5"
+                    className="px-4 py-2.5 rounded-full text-xs font-semibold border border-neutral-700 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-white transition-colors inline-flex items-center gap-1.5"
                   >
                     <span>View Benchmarks</span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-cyan-400" />
@@ -363,29 +360,29 @@ export function FeaturesPage() {
               </div>
 
               {/* Right Column: Visual Preview & Prompt Card */}
-              <div className="lg:col-span-5 space-y-4">
-                <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-950 shadow-2xl relative group border border-neutral-800">
+              <div className="lg:col-span-5 space-y-3">
+                <div className="aspect-[4/3] rounded-xl overflow-hidden bg-neutral-950 shadow-xl relative group border border-neutral-800">
                   <img
                     src={activeModel.image}
                     alt={activeModel.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-neutral-900/90 backdrop-blur-md text-[11px] font-mono text-cyan-300 border border-cyan-800/60 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-neutral-900/90 backdrop-blur-md text-[10px] sm:text-[11px] font-mono text-cyan-300 border border-cyan-800/60 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                     <span>Native 1024×1024 Output</span>
                   </div>
                 </div>
 
                 {/* Sample Prompt Container */}
-                <div className="p-4 rounded-2xl bg-[#0B0F19]/90 border border-neutral-800 space-y-2">
+                <div className="p-3 sm:p-3.5 rounded-xl bg-[#0B0F19]/90 border border-neutral-800 space-y-1.5">
                   <div className="flex items-center justify-between text-xs font-semibold text-neutral-400">
                     <span className="flex items-center gap-1.5">
                       <Terminal className="w-3.5 h-3.5 text-cyan-400" />
                       Sample Prompt
                     </span>
-                    <span className="text-[11px] font-mono text-neutral-500">Seed: 914028</span>
+                    <span className="text-[10px] sm:text-[11px] font-mono text-neutral-500">Seed: 914028</span>
                   </div>
-                  <p className="text-xs text-neutral-200 font-mono leading-relaxed bg-neutral-950/80 p-3 rounded-xl border border-neutral-800">
+                  <p className="text-xs text-neutral-200 font-mono leading-relaxed bg-neutral-950/80 p-2.5 rounded-lg border border-neutral-800">
                     "{activeModel.samplePrompt}"
                   </p>
                 </div>
@@ -394,71 +391,71 @@ export function FeaturesPage() {
           </div>
 
           {/* Model Matrix Comparison Table */}
-          <div className="mt-16">
-            <h3 className="text-xl font-bold text-white mb-4">
+          <div className="mt-7 sm:mt-8">
+            <h3 className="text-lg font-bold text-white mb-2.5">
               Side-by-Side Model Comparison
             </h3>
-            <div className="overflow-x-auto rounded-2xl border border-neutral-800 bg-[#0B0F19]/90 shadow-2xl">
-              <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <div className="overflow-x-auto rounded-xl border border-neutral-800 bg-[#0B0F19]/90 shadow-xl">
+              <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#0D111C] border-b border-neutral-800 text-neutral-400 font-bold uppercase tracking-wider text-[11px]">
-                    <th className="p-4">Model Name</th>
-                    <th className="p-4">Primary Type</th>
-                    <th className="p-4">Steps / Speed</th>
-                    <th className="p-4">Max Resolution</th>
-                    <th className="p-4">Cost</th>
-                    <th className="p-4">License</th>
-                    <th className="p-4">Ideal Production Workflow</th>
+                  <tr className="bg-[#0D111C] border-b border-neutral-800 text-neutral-300 font-bold uppercase tracking-wider text-[10px] sm:text-[11px]">
+                    <th className="p-2.5 sm:p-3 whitespace-nowrap">Model Name</th>
+                    <th className="p-2.5 sm:p-3 whitespace-nowrap">Primary Type</th>
+                    <th className="p-2.5 sm:p-3 whitespace-nowrap">Steps / Speed</th>
+                    <th className="p-2.5 sm:p-3 whitespace-nowrap">Max Resolution</th>
+                    <th className="p-2.5 sm:p-3 whitespace-nowrap">Cost</th>
+                    <th className="p-2.5 sm:p-3 whitespace-nowrap">License</th>
+                    <th className="p-2.5 sm:p-3">Ideal Production Workflow</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-800/60">
                   <tr className="hover:bg-neutral-800/30 transition-colors">
-                    <td className="p-4 font-bold text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <td className="p-2.5 sm:p-3 font-bold text-white whitespace-nowrap flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                       FLUX.2 Klein 4B
                     </td>
-                    <td className="p-4 text-neutral-300">Text-to-Image / Inpainting</td>
-                    <td className="p-4 font-mono font-medium text-cyan-400">4 steps • ~1.1s</td>
-                    <td className="p-4 font-mono text-neutral-300">1024 × 1024 (4K Upscale)</td>
-                    <td className="p-4 font-semibold text-white">1 Credit</td>
-                    <td className="p-4"><span className="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[11px] font-bold">Apache 2.0</span></td>
-                    <td className="p-4 text-neutral-300">Photorealism, characters, fast iterations</td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200 whitespace-nowrap">Text-to-Image / Inpainting</td>
+                    <td className="p-2.5 sm:p-3 font-mono font-medium text-cyan-400 whitespace-nowrap">4 steps • ~1.1s</td>
+                    <td className="p-2.5 sm:p-3 font-mono text-neutral-200 whitespace-nowrap">1024 × 1024 (4K Upscale)</td>
+                    <td className="p-2.5 sm:p-3 font-semibold text-white whitespace-nowrap">1 Credit</td>
+                    <td className="p-2.5 sm:p-3 whitespace-nowrap"><span className="px-1.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[10px] font-bold">Apache 2.0</span></td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200">Photorealism, characters, fast iterations</td>
                   </tr>
                   <tr className="hover:bg-neutral-800/30 transition-colors">
-                    <td className="p-4 font-bold text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                    <td className="p-2.5 sm:p-3 font-bold text-white whitespace-nowrap flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                       Z-Image Turbo
                     </td>
-                    <td className="p-4 text-neutral-300">Bilingual Typography / DiT</td>
-                    <td className="p-4 font-mono font-medium text-cyan-400">8 steps • ~2.2s</td>
-                    <td className="p-4 font-mono text-neutral-300">1536 × 1536</td>
-                    <td className="p-4 font-semibold text-white">1 Credit</td>
-                    <td className="p-4"><span className="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[11px] font-bold">Apache 2.0</span></td>
-                    <td className="p-4 text-neutral-300">Posters, typography, packaging, architecture</td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200 whitespace-nowrap">Bilingual Typography / DiT</td>
+                    <td className="p-2.5 sm:p-3 font-mono font-medium text-cyan-400 whitespace-nowrap">8 steps • ~2.2s</td>
+                    <td className="p-2.5 sm:p-3 font-mono text-neutral-200 whitespace-nowrap">1536 × 1536</td>
+                    <td className="p-2.5 sm:p-3 font-semibold text-white whitespace-nowrap">1 Credit</td>
+                    <td className="p-2.5 sm:p-3 whitespace-nowrap"><span className="px-1.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[10px] font-bold">Apache 2.0</span></td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200">Posters, typography, packaging, architecture</td>
                   </tr>
                   <tr className="hover:bg-neutral-800/30 transition-colors">
-                    <td className="p-4 font-bold text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-purple-400" />
+                    <td className="p-2.5 sm:p-3 font-bold text-white whitespace-nowrap flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
                       Wan 2.1 Video Draft
                     </td>
-                    <td className="p-4 text-neutral-300">Text & Image to Video</td>
-                    <td className="p-4 font-mono font-medium text-pink-400">81 frames • ~28s</td>
-                    <td className="p-4 font-mono text-neutral-300">854 × 480 (16fps)</td>
-                    <td className="p-4 font-semibold text-white">12 Credits</td>
-                    <td className="p-4"><span className="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[11px] font-bold">Apache 2.0</span></td>
-                    <td className="p-4 text-neutral-300">Rapid video scene prototyping & draft cuts</td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200 whitespace-nowrap">Text & Image to Video</td>
+                    <td className="p-2.5 sm:p-3 font-mono font-medium text-pink-400 whitespace-nowrap">81 frames • ~28s</td>
+                    <td className="p-2.5 sm:p-3 font-mono text-neutral-200 whitespace-nowrap">854 × 480 (16fps)</td>
+                    <td className="p-2.5 sm:p-3 font-semibold text-white whitespace-nowrap">12 Credits</td>
+                    <td className="p-2.5 sm:p-3 whitespace-nowrap"><span className="px-1.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[10px] font-bold">Apache 2.0</span></td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200">Rapid video scene prototyping & draft cuts</td>
                   </tr>
                   <tr className="hover:bg-neutral-800/30 transition-colors">
-                    <td className="p-4 font-bold text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-pink-400" />
+                    <td className="p-2.5 sm:p-3 font-bold text-white whitespace-nowrap flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-pink-400" />
                       Wan 2.2 Video Cinema
                     </td>
-                    <td className="p-4 text-neutral-300">Cinematic 3D Video</td>
-                    <td className="p-4 font-mono font-medium text-pink-400">81 frames • ~65s</td>
-                    <td className="p-4 font-mono text-neutral-300">1280 × 720 / 1080p</td>
-                    <td className="p-4 font-semibold text-white">25 Credits</td>
-                    <td className="p-4"><span className="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[11px] font-bold">Apache 2.0</span></td>
-                    <td className="p-4 text-neutral-300">Production ads, b-roll, broadcast motion</td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200 whitespace-nowrap">Cinematic 3D Video</td>
+                    <td className="p-2.5 sm:p-3 font-mono font-medium text-pink-400 whitespace-nowrap">81 frames • ~65s</td>
+                    <td className="p-2.5 sm:p-3 font-mono text-neutral-200 whitespace-nowrap">1280 × 720 / 1080p</td>
+                    <td className="p-2.5 sm:p-3 font-semibold text-white whitespace-nowrap">25 Credits</td>
+                    <td className="p-2.5 sm:p-3 whitespace-nowrap"><span className="px-1.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 text-[10px] font-bold">Apache 2.0</span></td>
+                    <td className="p-2.5 sm:p-3 text-neutral-200">Production ads, b-roll, broadcast motion</td>
                   </tr>
                 </tbody>
               </table>
@@ -468,65 +465,66 @@ export function FeaturesPage() {
       </section>
 
       {/* 3. SECTION 2: AI VIDEO SPECS & MOTION ENGINE (#video-specs) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="video-specs">
+      <section className="py-6 sm:py-8 lg:py-9 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="video-specs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12 space-y-3">
+          <div className="max-w-3xl mb-5 sm:mb-6 space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-950/40 text-pink-400 text-xs font-mono uppercase tracking-wider border border-pink-500/40">
               <Film className="w-3.5 h-3.5" />
               <span>Section 02 • AI Video Specifications</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               3D Spatio-Temporal Video Synthesis
             </h2>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
               Explore the technical video specifications, temporal coherence mechanisms, frame rates, and camera motion controllers powering Kiaan Studio Video.
             </p>
           </div>
 
           {/* Interactive Resolution Preset Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 mb-7 sm:mb-8 items-stretch">
             {Object.entries(videoPresets).map(([key, preset]) => {
               const isSelected = selectedVideoPreset === key
               return (
                 <div
                   key={key}
                   onClick={() => setSelectedVideoPreset(key)}
-                  className={`p-6 sm:p-7 rounded-3xl border transition-all cursor-pointer relative bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] ${
-                    isSelected
-                      ? 'border-cyan-500/80 shadow-[0_0_30px_rgba(6,182,212,0.25)] ring-1 ring-cyan-400/40'
-                      : 'border-neutral-800 hover:border-neutral-700 shadow-xl'
-                  }`}
+                  className={`p-4 sm:p-5 rounded-xl sm:rounded-2xl border transition-all cursor-pointer relative bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] flex flex-col justify-between h-full ${isSelected
+                    ? 'border-cyan-500/80 shadow-[0_0_30px_rgba(6,182,212,0.25)] ring-1 ring-cyan-400/40'
+                    : 'border-neutral-800 hover:border-neutral-700 shadow-xl'
+                    }`}
                 >
-                  {isSelected && (
-                    <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-950 text-cyan-300 border border-cyan-800/50">
-                      Active Tier
-                    </span>
-                  )}
-                  <h4 className="text-lg font-bold text-white mb-1">
-                    {preset.title}
-                  </h4>
-                  <div className="text-2xl font-black text-cyan-400 font-mono mb-3">
-                    {preset.resolution}
+                  <div>
+                    {isSelected && (
+                      <span className="absolute top-3.5 right-3.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-950 text-cyan-300 border border-cyan-800/50">
+                        Active Tier
+                      </span>
+                    )}
+                    <h4 className="text-base font-bold text-white mb-0.5">
+                      {preset.title}
+                    </h4>
+                    <div className="text-xl font-black text-cyan-400 font-mono mb-2">
+                      {preset.resolution}
+                    </div>
+                    <div className="space-y-1.5 text-xs border-t border-neutral-800 pt-2">
+                      <div className="flex justify-between text-neutral-400">
+                        <span>Temporal Frames:</span>
+                        <strong className="text-white font-mono">{preset.frames}</strong>
+                      </div>
+                      <div className="flex justify-between text-neutral-400">
+                        <span>Clip Duration:</span>
+                        <strong className="text-white">{preset.duration}</strong>
+                      </div>
+                      <div className="flex justify-between text-neutral-400">
+                        <span>Credit Tariff:</span>
+                        <strong className="text-pink-400 font-bold">{preset.creditCost}</strong>
+                      </div>
+                      <div className="flex justify-between text-neutral-400">
+                        <span>Avg Compute Time:</span>
+                        <strong className="text-cyan-400 font-mono">{preset.renderTime}</strong>
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-2 text-xs border-t border-neutral-800 pt-3">
-                    <div className="flex justify-between text-neutral-400">
-                      <span>Temporal Frames:</span>
-                      <strong className="text-white font-mono">{preset.frames}</strong>
-                    </div>
-                    <div className="flex justify-between text-neutral-400">
-                      <span>Clip Duration:</span>
-                      <strong className="text-white">{preset.duration}</strong>
-                    </div>
-                    <div className="flex justify-between text-neutral-400">
-                      <span>Credit Tariff:</span>
-                      <strong className="text-pink-400 font-bold">{preset.creditCost}</strong>
-                    </div>
-                    <div className="flex justify-between text-neutral-400">
-                      <span>Avg Compute Time:</span>
-                      <strong className="text-cyan-400 font-mono">{preset.renderTime}</strong>
-                    </div>
-                  </div>
-                  <p className="text-xs text-neutral-400 mt-4 leading-relaxed bg-neutral-900/80 p-3 rounded-xl border border-neutral-800">
+                  <p className="text-xs text-neutral-400 mt-2.5 leading-relaxed bg-neutral-900/80 p-2.5 rounded-lg border border-neutral-800">
                     {preset.recommendedFor}
                   </p>
                 </div>
@@ -535,33 +533,32 @@ export function FeaturesPage() {
           </div>
 
           {/* Camera Motion Trajectories Showcase */}
-          <div className="rounded-[32px] p-6 sm:p-10 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-2xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-6 space-y-4">
+          <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+              <div className="lg:col-span-6 space-y-3">
                 <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
                   <Camera className="w-3.5 h-3.5" />
                   <span>Cinematic Camera Trajectories</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-white">
                   Full 3-Axis Camera Path Control
                 </h3>
-                <p className="text-sm text-neutral-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
                   Direct synthetic camera motion precisely. Our 3D spatio-temporal conditioning lets you inject explicit translation matrices into the diffusion sampling loop without post-processing warping.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                   {cameraMotions.map((cam) => (
                     <button
                       key={cam.id}
                       onClick={() => setSelectedCameraMotion(cam.id)}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                        selectedCameraMotion === cam.id
-                          ? 'border-cyan-500/80 bg-cyan-950/40 text-white font-semibold'
-                          : 'border-neutral-800 hover:border-neutral-700 text-neutral-300 bg-neutral-900/60'
-                      }`}
+                      className={`p-2.5 sm:p-3 rounded-lg border text-left transition-all cursor-pointer ${selectedCameraMotion === cam.id
+                        ? 'border-cyan-500/80 bg-cyan-950/40 text-white font-semibold'
+                        : 'border-neutral-800 hover:border-neutral-700 text-neutral-300 bg-neutral-900/60'
+                        }`}
                     >
                       <span className="text-xs font-bold block text-white">{cam.name}</span>
-                      <span className="text-[11px] text-neutral-400 leading-relaxed block mt-1">
+                      <span className="text-[11px] text-neutral-400 leading-relaxed block mt-0.5">
                         {cam.desc}
                       </span>
                     </button>
@@ -571,7 +568,7 @@ export function FeaturesPage() {
 
               {/* Video Simulation Mockup Container */}
               <div className="lg:col-span-6">
-                <div className="aspect-video rounded-2xl overflow-hidden bg-neutral-950 shadow-2xl relative border border-neutral-800">
+                <div className="aspect-video rounded-xl overflow-hidden bg-neutral-950 shadow-xl relative border border-neutral-800">
                   <img
                     src="/images/landing/gallery-motorsport.jpg"
                     alt="Video Simulation"
@@ -580,16 +577,16 @@ export function FeaturesPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-transparent" />
 
                   {/* Playhead overlay */}
-                  <div className="absolute bottom-4 inset-x-4 flex items-center justify-between text-white text-xs">
-                    <div className="flex items-center gap-2 font-mono">
-                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+                  <div className="absolute bottom-3 inset-x-3 flex items-center justify-between text-white text-xs">
+                    <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400" />
                       <span>Wan 2.1 • 1280×720 @ 16fps</span>
                     </div>
-                    <span className="font-mono text-neutral-400">00:03.2 / 00:05.0</span>
+                    <span className="font-mono text-neutral-400 text-[11px]">00:03.2 / 00:05.0</span>
                   </div>
 
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white cursor-pointer hover:scale-110 transition-transform">
-                    <Play className="w-6 h-6 ml-1 fill-white" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white cursor-pointer hover:scale-110 transition-transform">
+                    <Play className="w-5 h-5 ml-0.5 fill-white" />
                   </div>
                 </div>
               </div>
@@ -599,73 +596,81 @@ export function FeaturesPage() {
       </section>
 
       {/* 4. SECTION 3: CREATIVE STUDIO TOOLS (#creative-tools) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="creative-tools">
+      <section className="py-6 sm:py-8 lg:py-9 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="creative-tools">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12 space-y-3">
+          <div className="max-w-3xl mb-5 sm:mb-6 space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/40 text-purple-400 text-xs font-mono uppercase tracking-wider border border-purple-500/40">
               <Layers className="w-3.5 h-3.5" />
               <span>Section 03 • Studio Workstation</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               A Complete Professional Visual Suite
             </h2>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
               From initial raw concept prompts to non-destructive canvas inpainting and project organization, everything happens inside an integrated workstation.
             </p>
           </div>
 
           {/* 4 Pillars Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-violet-950/80 border border-violet-800/60 text-violet-400 flex items-center justify-center">
-                <Wand2 className="w-5 h-5" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-7 sm:mb-8 items-stretch">
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-9 h-9 rounded-lg bg-violet-950/80 border border-violet-800/60 text-violet-400 flex items-center justify-center">
+                  <Wand2 className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-bold text-white">Text-to-Image</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Hyper-responsive prompt synthesis with negative prompt exclusion, CFG scale precision, and repeatable seed reproducibility.
+                </p>
               </div>
-              <h4 className="text-lg font-bold text-white">Text-to-Image</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Hyper-responsive prompt synthesis with negative prompt exclusion, CFG scale precision, and repeatable seed reproducibility.
-              </p>
               <Link to="/dashboard/image-generator" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 pt-1">
                 <span>Launch Generator</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-800/60 text-cyan-400 flex items-center justify-center">
-                <ImageIcon className="w-5 h-5" />
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-800/60 text-cyan-400 flex items-center justify-center">
+                  <ImageIcon className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-bold text-white">Image-to-Image</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Upload existing reference photos or sketches. Denoising sliders (0.10 to 0.90) preserve composition while reimagining artistic styling.
+                </p>
               </div>
-              <h4 className="text-lg font-bold text-white">Image-to-Image</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Upload existing reference photos or sketches. Denoising sliders (0.10 to 0.90) preserve composition while reimagining artistic styling.
-              </p>
               <Link to="/dashboard/image-to-image" className="text-xs font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 pt-1">
                 <span>Image-to-Image Studio</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-pink-950/80 border border-pink-800/60 text-pink-400 flex items-center justify-center">
-                <Sliders className="w-5 h-5" />
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-9 h-9 rounded-lg bg-pink-950/80 border border-pink-800/60 text-pink-400 flex items-center justify-center">
+                  <Sliders className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-bold text-white">Inpainting & Canvas</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Interactive brush masking for seamless object removal, background substitution, face refinement, and non-destructive neural relighting.
+                </p>
               </div>
-              <h4 className="text-lg font-bold text-white">Inpainting & Canvas</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Interactive brush masking for seamless object removal, background substitution, face refinement, and non-destructive neural relighting.
-              </p>
               <Link to="/dashboard/image-editor" className="text-xs font-bold text-pink-400 hover:text-pink-300 inline-flex items-center gap-1 pt-1">
                 <span>Open Canvas Editor</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-800/60 text-purple-400 flex items-center justify-center">
-                <Boxes className="w-5 h-5" />
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-9 h-9 rounded-lg bg-purple-950/80 border border-purple-800/60 text-purple-400 flex items-center justify-center">
+                  <Boxes className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-bold text-white">Projects & Gallery</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Organize generated assets by client campaign in dedicated folders. Inspect generation parameters, toggle favorites, and bulk export.
+                </p>
               </div>
-              <h4 className="text-lg font-bold text-white">Projects & Gallery</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Organize generated assets by client campaign in dedicated folders. Inspect generation parameters, toggle favorites, and bulk export.
-              </p>
               <Link to="/dashboard/projects" className="text-xs font-bold text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 pt-1">
                 <span>Explore Workspaces</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -674,24 +679,24 @@ export function FeaturesPage() {
           </div>
 
           {/* Aspect Ratio Presets Showcase */}
-          <div className="rounded-[28px] p-6 sm:p-8 bg-[#0B0F19]/90 border border-neutral-800 shadow-xl" id="aspect-ratios">
-            <h3 className="text-xl font-bold text-white mb-2">
+          <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-[#0B0F19]/90 border border-neutral-800 shadow-xl" id="aspect-ratios">
+            <h3 className="text-lg font-bold text-white mb-1">
               Supported Aspect Ratio Framing
             </h3>
-            <p className="text-sm text-neutral-300 mb-6">
+            <p className="text-xs sm:text-sm text-neutral-300 mb-4">
               One-click framing presets configured with native latent dimensions preventing spatial stretching or distortion.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
               {aspectRatios.map((item) => (
-                <div key={item.ratio} className="p-4 rounded-xl bg-neutral-900/90 border border-neutral-800 space-y-2">
+                <div key={item.ratio} className="p-3 rounded-lg bg-neutral-900/90 border border-neutral-800 space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-black text-cyan-400 font-mono">{item.ratio}</span>
+                    <span className="text-xs sm:text-sm font-black text-cyan-400 font-mono">{item.ratio}</span>
                     <span className="text-[10px] font-mono text-neutral-400 bg-neutral-950 px-1.5 py-0.5 rounded border border-neutral-800">
                       {item.dims}
                     </span>
                   </div>
                   <strong className="text-xs text-white block">{item.name}</strong>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">{item.useCase}</p>
+                  <p className="text-[10px] sm:text-[11px] text-neutral-400 leading-relaxed">{item.useCase}</p>
                 </div>
               ))}
             </div>
@@ -700,113 +705,121 @@ export function FeaturesPage() {
       </section>
 
       {/* 5. SECTION 4: SOVEREIGN PLATFORM ARCHITECTURE (#architecture) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="architecture">
+      <section className="py-6 sm:py-8 lg:py-9 border-b border-neutral-800/80 relative z-10 scroll-mt-24" id="architecture">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-14 space-y-3">
+          <div className="max-w-3xl mb-5 sm:mb-6 space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-cyan-400 text-xs font-mono uppercase tracking-wider">
               <Server className="w-3.5 h-3.5" />
               <span>Section 04 • Sovereign Infrastructure</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Engineered for Sovereignty & Zero Vendor Lock-In
             </h2>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
               Unlike cloud services that resell closed third-party APIs with high markups, Kiaan Studio runs on a sovereign full-stack architecture with private GPU dispatch.
             </p>
           </div>
 
           {/* Full-Stack Architecture Diagram Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-9 h-9 rounded-lg bg-violet-950 border border-violet-800/80 text-violet-400 flex items-center justify-center font-mono font-bold text-sm">
-                01
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-7 sm:mb-8 items-stretch">
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-8 h-8 rounded-lg bg-violet-950 border border-violet-800/80 text-violet-400 flex items-center justify-center font-mono font-bold text-xs">
+                  01
+                </div>
+                <h4 className="text-sm sm:text-base font-bold text-white">Client Tier (React 19)</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Vite 8 SPA with responsive workstation controls, client-side token caching, real-time job progress polling, and image manipulation canvas.
+                </p>
               </div>
-              <h4 className="text-base font-bold text-white">Client Tier (React 19)</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Vite 8 SPA with responsive workstation controls, client-side token caching, real-time job progress polling, and image manipulation canvas.
-              </p>
-              <div className="pt-2 text-[11px] font-mono text-cyan-400">
+              <div className="pt-1.5 text-[11px] font-mono text-cyan-400">
                 React 19 • Vite • Tailwind • Lucide
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-9 h-9 rounded-lg bg-cyan-950 border border-cyan-800/80 text-cyan-400 flex items-center justify-center font-mono font-bold text-sm">
-                02
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-8 h-8 rounded-lg bg-cyan-950 border border-cyan-800/80 text-cyan-400 flex items-center justify-center font-mono font-bold text-xs">
+                  02
+                </div>
+                <h4 className="text-sm sm:text-base font-bold text-white">API Gateway & Auth</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Node.js Express REST API with RS256/HS256 JWT rotation, HttpOnly refresh cookies, atomic credit reservations, and strict RBAC authorization.
+                </p>
               </div>
-              <h4 className="text-base font-bold text-white">API Gateway & Auth</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Node.js Express REST API with RS256/HS256 JWT rotation, HttpOnly refresh cookies, atomic credit reservations, and strict RBAC authorization.
-              </p>
-              <div className="pt-2 text-[11px] font-mono text-cyan-400">
+              <div className="pt-1.5 text-[11px] font-mono text-cyan-400">
                 Express • JWT • Bcrypt • Sanitization
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-9 h-9 rounded-lg bg-emerald-950 border border-emerald-800/80 text-emerald-400 flex items-center justify-center font-mono font-bold text-sm">
-                03
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-800/80 text-emerald-400 flex items-center justify-center font-mono font-bold text-xs">
+                  03
+                </div>
+                <h4 className="text-sm sm:text-base font-bold text-white">Data & State Store</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Relational tenant schema managed via Prisma ORM v5 on MySQL. Guaranteed atomic wallet ledger, download tracking, and audit logging.
+                </p>
               </div>
-              <h4 className="text-base font-bold text-white">Data & State Store</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Relational tenant schema managed via Prisma ORM v5 on MySQL. Guaranteed atomic wallet ledger, download tracking, and audit logging.
-              </p>
-              <div className="pt-2 text-[11px] font-mono text-cyan-400">
+              <div className="pt-1.5 text-[11px] font-mono text-cyan-400">
                 Prisma v5 • MySQL 8 • ACID Transactions
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-3 shadow-xl">
-              <div className="w-9 h-9 rounded-lg bg-pink-950 border border-pink-800/80 text-pink-400 flex items-center justify-center font-mono font-bold text-sm">
-                04
+            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#0B0F19] to-[#0D111C] border border-neutral-800 space-y-2.5 shadow-lg flex flex-col justify-between h-full">
+              <div className="space-y-2.5">
+                <div className="w-8 h-8 rounded-lg bg-pink-950 border border-pink-800/80 text-pink-400 flex items-center justify-center font-mono font-bold text-xs">
+                  04
+                </div>
+                <h4 className="text-sm sm:text-base font-bold text-white">Autonomous GPU Fleet</h4>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Dedicated worker nodes (RTX 4090 / A100 SXM4) polling inference jobs via pre-shared worker auth. Automatic credit refunds on any GPU failure.
+                </p>
               </div>
-              <h4 className="text-base font-bold text-white">Autonomous GPU Fleet</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Dedicated worker nodes (RTX 4090 / A100 SXM4) polling inference jobs via pre-shared worker auth. Automatic credit refunds on any GPU failure.
-              </p>
-              <div className="pt-2 text-[11px] font-mono text-cyan-400">
+              <div className="pt-1.5 text-[11px] font-mono text-cyan-400">
                 PyTorch 2.4 • Diffusers • FlashAttention-2
               </div>
             </div>
           </div>
 
           {/* Architectural Comparison Matrix */}
-          <div className="rounded-[32px] p-6 sm:p-8 bg-[#0B0F19]/90 border border-neutral-800 shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-6">
+          <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-[#0B0F19]/90 border border-neutral-800 shadow-xl">
+            <h3 className="text-lg font-bold text-white mb-3 sm:mb-4">
               Why Sovereign Compute Beats Closed API Gateways
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-neutral-900/90 border border-emerald-800/40 space-y-3">
-                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
-                  <ShieldCheck className="w-4 h-4" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+              <div className="p-4 sm:p-5 rounded-xl bg-neutral-900/90 border border-emerald-800/40 space-y-2.5">
+                <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
+                  <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Kiaan Studio Sovereign Cluster</span>
                 </div>
-                <ul className="space-y-2.5 text-xs text-neutral-300">
+                <ul className="space-y-1.5 text-xs text-neutral-300">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span><strong className="text-white">Zero token markups:</strong> Pay only for real GPU compute time</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span><strong className="text-white">100% prompt privacy:</strong> Your proprietary prompts are never logged for third-party training</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span><strong className="text-white">Permanent open weights:</strong> Models never disappear or change arbitrarily overnight</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span><strong className="text-white">Self-hosted flexibility:</strong> Run locally on private RTX 4090 rigs or in private cloud VPCs</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="p-6 rounded-2xl bg-neutral-900/90 border border-rose-900/40 space-y-3">
-                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-rose-400 uppercase tracking-wide">
-                  <Lock className="w-4 h-4" />
+              <div className="p-4 sm:p-5 rounded-xl bg-neutral-900/90 border border-rose-900/40 space-y-2.5">
+                <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-400 uppercase tracking-wide">
+                  <Lock className="w-3.5 h-3.5" />
                   <span>Closed Third-Party SaaS Gateways</span>
                 </div>
-                <ul className="space-y-2.5 text-xs text-neutral-400">
+                <ul className="space-y-1.5 text-xs text-neutral-400">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
                     <span>High recurring subscription markups and arbitrary rate-limit penalties</span>
@@ -830,43 +843,43 @@ export function FeaturesPage() {
         </div>
       </section>
 
-      {/* 6. BOTTOM CALL-TO-ACTION (Matching CinematicCtaSection banner) */}
-      <section className="py-20 bg-[#06080F] relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-[32px] sm:rounded-[44px] overflow-hidden bg-neutral-950 aspect-[16/9] sm:aspect-[21/9] flex items-center justify-center p-6 sm:p-12 shadow-2xl border border-neutral-800 group">
+      {/* 6. BOTTOM CALL-TO-ACTION (Compact Banner) */}
+      <section className="py-6 sm:py-8 lg:py-10 bg-[#06080F] relative z-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-950 flex items-center justify-center p-6 sm:p-8 lg:p-9 shadow-2xl border border-neutral-800 group">
             <img
               src="/images/landing/cta-cinematic-banner.jpg"
               alt="Cinematic atmospheric horizon"
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/55 pointer-events-none" />
 
-            <div className="relative z-10 max-w-2xl text-center space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-white mx-auto shadow-sm">
+            <div className="relative z-10 max-w-xl text-center space-y-3 sm:space-y-3.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-white mx-auto shadow-sm">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Kiaan Studio Creative Workstation</span>
               </div>
 
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">
                 Experience Sovereign Visual AI
               </h2>
 
-              <p className="text-sm sm:text-base text-neutral-300 max-w-xl mx-auto leading-relaxed">
+              <p className="text-xs sm:text-sm text-neutral-300 max-w-lg mx-auto leading-relaxed">
                 Create an account in 30 seconds and receive 25 welcome credits. Zero credit card required to explore the full studio workstation.
               </p>
 
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="pt-1.5 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
                 <Link
                   to="/register"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-base bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-xl shadow-pink-500/30 transition-all hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <span>Start Free Trial (25 Credits)</span>
-                  <ArrowRight className="w-4 h-4 text-white" />
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </Link>
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-sm bg-neutral-900/90 hover:bg-neutral-800 text-white border border-neutral-700 shadow-md transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-full font-semibold text-xs sm:text-sm bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white border border-neutral-700 shadow-sm transition-all"
                 >
                   <span>Compare Plans</span>
                 </Link>

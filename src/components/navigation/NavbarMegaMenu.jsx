@@ -48,21 +48,21 @@ export function DesktopMegaMenu({
         <div
           className={
             theme === 'dark'
-              ? 'bg-[#0B0F19] backdrop-blur-2xl rounded-[24px] border border-cyan-500/30 shadow-[0_16px_40px_rgba(0,0,0,0.8)] ring-1 ring-cyan-500/15 p-6 sm:p-7 animate-in fade-in slide-in-from-top-1 duration-150 text-white max-h-[calc(100vh-5rem)] overflow-y-auto'
-              : 'bg-white backdrop-blur-xl rounded-[24px] border border-neutral-200/90 shadow-2xl shadow-neutral-950/10 p-6 sm:p-7 animate-in fade-in slide-in-from-top-1 duration-150 max-h-[calc(100vh-5rem)] overflow-y-auto'
+              ? 'bg-[#0B0F19] backdrop-blur-2xl rounded-[24px] border border-cyan-500/30 shadow-[0_16px_40px_rgba(0,0,0,0.8)] ring-1 ring-cyan-500/15 p-4 sm:p-5 animate-in fade-in slide-in-from-top-1 duration-150 text-white max-h-[calc(100vh-5rem)] overflow-y-auto'
+              : 'bg-white backdrop-blur-xl rounded-[24px] border border-neutral-200/90 shadow-2xl shadow-neutral-950/10 p-4 sm:p-5 animate-in fade-in slide-in-from-top-1 duration-150 max-h-[calc(100vh-5rem)] overflow-y-auto'
           }
         >
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-7 items-start">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 items-start">
             {/* Columns Area (Left side) */}
             <div
               className={`flex-1 min-w-0 grid ${
                 columns.length === 3
                   ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                   : 'grid-cols-1 sm:grid-cols-2'
-              } gap-6 lg:gap-7`}
+              } gap-4 lg:gap-5`}
             >
               {columns.map((col) => (
-                <div key={col.title} className="space-y-3">
+                <div key={col.title} className="space-y-2.5">
                   <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 select-none pb-1 border-b border-neutral-800/40">
                     {col.title}
                   </h4>
@@ -91,7 +91,7 @@ export function DesktopMegaMenu({
                         <p
                           className={`text-xs ${
                             theme === 'dark'
-                              ? 'text-neutral-300/85'
+                              ? 'text-neutral-300'
                               : 'text-neutral-600'
                           } mt-0.5 line-clamp-2 leading-relaxed`}
                         >
@@ -107,21 +107,21 @@ export function DesktopMegaMenu({
             {/* Featured Card (Right side) */}
             {hasFeatured && (
               <div
-                className={`w-full lg:w-[320px] shrink-0 ${
+                className={`w-full lg:w-[290px] xl:w-[300px] shrink-0 ${
                   theme === 'dark'
                     ? 'lg:border-l lg:border-neutral-800/80'
                     : 'lg:border-l lg:border-neutral-100'
-                } lg:pl-7 pt-4 lg:pt-0 border-t lg:border-t-0 border-neutral-800/60`}
+                } lg:pl-5 pt-4 lg:pt-0 border-t lg:border-t-0 border-neutral-800/60`}
               >
                 <div
                   className={`rounded-2xl ${
                     theme === 'dark'
                       ? 'bg-[#0D111C]/90 border border-neutral-800/80 text-white'
                       : 'bg-neutral-50/80 border border-neutral-200/70'
-                  } p-4 flex flex-col`}
+                  } p-3 sm:p-3.5 flex flex-col`}
                 >
                   {featured.image && (
-                    <div className="h-[155px] w-full rounded-xl overflow-hidden mb-3 bg-neutral-900 shadow-xs shrink-0">
+                    <div className="h-[120px] sm:h-[125px] w-full rounded-xl overflow-hidden mb-2 bg-neutral-900 shadow-xs shrink-0">
                       <img
                         src={featured.image}
                         alt={featured.title}
@@ -129,7 +129,7 @@ export function DesktopMegaMenu({
                       />
                     </div>
                   )}
-                  <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="space-y-1 flex-1 min-w-0">
                     <span
                       className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         theme === 'dark'
@@ -149,15 +149,15 @@ export function DesktopMegaMenu({
                     <p
                       className={`text-xs ${
                         theme === 'dark'
-                          ? 'text-neutral-300/85'
+                          ? 'text-neutral-300'
                           : 'text-neutral-600'
-                      } line-clamp-2 leading-relaxed`}
+                      } line-clamp-3 leading-relaxed`}
                     >
                       {featured.desc}
                     </p>
                   </div>
 
-                  <div className="pt-3.5 space-y-2 mt-3.5">
+                  <div className="pt-2 space-y-1.5 mt-2">
                     <Link
                       to={featured.ctaTo}
                       onClick={onClose}

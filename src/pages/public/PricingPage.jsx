@@ -272,34 +272,34 @@ export function PricingPage() {
       </div>
 
       {/* 1. HERO HEADER */}
-      <section className="relative pt-12 pb-16 sm:pt-16 sm:pb-20 border-b border-neutral-800/80 bg-gradient-to-b from-[#0B0F19]/80 via-[#06080F] to-[#06080F] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-cyan-400 text-xs font-mono uppercase tracking-wider">
-              <Zap className="w-3.5 h-3.5" />
+      <section className="relative pt-6 pb-7 sm:pt-8 sm:pb-9 lg:pt-9 lg:pb-10 border-b border-neutral-800/80 bg-gradient-to-b from-[#0B0F19]/80 via-[#06080F] to-[#06080F] overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center space-y-2.5 sm:space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-950/40 border border-cyan-500/40 text-cyan-400 text-[11px] font-mono uppercase tracking-wider">
+              <Zap className="w-3 h-3" />
               <span>Transparent, Predictable Billing</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
+            <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-white tracking-tight leading-tight">
               Simple Plans for{' '}
               <span className="bg-gradient-to-r from-cyan-400 via-pink-500 to-amber-300 bg-clip-text text-transparent">
                 Every Creative Ambition
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-neutral-300 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-xl mx-auto">
               Choose the recurring subscription tier that fits your creative rhythm, or scale on demand with non-expiring credit packs. No hidden markups, guaranteed auto-refunds.
             </p>
 
             {/* Billing Cycle Toggle */}
-            <div className="pt-6 flex items-center justify-center">
-              <div className="p-1 rounded-full bg-[#0B0F19] border border-neutral-800 flex items-center shadow-lg">
+            <div className="pt-2 sm:pt-2.5 flex items-center justify-center">
+              <div className="p-0.5 rounded-full bg-[#0B0F19] border border-neutral-800 flex items-center shadow-md">
                 <button
                   type="button"
                   onClick={() => setBillingCycle('monthly')}
-                  className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`px-3.5 sm:px-4 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     billingCycle === 'monthly'
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md'
+                      ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-sm'
                       : 'text-neutral-400 hover:text-white'
                   }`}
                 >
@@ -308,14 +308,14 @@ export function PricingPage() {
                 <button
                   type="button"
                   onClick={() => setBillingCycle('yearly')}
-                  className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3.5 sm:px-4 py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     billingCycle === 'yearly'
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md'
+                      ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-sm'
                       : 'text-neutral-400 hover:text-white'
                   }`}
                 >
                   <span>Yearly Billing</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-pink-950/60 border border-pink-500/40 text-pink-300 tracking-wide font-mono">
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-pink-950/60 border border-pink-500/40 text-pink-300 tracking-wide font-mono">
                     Save 20%
                   </span>
                 </button>
@@ -323,7 +323,7 @@ export function PricingPage() {
             </div>
 
             {/* Jump links */}
-            <div className="pt-3 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-neutral-400">
+            <div className="pt-1 flex flex-wrap items-center justify-center gap-2.5 text-[11px] font-semibold text-neutral-400">
               <a href="#plans" className="hover:text-cyan-400 transition-colors">Plan Cards ↓</a>
               <span>•</span>
               <a href="#comparison" className="hover:text-cyan-400 transition-colors">Full Feature Matrix ↓</a>
@@ -337,59 +337,61 @@ export function PricingPage() {
       </section>
 
       {/* 2. SECTION 1: THE 4 PLAN CARDS (#plans) */}
-      <section className="py-16 sm:py-24 border-b border-neutral-800/80 bg-[#06080F] scroll-mt-20" id="plans">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+      <section className="py-5 sm:py-6 lg:py-8 border-b border-neutral-800/80 bg-[#06080F] scroll-mt-20" id="plans">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 lg:gap-3.5 items-stretch">
             {plans.map((plan) => {
               const price = billingCycle === 'yearly' ? plan.priceYearly : plan.priceMonthly
               return (
                 <div
                   key={plan.id}
-                  className={`rounded-[28px] p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 relative ${
+                  className={`rounded-xl sm:rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 relative h-full ${
                     plan.featured
-                      ? 'bg-gradient-to-br from-[#0E1322] via-[#141B2D] to-[#0E1322] text-white border-2 border-pink-500 shadow-2xl shadow-pink-500/20 scale-[1.02] z-10'
-                      : 'bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] text-white border border-neutral-800 shadow-lg hover:border-cyan-500/40'
+                      ? 'bg-gradient-to-br from-[#0E1322] via-[#141B2D] to-[#0E1322] text-white border-2 border-pink-500 shadow-xl shadow-pink-500/20 scale-[1.01] xl:scale-[1.02] z-10'
+                      : 'bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] text-white border border-neutral-800 shadow-md hover:border-cyan-500/40'
                   }`}
                 >
                   {plan.featured && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/30 border border-pink-400/40 font-mono">
+                    <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[8.5px] font-black uppercase tracking-wider bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-md shadow-pink-500/30 border border-pink-400/40 font-mono whitespace-nowrap">
                       {plan.badge}
                     </div>
                   )}
 
                   <div>
-                    {/* Header */}
-                    <div className="mb-4">
-                      {!plan.featured && (
-                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider border mb-2 font-mono ${plan.badgeColor}`}>
-                          {plan.badge}
-                        </span>
-                      )}
-                      <h3 className="text-xl font-extrabold text-white tracking-tight">
+                    {/* Header with consistent vertical alignment */}
+                    <div className="mb-2">
+                      <div className="h-4 mb-0.5 flex items-center">
+                        {!plan.featured && (
+                          <span className={`inline-block px-1.5 py-0.2 rounded-full text-[9px] font-bold uppercase tracking-wider border font-mono ${plan.badgeColor}`}>
+                            {plan.badge}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">
                         {plan.name}
                       </h3>
-                      <p className="text-xs mt-1 leading-relaxed text-neutral-400">
+                      <p className="text-[11px] mt-0.5 leading-tight text-neutral-400 min-h-[22px]">
                         {plan.tagline}
                       </p>
                     </div>
 
                     {/* Pricing */}
-                    <div className="mb-6 pb-6 border-b border-neutral-800">
+                    <div className="mb-2 pb-2 border-b border-neutral-800">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-extrabold text-white font-mono">
+                        <span className="text-xl sm:text-2xl font-extrabold text-white font-mono">
                           ${price}
                         </span>
-                        <span className="text-xs font-semibold text-neutral-400">
+                        <span className="text-[11px] font-semibold text-neutral-400">
                           / month
                         </span>
                       </div>
-                      <p className={`text-[11px] mt-1 font-mono font-medium ${plan.featured ? 'text-pink-300' : 'text-cyan-400'}`}>
+                      <p className={`text-[10px] mt-0.5 font-mono font-medium ${plan.featured ? 'text-pink-300' : 'text-cyan-400'}`}>
                         {billingCycle === 'yearly' && price > 0 ? `Billed annually ($${price * 12}/yr)` : 'Flexible monthly cancellation'}
                       </p>
                     </div>
 
                     {/* Quick Specs Pill Highlights */}
-                    <div className={`p-3.5 rounded-2xl mb-6 space-y-1.5 text-xs ${plan.featured ? 'bg-neutral-900/90 border border-pink-500/30' : 'bg-neutral-900/70 border border-neutral-800'}`}>
+                    <div className={`p-1.5 sm:p-2 rounded-lg mb-2 space-y-0.5 text-[10.5px] leading-tight ${plan.featured ? 'bg-neutral-900/90 border border-pink-500/30' : 'bg-neutral-900/70 border border-neutral-800'}`}>
                       <div className="flex justify-between">
                         <span className="text-neutral-400">Credits:</span>
                         <strong className="font-bold text-white font-mono">{plan.credits}</strong>
@@ -405,11 +407,11 @@ export function PricingPage() {
                     </div>
 
                     {/* Feature Bullets */}
-                    <ul className="space-y-2.5 text-xs mb-8">
+                    <ul className="space-y-1 text-[11px] mb-2.5">
                       {plan.features.map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <Check className={`w-4 h-4 shrink-0 mt-0.5 ${plan.featured ? 'text-pink-400' : 'text-cyan-400'}`} />
-                          <span className="text-neutral-300">
+                        <li key={idx} className="flex items-start gap-1.5">
+                          <Check className={`w-3 h-3 shrink-0 mt-0.5 ${plan.featured ? 'text-pink-400' : 'text-cyan-400'}`} />
+                          <span className="text-neutral-300 leading-tight">
                             {feat}
                           </span>
                         </li>
@@ -420,7 +422,7 @@ export function PricingPage() {
                   {/* CTA Button */}
                   <Link
                     to={plan.ctaTo}
-                    className={`w-full py-3 rounded-xl text-xs sm:text-sm font-bold text-center block transition-all shadow-md ${plan.buttonStyle}`}
+                    className={`w-full py-1.5 sm:py-2 rounded-lg text-xs font-bold text-center block transition-all shadow-sm ${plan.buttonStyle}`}
                   >
                     {plan.ctaText}
                   </Link>
@@ -432,50 +434,50 @@ export function PricingPage() {
       </section>
 
       {/* 3. SECTION 2: COMPREHENSIVE FEATURE COMPARISON MATRIX (#comparison) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 bg-[#06080F]/90 scroll-mt-20" id="comparison">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 text-cyan-400 text-xs font-mono uppercase tracking-wider border border-cyan-500/40">
-              <Layers className="w-3.5 h-3.5" />
+      <section className="py-5 sm:py-6 lg:py-8 border-b border-neutral-800/80 bg-[#06080F]/90 scroll-mt-20" id="comparison">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-4 sm:mb-5 space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-950/40 text-cyan-400 text-[10.5px] font-mono uppercase tracking-wider border border-cyan-500/40">
+              <Layers className="w-3 h-3" />
               <span>Side-by-Side Comparison Matrix</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               Compare Every Plan Specification
             </h2>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
+            <p className="text-xs text-neutral-300 leading-relaxed">
               Transparent, complete breakdown of credits, GPU priority tiers, model capabilities, and commercial licensing across all 4 plans.
             </p>
           </div>
 
           {/* Matrix Table */}
-          <div className="overflow-x-auto rounded-[28px] border border-neutral-800 bg-[#0B0F19]/90 shadow-2xl">
-            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+          <div className="overflow-x-auto rounded-xl border border-neutral-800 bg-[#0B0F19]/90 shadow-lg">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-[#0D111C] border-b border-neutral-800 text-neutral-300 font-extrabold text-xs">
-                  <th className="p-4 sm:p-5 w-1/3">Features & Specifications</th>
-                  <th className="p-4 sm:p-5 text-center">Free Trial</th>
-                  <th className="p-4 sm:p-5 text-center">Creator ($19)</th>
-                  <th className="p-4 sm:p-5 text-center bg-pink-950/40 text-pink-300 border-x border-pink-500/30">Studio Pro ($49)</th>
-                  <th className="p-4 sm:p-5 text-center">Enterprise ($199)</th>
+                  <th className="px-3.5 py-2 sm:px-4 sm:py-2.5 w-1/3 whitespace-nowrap">Features & Specifications</th>
+                  <th className="px-3 py-2 sm:px-4 sm:py-2.5 text-center whitespace-nowrap">Free Trial</th>
+                  <th className="px-3 py-2 sm:px-4 sm:py-2.5 text-center whitespace-nowrap">Creator ($19)</th>
+                  <th className="px-3 py-2 sm:px-4 sm:py-2.5 text-center bg-pink-950/40 text-pink-300 border-x border-pink-500/30 whitespace-nowrap">Studio Pro ($49)</th>
+                  <th className="px-3 py-2 sm:px-4 sm:py-2.5 text-center whitespace-nowrap">Enterprise ($199)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-800/60">
                 {comparisonCategories.map((cat, catIdx) => (
                   <React.Fragment key={catIdx}>
                     <tr className="bg-[#0D111C]/90 border-t border-b border-neutral-800">
-                      <td colSpan="5" className="p-3.5 font-bold uppercase tracking-wider text-[11px] text-cyan-400 font-mono">
+                      <td colSpan="5" className="px-3.5 py-1.5 sm:px-4 sm:py-1.5 font-bold uppercase tracking-wider text-[10px] text-cyan-400 font-mono">
                         {cat.category}
                       </td>
                     </tr>
                     {cat.rows.map((row, rowIdx) => (
                       <tr key={rowIdx} className="hover:bg-neutral-800/30 transition-colors">
-                        <td className="p-4 sm:p-5 font-medium text-neutral-200">
+                        <td className="px-3.5 py-1.5 sm:px-4 sm:py-2 font-medium text-neutral-200">
                           {row.name}
                         </td>
-                        <td className="p-4 sm:p-5 text-center text-neutral-400">
+                        <td className="px-3 py-1.5 sm:px-4 sm:py-2 text-center text-neutral-300 whitespace-nowrap">
                           {typeof row.free === 'boolean' ? (
                             row.free ? (
-                              <CheckCircle2 className="w-4 h-4 text-cyan-400 mx-auto" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mx-auto" />
                             ) : (
                               <span className="text-neutral-600 font-bold">—</span>
                             )
@@ -483,10 +485,10 @@ export function PricingPage() {
                             row.free
                           )}
                         </td>
-                        <td className="p-4 sm:p-5 text-center text-neutral-300">
+                        <td className="px-3 py-1.5 sm:px-4 sm:py-2 text-center text-neutral-200 whitespace-nowrap">
                           {typeof row.creator === 'boolean' ? (
                             row.creator ? (
-                              <CheckCircle2 className="w-4 h-4 text-cyan-400 mx-auto" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mx-auto" />
                             ) : (
                               <span className="text-neutral-600 font-bold">—</span>
                             )
@@ -494,10 +496,10 @@ export function PricingPage() {
                             row.creator
                           )}
                         </td>
-                        <td className="p-4 sm:p-5 text-center font-semibold text-pink-200 bg-pink-950/20 border-x border-pink-500/20">
+                        <td className="px-3 py-1.5 sm:px-4 sm:py-2 text-center font-semibold text-pink-200 bg-pink-950/20 border-x border-pink-500/20 whitespace-nowrap">
                           {typeof row.pro === 'boolean' ? (
                             row.pro ? (
-                              <CheckCircle2 className="w-4 h-4 text-pink-400 mx-auto" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-pink-400 mx-auto" />
                             ) : (
                               <span className="text-neutral-600 font-bold">—</span>
                             )
@@ -505,10 +507,10 @@ export function PricingPage() {
                             row.pro
                           )}
                         </td>
-                        <td className="p-4 sm:p-5 text-center font-semibold text-neutral-200">
+                        <td className="px-3 py-1.5 sm:px-4 sm:py-2 text-center font-semibold text-neutral-200 whitespace-nowrap">
                           {typeof row.enterprise === 'boolean' ? (
                             row.enterprise ? (
-                              <CheckCircle2 className="w-4 h-4 text-cyan-400 mx-auto" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 mx-auto" />
                             ) : (
                               <span className="text-neutral-600 font-bold">—</span>
                             )
@@ -527,53 +529,53 @@ export function PricingPage() {
       </section>
 
       {/* 4. SECTION 3: NON-EXPIRING CREDIT TOP-UPS (#topups) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 bg-[#06080F] scroll-mt-20" id="topups">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 text-emerald-400 text-xs font-mono uppercase tracking-wider border border-emerald-500/40">
-              <Zap className="w-3.5 h-3.5" />
+      <section className="py-5 sm:py-6 lg:py-8 border-b border-neutral-800/80 bg-[#06080F] scroll-mt-20" id="topups">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-4 sm:mb-5 space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/40 text-emerald-400 text-[10.5px] font-mono uppercase tracking-wider border border-emerald-500/40">
+              <Zap className="w-3 h-3" />
               <span>On-Demand Credit Scaling</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               Non-Expiring Credit Top-Up Packs
             </h2>
-            <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
+            <p className="text-xs text-neutral-300 leading-relaxed">
               Need extra capacity for an intensive client campaign? Top-up packs never expire and can be used on any image model, canvas tool, or cinematic video render.
             </p>
           </div>
 
           {/* Topup Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-3.5 mb-5 sm:mb-6 items-stretch">
             {topupPacks.map((pack) => (
               <div
                 key={pack.name}
-                className="p-6 sm:p-8 rounded-[28px] bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-xl space-y-4 relative flex flex-col justify-between hover:border-cyan-500/40 transition-all"
+                className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#0B0F19] via-[#0D111C] to-[#0A0D18] border border-neutral-800 shadow-md space-y-2 relative flex flex-col justify-between hover:border-cyan-500/40 transition-all h-full"
               >
                 {pack.bonus && (
-                  <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-pink-950/60 border border-pink-500/40 text-pink-300 font-mono">
+                  <span className="absolute top-3 right-3 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-pink-950/60 border border-pink-500/40 text-pink-300 font-mono">
                     {pack.bonus}
                   </span>
                 )}
                 <div>
-                  <h4 className="text-xl font-bold text-white">{pack.name}</h4>
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-3xl font-black text-white font-mono">{pack.price}</span>
-                    <span className="text-xs text-neutral-400 font-medium">one-time payment</span>
+                  <h4 className="text-sm sm:text-base font-bold text-white">{pack.name}</h4>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-xl sm:text-2xl font-black text-white font-mono">{pack.price}</span>
+                    <span className="text-[10px] text-neutral-400 font-medium">one-time payment</span>
                   </div>
-                  <div className="text-lg font-bold text-cyan-400 font-mono mt-1">
+                  <div className="text-xs sm:text-sm font-bold text-cyan-400 font-mono mt-0.5">
                     {pack.credits.toLocaleString()} Credits
                   </div>
-                  <p className="text-xs text-neutral-400 mt-1 font-mono">{pack.unitCost}</p>
+                  <p className="text-[10px] text-neutral-400 mt-0.5 font-mono">{pack.unitCost}</p>
 
-                  <div className="pt-4 mt-4 border-t border-neutral-800 space-y-1.5 text-xs text-neutral-300">
+                  <div className="pt-2 mt-2 border-t border-neutral-800 space-y-0.5 text-[11px] text-neutral-300">
                     <p className="font-semibold text-neutral-200">{pack.highlight}</p>
-                    <p className="text-[11px] text-neutral-400 font-mono">{pack.equivalent}</p>
+                    <p className="text-[10px] text-neutral-400 font-mono">{pack.equivalent}</p>
                   </div>
                 </div>
 
                 <Link
                   to="/dashboard/credits"
-                  className="w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold text-center block bg-neutral-900 border border-neutral-700 hover:bg-neutral-800 text-neutral-200 hover:text-white transition-colors shadow-sm"
+                  className="w-full py-1.5 sm:py-2 rounded-lg text-xs font-bold text-center block bg-neutral-900 border border-neutral-700 hover:bg-neutral-800 text-neutral-200 hover:text-white transition-colors shadow-xs mt-2"
                 >
                   Purchase in Studio
                 </Link>
@@ -582,15 +584,15 @@ export function PricingPage() {
           </div>
 
           {/* Auto-Refund Guarantee Banner */}
-          <div className="rounded-[24px] bg-gradient-to-r from-teal-950/50 via-cyan-950/40 to-neutral-900 border border-teal-500/40 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 shadow-xl">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/50 text-cyan-400 flex items-center justify-center shrink-0 shadow-md">
-              <Shield className="w-7 h-7" />
+          <div className="rounded-xl sm:rounded-2xl bg-gradient-to-r from-teal-950/50 via-cyan-950/40 to-neutral-900 border border-teal-500/40 p-3.5 sm:p-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-3.5 shadow-md">
+            <div className="w-8 h-8 rounded-lg bg-cyan-950/80 border border-cyan-500/50 text-cyan-400 flex items-center justify-center shrink-0 shadow-sm">
+              <Shield className="w-4 h-4" />
             </div>
-            <div className="space-y-1 text-center sm:text-left">
-              <h4 className="text-lg font-bold text-white">
+            <div className="space-y-0.5 text-center sm:text-left">
+              <h4 className="text-xs sm:text-sm font-bold text-white">
                 100% Zero-Risk Auto-Refund Guarantee
               </h4>
-              <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-neutral-300 leading-relaxed">
                 We believe you should only pay for completed visuals. If an inference worker experiences a hardware error, network timeout, or CUDA out-of-memory exception, your reserved credits are refunded automatically to your wallet in real time.
               </p>
             </div>
@@ -599,54 +601,54 @@ export function PricingPage() {
       </section>
 
       {/* 5. SECTION 4: INTERACTIVE ACCORDION FAQS (#faq) */}
-      <section className="py-20 sm:py-28 border-b border-neutral-800/80 bg-[#06080F]/90 scroll-mt-20" id="faq">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-3 mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/40 text-purple-400 text-xs font-mono uppercase tracking-wider border border-purple-500/40">
-              <HelpCircle className="w-3.5 h-3.5" />
+      <section className="py-5 sm:py-6 lg:py-8 border-b border-neutral-800/80 bg-[#06080F]/90 scroll-mt-20" id="faq">
+        <div className="max-w-2xl sm:max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center space-y-1.5 mb-4 sm:mb-5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-950/40 text-purple-400 text-[10.5px] font-mono uppercase tracking-wider border border-purple-500/40">
+              <HelpCircle className="w-3 h-3" />
               <span>Frequently Asked Questions</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               Pricing & Credit Clarifications
             </h2>
-            <p className="text-base text-neutral-300 leading-relaxed">
+            <p className="text-xs text-neutral-300 leading-relaxed max-w-lg mx-auto">
               Everything you need to know about billing, plan switching, credit consumption, and enterprise options.
             </p>
           </div>
 
           {/* Accordion List */}
-          <div className="space-y-3">
+          <div className="space-y-1.5 sm:space-y-2">
             {faqs.map((faq, index) => {
               const isOpen = openFaq === index
               return (
                 <div
                   key={index}
-                  className={`rounded-2xl border transition-all overflow-hidden ${
+                  className={`rounded-lg sm:rounded-xl border transition-all overflow-hidden ${
                     isOpen
-                      ? 'bg-[#0D111C] border-cyan-500/60 shadow-[0_0_25px_rgba(6,182,212,0.15)]'
+                      ? 'bg-[#0D111C] border-cyan-500/60 shadow-[0_0_20px_rgba(6,182,212,0.12)]'
                       : 'bg-[#0B0F19]/90 border-neutral-800 hover:border-neutral-700'
                   }`}
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : index)}
-                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                    className="w-full py-2.5 px-3 sm:py-2.5 sm:px-3.5 text-left flex items-center justify-between gap-3 cursor-pointer focus:outline-none"
                     aria-expanded={isOpen}
                   >
-                    <span className="text-sm sm:text-base font-bold text-white">
+                    <span className="text-xs sm:text-[13px] font-semibold text-white">
                       {faq.q}
                     </span>
-                    <span className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform ${
+                    <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 transition-transform ${
                       isOpen
                         ? 'bg-cyan-950/60 text-cyan-400 rotate-180 border border-cyan-500/40'
                         : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
                     }`}>
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="w-3 h-3" />
                     </span>
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-neutral-300 leading-relaxed border-t border-neutral-800/80 pt-4">
+                    <div className="px-3 pb-2.5 sm:px-3.5 sm:pb-3 text-[11px] sm:text-xs text-neutral-300 leading-relaxed border-t border-neutral-800/80 pt-2">
                       {faq.a}
                     </div>
                   )}
@@ -658,9 +660,9 @@ export function PricingPage() {
       </section>
 
       {/* 6. BOTTOM CALL-TO-ACTION (Cinematic CTA) */}
-      <section className="py-20 sm:py-28 bg-[#06080F] relative overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-[32px] overflow-hidden border border-neutral-800 bg-[#0B0F19] p-8 sm:p-14 text-center shadow-2xl">
+      <section className="py-5 sm:py-6 lg:py-8 bg-[#06080F] relative overflow-hidden">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-[#0B0F19] p-5 sm:p-6 lg:p-7 text-center shadow-xl">
             {/* Background Image with Dark Cyberpunk Overlay */}
             <div className="absolute inset-0 pointer-events-none -z-10">
               <img
@@ -671,31 +673,31 @@ export function PricingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#06080F] via-[#06080F]/85 to-transparent" />
             </div>
 
-            <div className="relative z-10 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 text-cyan-400 text-xs font-mono uppercase tracking-wider border border-cyan-500/40 mx-auto">
-                <Sparkles className="w-3.5 h-3.5" />
+            <div className="relative z-10 space-y-2.5 sm:space-y-3">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-950/40 text-cyan-400 text-[10.5px] font-mono uppercase tracking-wider border border-cyan-500/40 mx-auto">
+                <Sparkles className="w-3 h-3" />
                 <span>Zero Latency Creative Flow</span>
               </div>
 
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-extrabold text-white tracking-tight leading-snug">
                 Ready to Unleash Your Creative Vision?
               </h2>
 
-              <p className="text-sm sm:text-base text-neutral-300 max-w-xl mx-auto leading-relaxed">
+              <p className="text-xs text-neutral-300 max-w-md mx-auto leading-relaxed">
                 Register now for 25 instant welcome credits. No credit card required. Experience sub-second photorealism and cinematic video in your own private studio.
               </p>
 
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="pt-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2.5">
                 <Link
                   to="/register"
-                  className="w-full sm:w-auto px-8 py-4 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg shadow-pink-500/25 transition-all hover:scale-105 inline-flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-4 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md shadow-pink-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-1.5"
                 >
                   <span>Start Free Trial (25 Credits)</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3 h-3" />
                 </Link>
                 <Link
                   to="/contact"
-                  className="w-full sm:w-auto px-8 py-4 rounded-full text-sm font-semibold border border-neutral-700 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-200 hover:text-white transition-colors"
+                  className="w-full sm:w-auto px-3.5 py-2 rounded-full text-xs font-semibold border border-neutral-700 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-200 hover:text-white transition-colors"
                 >
                   Talk to Sales & Consultation
                 </Link>
