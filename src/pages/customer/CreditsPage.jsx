@@ -10,7 +10,6 @@ import {
   StudioPageHeader, Panel, SearchField, LightSelect, LightEmptyState,
   StatCard, Toast
 } from '../../components/studio/StudioUI'
-import { DEMO_USAGE_DAILY, DEMO_TRANSACTIONS } from '../../mocks/customerDemoData'
 import { useAuth } from '../../hooks/useAuth'
 import { formatDateTime } from '../../utils/format'
 import { cn } from '../../utils/cn'
@@ -24,8 +23,11 @@ const TOP_UP_PACKS = [
 
 export function CreditsPage() {
   const { user, setUser } = useAuth()
-  const [balance, setBalance] = useState(user?.creditBalance ?? 25)
+  const [balance, setBalance] = useState(null)
+  const [balanceLoading, setBalanceLoading] = useState(true)
   const [transactions, setTransactions] = useState([])
+  const [transactionsLoading, setTransactionsLoading] = useState(true)
+  const [dailyUsage, setDailyUsage] = useState([])
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [isActivityMenuOpen, setIsActivityMenuOpen] = useState(false)
   const activityMenuRef = useRef(null)
@@ -62,41 +64,78 @@ export function CreditsPage() {
   const [toast, setToast] = useState(null)
   const closeToast = useCallback(() => setToast(null), [])
 
-  // Load real balance and transaction history on mount
+  // Load real balance, transaction history, and 14-day usage history on mount
   useEffect(() => {
     let isMounted = true
 
     async function loadCreditData() {
       try {
-        const [balRes, txRes] = await Promise.allSettled([
+        const [balRes, txRes, usageRes] = await Promise.allSettled([
           api.get('/credits/balance'),
-          api.get('/credits/transactions')
+          api.get('/credits/transactions'),
+          api.get('/credits/usage-history?days=14')
         ])
 
         if (isMounted) {
           if (balRes.status === 'fulfilled' && balRes.value.data?.success) {
-            const b = balRes.value.data.data?.balance ?? 25
-            setBalance(b)
-            if (setUser) setUser((prev) => (prev ? { ...prev, creditBalance: b } : prev))
+            const b = balRes.value.data.data?.balance
+            if (typeof b === 'number') {
+              setBalance(b)
+              if (setUser) setUser((prev) => (prev ? { ...prev, creditBalance: b } : prev))
+            }
           }
+          setBalanceLoading(false)
+
           if (txRes.status === 'fulfilled' && txRes.value.data?.success) {
             const rawData = txRes.value.data.data
             const list = Array.isArray(rawData)
               ? rawData
               : (Array.isArray(rawData?.transactions) ? rawData.transactions : [])
-            setTransactions(list.length > 0 ? list : DEMO_TRANSACTIONS)
+            setTransactions(list)
           } else {
-            setTransactions(DEMO_TRANSACTIONS)
+            setTransactions([])
+          }
+          setTransactionsLoading(false)
+
+          if (usageRes.status === 'fulfilled' && usageRes.value.data?.success) {
+            setDailyUsage(usageRes.value.data.data?.usage || [])
+          } else {
+            setDailyUsage([])
           }
         }
       } catch {
-        if (isMounted) setTransactions(DEMO_TRANSACTIONS)
+        if (isMounted) {
+          setTransactions([])
+          setDailyUsage([])
+          setBalanceLoading(false)
+          setTransactionsLoading(false)
+        }
       }
     }
 
     loadCreditData()
     return () => { isMounted = false }
   }, [setUser])
+
+  const chartData = useMemo(() => {
+    if (Array.isArray(dailyUsage) && dailyUsage.length > 0) {
+      return dailyUsage
+    }
+    // Safe zero-usage series for 14 days when empty or loading
+    const zeros = []
+    const now = new Date()
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i))
+      zeros.push({
+        date: d.toISOString().split('T')[0],
+        day: d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' }),
+        image: 0,
+        video: 0,
+        total: 0
+      })
+    }
+    return zeros
+  }, [dailyUsage])
 
   const filteredTx = useMemo(() => {
     if (!Array.isArray(transactions)) return []
@@ -143,7 +182,7 @@ export function CreditsPage() {
   }, [])
 
   const yScale = useMemo(() => {
-    const dailyTotals = (DEMO_USAGE_DAILY || []).map((d) => (d.image || 0) + (d.video || 0))
+    const dailyTotals = (chartData || []).map((d) => (d.image || 0) + (d.video || 0))
     const maxVal = Math.max(...dailyTotals, 1)
 
     const roughStep = maxVal / 4
@@ -165,7 +204,7 @@ export function CreditsPage() {
     }
 
     return { max: niceMax, ticks }
-  }, [])
+  }, [chartData])
 
   const handleSimulateTopUp = async () => {
     const pack = TOP_UP_PACKS.find((p) => p.id === selectedPack) || TOP_UP_PACKS[1]
@@ -176,25 +215,17 @@ export function CreditsPage() {
         const order = res.data.data
         setTopUpModalOpen(false)
         setToast({
-          message: `Order created (${order.invoiceNumber}). Payment gateways will be connected in Phase 6.`
+          message: `Order created (${order.invoiceNumber}). Payment processing is pending gateway integration.`
         })
       } else {
         setToast({ message: res.data?.error?.message || 'Failed to create top-up order', tone: 'danger' })
       }
-    } catch {
-      // Local demo fallback
-      const newTx = {
-        id: `tx-${Date.now()}`,
-        date: new Date().toISOString(),
-        description: `Credit top-up • ${pack.credits} credit pack (Demo)`,
-        type: 'credit',
-        category: 'topup',
-        amount: pack.credits
-      }
-      setBalance((prev) => prev + pack.credits)
-      setTransactions([newTx, ...transactions])
+    } catch (err) {
       setTopUpModalOpen(false)
-      setToast({ message: `Simulated top-up: +${pack.credits} credits added to local session.` })
+      setToast({
+        message: err.response?.data?.error?.message || 'Payment gateway integration is pending. Credit purchases are currently disabled.',
+        tone: 'danger'
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -220,7 +251,7 @@ export function CreditsPage() {
         <StatCard
           icon={Coins}
           label="Available Balance"
-          value={`${balance} cr`}
+          value={balance !== null ? `${balance} cr` : (balanceLoading ? 'Loading…' : '—')}
           sub="No expiration on purchased credits"
           accent="amber"
         />
@@ -299,8 +330,8 @@ export function CreditsPage() {
                 })}
 
                 {/* Floating Interactive Tooltip — displays exclusively on active bar hover */}
-                {hoveredBar !== null && DEMO_USAGE_DAILY[hoveredBar.index] && (() => {
-                  const activeDay = DEMO_USAGE_DAILY[hoveredBar.index]
+                {hoveredBar !== null && chartData[hoveredBar.index] && (() => {
+                  const activeDay = chartData[hoveredBar.index]
                   const isVideo = hoveredBar.type === 'video'
                   const value = isVideo ? (activeDay.video || 0) : (activeDay.image || 0)
                   const fullDate = activeDay.day.includes('202')
@@ -311,12 +342,12 @@ export function CreditsPage() {
                     <div
                       className="absolute z-30 pointer-events-none transition-all duration-150 ease-out"
                       style={{
-                        left: `${((hoveredBar.index + 0.5) / DEMO_USAGE_DAILY.length) * 100}%`,
+                        left: `${((hoveredBar.index + 0.5) / chartData.length) * 100}%`,
                         top: '6px',
                         transform:
                           hoveredBar.index <= 1
                             ? 'translateX(0%)'
-                            : hoveredBar.index >= DEMO_USAGE_DAILY.length - 2
+                            : hoveredBar.index >= chartData.length - 2
                             ? 'translateX(-100%)'
                             : 'translateX(-50%)'
                       }}
@@ -355,7 +386,7 @@ export function CreditsPage() {
 
                 {/* Bars Columns — Pointer events disabled on empty container & columns */}
                 <div className="absolute inset-0 flex items-end gap-2 sm:gap-2.5 px-1 pointer-events-none">
-                  {(DEMO_USAGE_DAILY || []).map((day, idx) => {
+                  {(chartData || []).map((day, idx) => {
                     const totalCredits = (day.image || 0) + (day.video || 0)
                     const totalPct = yScale.max > 0 ? (totalCredits / yScale.max) * 100 : 0
                     const isVideoHovered = hoveredBar?.index === idx && hoveredBar?.type === 'video'
@@ -437,7 +468,7 @@ export function CreditsPage() {
             <div className="flex items-start gap-3 mt-2 pointer-events-none">
               <div className="w-11 shrink-0" />
               <div className="flex-1 flex gap-2 sm:gap-2.5 px-1">
-                {(DEMO_USAGE_DAILY || []).map((day, idx) => {
+                {(chartData || []).map((day, idx) => {
                   const parts = (day.day || day.date || '').split(' ')
                   const dayNum = parts[0] || `D${idx + 1}`
                   const month = parts[1] || ''
@@ -574,38 +605,50 @@ export function CreditsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800">
-              {filteredTx.map((tx) => {
-                const isPositive = tx.amount > 0
-                return (
-                  <tr key={tx.id} className="hover:bg-neutral-800/40 transition-colors">
-                    <td className="px-4 py-3">
-                      <div>
-                        <p className="text-xs font-bold text-white">{tx.description}</p>
-                        <p className="text-[11px] text-neutral-400 font-mono mt-0.5">{tx.id}</p>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 hidden sm:table-cell">
-                      <span className={cn(
-                        'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase',
-                        tx.type === 'debit' ? 'bg-neutral-800 text-neutral-200 border border-neutral-700/60' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
-                      )}>
-                        {tx.type}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-neutral-300 font-medium hidden md:table-cell">
-                      {formatDateTime(tx.date || tx.createdAt)}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <span className={cn(
-                        'text-xs font-bold font-mono',
-                        isPositive ? 'text-emerald-400' : 'text-neutral-200'
-                      )}>
-                        {isPositive ? `+${tx.amount}` : tx.amount} cr
-                      </span>
-                    </td>
-                  </tr>
-                )
-              })}
+              {filteredTx.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-4 py-8 text-center text-xs text-neutral-400">
+                    {transactionsLoading
+                      ? 'Loading transaction ledger...'
+                      : (categoryFilter !== 'all'
+                        ? `No credit transactions found matching "${selectedActivity.label}".`
+                        : 'No credit transactions recorded yet.')}
+                  </td>
+                </tr>
+              ) : (
+                filteredTx.map((tx) => {
+                  const isPositive = tx.amount > 0
+                  return (
+                    <tr key={tx.id} className="hover:bg-neutral-800/40 transition-colors">
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="text-xs font-bold text-white">{tx.description}</p>
+                          <p className="text-[11px] text-neutral-400 font-mono mt-0.5">{tx.id}</p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 hidden sm:table-cell">
+                        <span className={cn(
+                          'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase',
+                          tx.type === 'debit' ? 'bg-neutral-800 text-neutral-200 border border-neutral-700/60' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
+                        )}>
+                          {tx.type}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-neutral-300 font-medium hidden md:table-cell">
+                        {formatDateTime(tx.date || tx.createdAt)}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className={cn(
+                          'text-xs font-bold font-mono',
+                          isPositive ? 'text-emerald-400' : 'text-neutral-200'
+                        )}>
+                          {isPositive ? `+${tx.amount}` : tx.amount} cr
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
             </tbody>
           </table>
         </div>
