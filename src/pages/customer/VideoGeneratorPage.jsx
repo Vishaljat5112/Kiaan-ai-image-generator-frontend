@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Video,
   Sparkles,
@@ -19,13 +19,15 @@ import {
   Volume2,
   VolumeX,
   Share2,
-  Film
+  Film,
+  RefreshCw
 } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { useAuth } from '../../hooks/useAuth'
 import { api } from '../../services/api'
 import { cn } from '../../utils/cn'
+import { formatDateTime } from '../../utils/format'
 
 // Video Generation Models (PRD / sovereign open weights)
 const VIDEO_MODELS = [
@@ -151,8 +153,72 @@ export function VideoGeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)
   const [generationStepText, setGenerationStepText] = useState('')
-  const [currentVideo, setCurrentVideo] = useState(SAMPLE_VIDEOS[0])
-  const [videoHistory, setVideoHistory] = useState(SAMPLE_VIDEOS)
+  const [currentVideo, setCurrentVideo] = useState(null)
+  const [videoHistory, setVideoHistory] = useState([])
+  const [loadingRecent, setLoadingRecent] = useState(true)
+
+  // Fetch logged-in user's recent Text-to-Video generations
+  const fetchRecentVideos = useCallback(async () => {
+    try {
+      setLoadingRecent(true)
+      const res = await api.get('/assets/generations', {
+        params: { type: 'video', generationType: 'TEXT_TO_VIDEO', sort: 'newest', limit: 12 }
+      })
+      const rawList = res.data?.data || []
+      const videoItems = rawList
+        .filter((item) => {
+          if (item.deletedAt) return false
+          const isVideo = item.type === 'video' || item.mediaType === 'VIDEO'
+          const isTextToVideo = item.generationType === 'TEXT_TO_VIDEO' || item.jobType === 'TEXT_TO_VIDEO' || item.tool === 'Text-to-Video'
+          return isVideo && isTextToVideo
+        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 6)
+        .map((item) => {
+          const rawSrc = item.src || item.storagePath || ''
+          const videoUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
+            ? rawSrc
+            : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
+          const rawThumb = item.poster || item.thumbnailPath || videoUrl
+          const thumbUrl = rawThumb.startsWith('http') || rawThumb.startsWith('data:')
+            ? rawThumb
+            : (rawThumb.startsWith('/') ? rawThumb : `/${rawThumb}`)
+
+          return {
+            id: item.id,
+            title: item.title || item.prompt?.slice(0, 30) || 'Text-to-Video Sequence',
+            prompt: item.prompt || '',
+            model: item.model || 'Wan 2.1 Video',
+            resolution: item.dimensions || '1280×720',
+            duration: item.duration || '5.0s',
+            fps: item.fps || 24,
+            cameraMotion: item.camera || 'Dynamic',
+            seed: item.seed ? String(item.seed) : '8192',
+            timestamp: formatDateTime(item.createdAt),
+            thumbnail: thumbUrl,
+            videoUrl: videoUrl,
+            badge: `${item.aspect || '16:9'}`,
+            status: 'COMPLETED'
+          }
+        })
+      setVideoHistory(videoItems)
+      if (videoItems.length > 0) {
+        setCurrentVideo(videoItems[0])
+      } else {
+        setCurrentVideo(null)
+      }
+    } catch (err) {
+      console.error('Failed to load recent video generations:', err)
+      setVideoHistory([])
+      setCurrentVideo(null)
+    } finally {
+      setLoadingRecent(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchRecentVideos()
+  }, [fetchRecentVideos])
 
   // Video Player Simulation State
   const [isPlaying, setIsPlaying] = useState(false)
@@ -288,7 +354,10 @@ export function VideoGeneratorPage() {
               }
 
               setCurrentVideo(newVideo)
-              setVideoHistory((prev) => [newVideo, ...prev])
+              setVideoHistory((prev) => {
+                const combined = [newVideo, ...prev.filter((i) => i.id !== newVideo.id)]
+                return combined.slice(0, 6)
+              })
               setIsGenerating(false)
               setIsPlaying(true)
               setPlayerProgress(0)
@@ -752,7 +821,7 @@ export function VideoGeneratorPage() {
                   </div>
                   <span className="text-xs font-mono text-cyan-400">{generationProgress}% completed</span>
                 </div>
-              ) : (
+              ) : currentVideo ? (
                 <>
                   <img
                     src={currentVideo.thumbnail}
@@ -803,7 +872,7 @@ export function VideoGeneratorPage() {
                           <RotateCcw className="w-3.5 h-3.5" />
                         </button>
                         <span className="font-mono text-[11px] text-neutral-300">
-                          {((playerProgress / 100) * parseFloat(currentVideo.duration)).toFixed(1)}s / {currentVideo.duration}
+                          {((playerProgress / 100) * parseFloat(currentVideo.duration || '5.0s')).toFixed(1)}s / {currentVideo.duration || '5.0s'}
                         </span>
                       </div>
 
@@ -826,33 +895,47 @@ export function VideoGeneratorPage() {
                     </div>
                   </div>
                 </>
+              ) : (
+                <div className="text-center p-8 space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
+                    <Video className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-neutral-300">Video Canvas Ready</p>
+                    <p className="text-[11px] text-neutral-400 max-w-xs mt-0.5">
+                      Configure your prompt on the left and click Generate Video to produce your first motion clip.
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
 
             {/* Current Video Information */}
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white">{currentVideo.title}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
-                  {currentVideo.model}
-                </span>
+            {currentVideo && (
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white">{currentVideo.title}</span>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+                    {currentVideo.model}
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-400 line-clamp-2">"{currentVideo.prompt}"</p>
+                <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-1 border-t border-neutral-800">
+                  <span>Res: <strong className="text-white">{currentVideo.resolution}</strong></span>
+                  <span>Camera: <strong className="text-white">{currentVideo.cameraMotion}</strong></span>
+                  <span>FPS: <strong className="text-white">{currentVideo.fps}</strong></span>
+                </div>
               </div>
-              <p className="text-xs text-neutral-400 line-clamp-2">"{currentVideo.prompt}"</p>
-              <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-1 border-t border-neutral-800">
-                <span>Res: <strong className="text-white">{currentVideo.resolution}</strong></span>
-                <span>Camera: <strong className="text-white">{currentVideo.cameraMotion}</strong></span>
-                <span>FPS: <strong className="text-white">{currentVideo.fps}</strong></span>
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Sample Video Gallery */}
+          {/* Recent Generations Gallery */}
           <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                   <Film className="w-4 h-4 text-cyan-400" />
-                  Recent Sample Videos
+                  Recent Generations
                 </h2>
                 <p className="text-[11px] text-neutral-400 mt-0.5">Click any video to load into the preview player.</p>
               </div>
@@ -861,36 +944,53 @@ export function VideoGeneratorPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {videoHistory.map((video) => (
-                <div
-                  key={video.id}
-                  onClick={() => {
-                    setCurrentVideo(video)
-                    setIsPlaying(true)
-                    setPlayerProgress(0)
-                  }}
-                  className={cn(
-                    'group relative aspect-video rounded-xl overflow-hidden border cursor-pointer transition-all',
-                    currentVideo.id === video.id
-                      ? 'border-cyan-500 ring-2 ring-cyan-500/20'
-                      : 'border-neutral-800 hover:border-cyan-500/60'
-                  )}
-                >
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex flex-col justify-between text-white">
-                    <span className="text-[9px] font-semibold bg-black/60 px-1.5 py-0.5 rounded self-start border border-white/20">
-                      {video.duration} • {video.badge}
-                    </span>
-                    <p className="text-[10px] font-medium line-clamp-1">{video.title}</p>
-                  </div>
+            {loadingRecent && videoHistory.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center text-center">
+                <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin mb-2" />
+                <p className="text-xs text-neutral-400">Loading recent videos…</p>
+              </div>
+            ) : videoHistory.length === 0 ? (
+              <div className="py-10 px-4 rounded-xl border border-dashed border-neutral-800 bg-[#080B14]/60 flex flex-col items-center justify-center text-center">
+                <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-2.5">
+                  <Video className="w-5 h-5 text-neutral-400" />
                 </div>
-              ))}
-            </div>
+                <p className="text-xs font-semibold text-neutral-200">Your recent videos will appear here</p>
+                <p className="text-[11px] text-neutral-400 mt-1 max-w-xs">
+                  Generate a video using the prompt controls on the left to populate your recent video gallery.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {videoHistory.map((video) => (
+                  <div
+                    key={video.id}
+                    onClick={() => {
+                      setCurrentVideo(video)
+                      setIsPlaying(true)
+                      setPlayerProgress(0)
+                    }}
+                    className={cn(
+                      'group relative aspect-video rounded-xl overflow-hidden border cursor-pointer transition-all',
+                      currentVideo?.id === video.id
+                        ? 'border-cyan-500 ring-2 ring-cyan-500/20'
+                        : 'border-neutral-800 hover:border-cyan-500/60'
+                    )}
+                  >
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex flex-col justify-between text-white">
+                      <span className="text-[9px] font-semibold bg-black/60 px-1.5 py-0.5 rounded self-start border border-white/20">
+                        {video.duration} • {video.badge}
+                      </span>
+                      <p className="text-[10px] font-medium line-clamp-1">{video.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

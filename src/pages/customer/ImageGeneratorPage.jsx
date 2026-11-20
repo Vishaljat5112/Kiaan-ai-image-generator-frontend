@@ -1,45 +1,42 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Sparkles,
   Wand2,
-  Sliders,
   Image as ImageIcon,
-  Upload,
   RefreshCw,
   Download,
   Copy,
   Check,
   Maximize2,
-  Trash2,
   Zap,
-  Info,
   Layers,
   ChevronDown,
   ChevronUp,
-  Share2,
   Square,
   RectangleHorizontal,
   RectangleVertical,
-  HelpCircle,
   Clock,
   Coins,
   AlertTriangle,
   X
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
 import { Modal } from '../../components/ui/Modal'
 import { useAuth } from '../../hooks/useAuth'
 import { api } from '../../services/api'
 import { cn } from '../../utils/cn'
+import { formatDateTime } from '../../utils/format'
 
-// Curated preset prompts for creative exploration
+// Curated photorealistic prompts for creative exploration
 const PROMPT_INSPIRATIONS = [
-  'Hyper-realistic editorial portrait of an astronaut looking at glowing flora on an alien biome, 8k resolution, cinematic volumetric light',
-  'Futuristic sleek electric hypercar parked on a neon-lit Tokyo street in heavy rain, puddles reflecting magenta and cyan cyber lighting',
-  'Minimalist Scandinavian architectural villa cantilevered over a misty Norwegian fjord, sunset golden hour, photorealistic interior design',
-  'Whimsical miniature terrarium floating in outer space inside an ornate blown-glass sphere with lush bonsai and glowing fireflies'
+  'A beautiful mountain lake at sunrise, realistic landscape photography, natural lighting, detailed reflections.',
+  'A cozy modern living room with sunlight through large windows, professional interior photography.',
+  'A white kitten sitting in a garden, soft morning sunlight, realistic fur details.',
+  'A bustling Indian street market during golden hour, candid documentary photography.',
+  'A luxury sports car parked on a mountain road, photorealistic automotive photography.',
+  'A tropical beach with crystal-clear water, natural daylight, realistic travel photography.',
+  'A chef preparing fresh food in a modern restaurant kitchen, professional food photography.',
+  'A snow-covered mountain village at dawn, realistic architectural and landscape photography.'
 ]
 
 // Available AI Generation Models
@@ -85,85 +82,8 @@ const ASPECT_RATIOS = [
   { id: '21:9', label: '21:9 Ultra-wide', width: 1536, height: 640, icon: RectangleHorizontal, desc: 'Cinematic banner' }
 ]
 
-// Sample Initial Gallery
-const INITIAL_GALLERY = [
-  {
-    id: 'gen-001',
-    prompt: 'Hyper-realistic futuristic architectural villa hovering over a turquoise alpine lake at twilight, glass facade glowing with warm amber lighting',
-    model: 'FLUX.2 Klein 4B',
-    aspect: '16:9',
-    dimensions: '1344×768',
-    seed: '482910385',
-    steps: 4,
-    cfg: 3.5,
-    timestamp: 'Just now',
-    image: '/images/landing/gallery-architecture.jpg'
-  },
-  {
-    id: 'gen-002',
-    prompt: 'Cinematic close-up portrait of an astronaut with intricate golden reflections in the helmet visor, nebula dust in background',
-    model: 'FLUX.2 Klein 4B',
-    aspect: '1:1',
-    dimensions: '1024×1024',
-    seed: '918274619',
-    steps: 4,
-    cfg: 4.0,
-    timestamp: '5m ago',
-    image: '/images/landing/hero-astronaut.jpg'
-  },
-  {
-    id: 'gen-003',
-    prompt: 'Bioluminescent mystical fantasy tree glowing with ethereal cyan and magenta flora in a misty fairy forest',
-    model: 'Z-Image Turbo',
-    aspect: '9:16',
-    dimensions: '768×1344',
-    seed: '109283742',
-    steps: 8,
-    cfg: 5.0,
-    timestamp: '18m ago',
-    image: '/images/landing/gallery-fantasy.jpg'
-  },
-  {
-    id: 'gen-004',
-    prompt: 'High fashion editorial runway portrait in minimalist neutral beige tones, sharp cinematic studio rim lighting',
-    model: 'FLUX.2 Klein 4B',
-    aspect: '1:1',
-    dimensions: '1024×1024',
-    seed: '372819401',
-    steps: 4,
-    cfg: 3.5,
-    timestamp: '42m ago',
-    image: '/images/landing/gallery-fashion.jpg'
-  },
-  {
-    id: 'gen-005',
-    prompt: 'Macro shot of iridescent dew drops suspended on dandelion seeds with sunset bokeh spheres in soft focus',
-    model: 'Z-Image Turbo',
-    aspect: '4:3',
-    dimensions: '1152×864',
-    seed: '847291023',
-    steps: 8,
-    cfg: 5.5,
-    timestamp: '1h ago',
-    image: '/images/landing/gallery-dandelion.jpg'
-  },
-  {
-    id: 'gen-006',
-    prompt: 'Luxury product photography for high-end organic skincare bottle on smooth volcanic wet stone with morning mist',
-    model: 'FLUX.2 Klein 4B',
-    aspect: '1:1',
-    dimensions: '1024×1024',
-    seed: '629104857',
-    steps: 4,
-    cfg: 3.5,
-    timestamp: '2h ago',
-    image: '/images/landing/gallery-product.jpg'
-  }
-]
-
 export function ImageGeneratorPage() {
   const { user, setUser } = useAuth()
-  const fileInputRef = useRef(null)
 
   // Form State
   const [prompt, setPrompt] = useState('')
@@ -171,23 +91,110 @@ export function ImageGeneratorPage() {
   const [showNegative, setShowNegative] = useState(false)
   const [selectedModel, setSelectedModel] = useState(AI_MODELS[0].id)
   const [aspectRatio, setAspectRatio] = useState('1:1')
-  const [referenceImage, setReferenceImage] = useState(null)
-  const [referenceStrength, setReferenceStrength] = useState(0.65)
-  const [guidanceScale, setGuidanceScale] = useState(3.5)
-  const [steps, setSteps] = useState(4)
-  const [seed, setSeed] = useState('')
-  const [isRandomSeed, setIsRandomSeed] = useState(true)
-  const [sampler, setSampler] = useState('euler_ancestral')
-  const [showAdvanced, setShowAdvanced] = useState(false)
-  const [outputCount, setOutputCount] = useState(1)
 
-  // Generation Simulation State
+  // Generation State
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)
   const [generationStepText, setGenerationStepText] = useState('')
   const [generationError, setGenerationError] = useState(null)
   const [generatedResults, setGeneratedResults] = useState([])
-  const [historyGallery, setHistoryGallery] = useState(INITIAL_GALLERY)
+  const [historyGallery, setHistoryGallery] = useState([])
+  const [loadingRecent, setLoadingRecent] = useState(true)
+
+  // Dynamic Inspiration Presets Ref & Responsive Visible Count
+  const presetsAreaRef = useRef(null)
+  const presetsHeaderRef = useRef(null)
+  const [visiblePresetsCount, setVisiblePresetsCount] = useState(2)
+
+  useEffect(() => {
+    const node = presetsAreaRef.current
+    if (!node || typeof ResizeObserver === 'undefined') return
+
+    const updateCount = () => {
+      // On narrow/mobile screens, keep preset list compact so cards stack naturally
+      if (window.innerWidth < 1024) {
+        setVisiblePresetsCount((prev) => (prev !== 2 ? 2 : prev))
+        return
+      }
+
+      // On desktop, measure exact available vertical height in the stretched flex container
+      const availableHeight = node.clientHeight
+      const headerHeight = presetsHeaderRef.current ? presetsHeaderRef.current.offsetHeight + 6 : 22
+      const usableHeight = availableHeight - headerHeight
+
+      // Each preset button is h-[32px] (32px) + gap-1.5 (6px) = 38px
+      // For N items: totalNeeded = 38 * N - 6 => N = Math.floor((usableHeight + 6) / 38)
+      const count = Math.max(1, Math.min(PROMPT_INSPIRATIONS.length, Math.floor((usableHeight + 6) / 38)))
+      setVisiblePresetsCount((prev) => (prev !== count ? count : prev))
+    }
+
+    // Run initial calculation
+    updateCount()
+
+    // Observe size changes without infinite loop (min-h-0 container doesn't expand on child insertion)
+    const observer = new ResizeObserver(() => {
+      updateCount()
+    })
+    observer.observe(node)
+
+    window.addEventListener('resize', updateCount)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', updateCount)
+    }
+  }, [showNegative, generationError, aspectRatio])
+
+  // Fetch logged-in user's recent generations from authenticated assets API
+  const fetchRecentGenerations = useCallback(async () => {
+    try {
+      setLoadingRecent(true)
+      const res = await api.get('/assets/generations', {
+        params: { type: 'image', generationType: 'TEXT_TO_IMAGE', sort: 'newest', limit: 12 }
+      })
+      const rawList = res.data?.data || []
+      const imageItems = rawList
+        .filter((item) => {
+          if (item.deletedAt) return false
+          const isImage = item.type === 'image' || item.mediaType === 'IMAGE'
+          const isTextToImage = item.generationType === 'TEXT_TO_IMAGE' || item.jobType === 'TEXT_TO_IMAGE' || item.tool === 'Text-to-Image'
+          return isImage && isTextToImage
+        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 6)
+        .map((item) => {
+          const rawSrc = item.src || item.storagePath || ''
+          const imageUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
+            ? rawSrc
+            : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
+
+          return {
+            id: item.id,
+            prompt: item.prompt || 'Generated Image',
+            negativePrompt: item.negativePrompt || undefined,
+            model: item.model || 'FLUX.2 Klein 4B',
+            aspect: item.aspect || '1:1',
+            dimensions: item.dimensions || '1024×1024',
+            seed: item.seed ? String(item.seed) : '482910385',
+            steps: item.steps || 4,
+            cfg: item.cfg || 3.5,
+            timestamp: formatDateTime(item.createdAt),
+            image: imageUrl,
+            status: 'COMPLETED'
+          }
+        })
+      setHistoryGallery(imageItems)
+    } catch (err) {
+      console.error('Failed to load recent generations:', err)
+      setHistoryGallery([])
+    } finally {
+      setLoadingRecent(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchRecentGenerations()
+  }, [fetchRecentGenerations])
 
   // Interactive View Modal
   const [activeModalItem, setActiveModalItem] = useState(null)
@@ -200,40 +207,11 @@ export function ImageGeneratorPage() {
   // Handle Model change
   const handleModelChange = (modelId) => {
     setSelectedModel(modelId)
-    const m = AI_MODELS.find(item => item.id === modelId)
-    if (m) {
-      setSteps(m.defaultSteps)
-      setGuidanceScale(m.recommendedCfg)
-    }
   }
 
   // Handle Inspiration Click
   const handleApplyInspiration = (item) => {
     setPrompt(item)
-  }
-
-  // Handle Reference Image Upload (Browser FileReader for local dummy preview)
-  const handleReferenceUpload = (e) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        setReferenceImage({
-          name: file.name,
-          url: reader.result,
-          size: (file.size / 1024).toFixed(1) + ' KB'
-        })
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  // Clear Reference Image
-  const handleClearReference = () => {
-    setReferenceImage(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
   }
 
   // Prompt Enhancer simulation
@@ -265,7 +243,10 @@ export function ImageGeneratorPage() {
     setGenerationProgress(10)
     setGenerationStepText('Submitting job to GPU inference queue...')
 
-    const randomSeedVal = isRandomSeed ? Math.floor(Math.random() * 900000000 + 100000000).toString() : (seed || '42')
+    const modelSteps = currentModelObj.defaultSteps || 4
+    const modelCfg = currentModelObj.recommendedCfg || 3.5
+    const modelSampler = 'euler_ancestral'
+    const randomSeedVal = Math.floor(Math.random() * 900000000 + 100000000).toString()
 
     try {
       const res = await api.post('/generation/jobs', {
@@ -277,9 +258,9 @@ export function ImageGeneratorPage() {
           aspect: currentAspectObj.id,
           width: currentAspectObj.width,
           height: currentAspectObj.height,
-          steps,
-          cfg: guidanceScale,
-          sampler,
+          steps: modelSteps,
+          cfg: modelCfg,
+          sampler: modelSampler,
           seed: randomSeedVal
         }
       })
@@ -294,7 +275,7 @@ export function ImageGeneratorPage() {
           if (balRes.data?.data && setUser) {
             setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
           }
-        } catch {}
+        } catch { }
 
         setGenerationProgress(20)
         setGenerationStepText(`Job #${jobId.slice(0, 8)} enqueued (Queue pos #${backendJob.queuePosition || 1}) - waiting for AI engine...`)
@@ -329,24 +310,26 @@ export function ImageGeneratorPage() {
                 : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
 
               const newGen = {
-                id: jobData.id,
+                id: asset?.id || jobData.id,
                 prompt: finalPrompt,
                 negativePrompt: negativePrompt.trim() || undefined,
                 model: currentModelObj.name,
                 aspect: currentAspectObj.id,
                 dimensions: asset?.dimensions || `${currentAspectObj.width}×${currentAspectObj.height}`,
                 seed: randomSeedVal,
-                steps,
-                cfg: guidanceScale,
-                sampler,
+                steps: modelSteps,
+                cfg: modelCfg,
+                sampler: modelSampler,
                 timestamp: 'Just now',
                 image: finalImageUrl,
-                refImage: referenceImage ? referenceImage.url : null,
                 status: 'COMPLETED'
               }
 
               setGeneratedResults([newGen])
-              setHistoryGallery((prev) => [newGen, ...prev])
+              setHistoryGallery((prev) => {
+                const combined = [newGen, ...prev.filter((i) => i.id !== newGen.id)]
+                return combined.slice(0, 6)
+              })
               setIsGenerating(false)
 
               // Refresh user credit balance
@@ -355,7 +338,7 @@ export function ImageGeneratorPage() {
                 if (balRes.data?.data && setUser) {
                   setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
                 }
-              } catch {}
+              } catch { }
             } else if (jobData.status === 'FAILED' || jobData.status === 'CANCELED') {
               clearInterval(pollInterval)
               setIsGenerating(false)
@@ -378,7 +361,7 @@ export function ImageGeneratorPage() {
                 if (balRes.data?.data && setUser) {
                   setUser((prev) => (prev ? { ...prev, creditBalance: balRes.data.data.balance } : prev))
                 }
-              } catch {}
+              } catch { }
             }
           } catch (pollErr) {
             console.warn('[AI Poll Warning]', pollErr)
@@ -475,12 +458,12 @@ export function ImageGeneratorPage() {
         </div>
       </div>
 
-      {/* Main Studio Grid: Left Control Panel (60%) + Right Interactive Workspace / Results (40%) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
-        {/* Left Side: Generator Controls (7 cols) */}
-        <div className="lg:col-span-7 space-y-5 sm:space-y-6">
-          {/* Main Prompt Card */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+      {/* ROW 1: Prompt Description (Left) + Real-Time Canvas (Right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:items-stretch items-start">
+        {/* Main Prompt Card */}
+        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
+          {/* Top Section */}
+          <div className="space-y-3 shrink-0">
             <div className="flex items-center justify-between">
               <label htmlFor="prompt-input" className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-cyan-400" />
@@ -489,7 +472,7 @@ export function ImageGeneratorPage() {
               <button
                 type="button"
                 onClick={handleEnhancePrompt}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/60 px-2.5 py-1 rounded-lg border border-cyan-800/60 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/60 px-2.5 py-1 rounded-lg border border-cyan-800/60 transition-colors cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 Enhance Prompt
@@ -498,11 +481,10 @@ export function ImageGeneratorPage() {
 
             {/* Generation Error / Safety Filter Banner */}
             {generationError && (
-              <div className={`p-4 rounded-xl border text-xs flex items-start gap-3 transition-all ${
-                generationError.isFlagged
-                  ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
-                  : 'bg-rose-950/30 border-rose-500/40 text-rose-200'
-              }`}>
+              <div className={`p-4 rounded-xl border text-xs flex items-start gap-3 transition-all ${generationError.isFlagged
+                ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
+                : 'bg-rose-950/30 border-rose-500/40 text-rose-200'
+                }`}>
                 <AlertTriangle className={`w-4 h-4 shrink-0 mt-0.5 ${generationError.isFlagged ? 'text-amber-400' : 'text-rose-400'}`} />
                 <div className="flex-1 space-y-1">
                   <div className="font-semibold text-sm flex items-center gap-2">
@@ -533,359 +515,80 @@ export function ImageGeneratorPage() {
             <div className="relative">
               <textarea
                 id="prompt-input"
-                rows={4}
+                rows={3}
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe what you want to see in rich sensory detail (subject, environment, lighting, shot angle, medium, aesthetic mood)..."
-                className="w-full rounded-xl p-3.5 text-sm bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all resize-none"
+                className="w-full rounded-xl p-3 text-sm bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all resize-none"
               />
               {prompt && (
                 <button
                   type="button"
                   onClick={() => setPrompt('')}
-                  className="absolute bottom-3 right-3 text-xs text-neutral-400 hover:text-white bg-neutral-800/90 px-2 py-0.5 rounded border border-neutral-700 shadow-xs"
+                  className="absolute bottom-2.5 right-2.5 text-xs text-neutral-400 hover:text-white bg-neutral-800/90 px-2 py-0.5 rounded border border-neutral-700 shadow-xs cursor-pointer"
                 >
                   Clear
                 </button>
               )}
             </div>
-
-            {/* Inspiration Prompt Chips */}
-            <div className="space-y-1.5 pt-1">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
-                Inspiration Presets (Click to Load)
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {PROMPT_INSPIRATIONS.map((preset, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleApplyInspiration(preset)}
-                    className="text-left text-xs bg-[#080B14] hover:bg-cyan-950/40 text-neutral-300 hover:text-cyan-200 hover:border-cyan-700/60 border border-neutral-800 px-3 py-1.5 rounded-lg transition-all line-clamp-1 max-w-full"
-                    title={preset}
-                  >
-                    💡 {preset}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Toggle Negative Prompt */}
-            <div className="pt-2 border-t border-neutral-800">
-              <button
-                type="button"
-                onClick={() => setShowNegative(!showNegative)}
-                className="text-xs font-semibold text-neutral-400 hover:text-white flex items-center gap-1.5"
-              >
-                {showNegative ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                {showNegative ? 'Hide Negative Prompt' : 'Add Negative Prompt (Avoid specific elements)'}
-              </button>
-
-              {showNegative && (
-                <div className="mt-2.5">
-                  <textarea
-                    rows={2}
-                    value={negativePrompt}
-                    onChange={(e) => setNegativePrompt(e.target.value)}
-                    placeholder="e.g. blur, out of focus, distorted anatomy, low quality, oversaturated, watermark, extra limbs..."
-                    className="w-full rounded-xl p-3 text-xs bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition-all resize-none"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Generate Action Button (In Normal Flow) */}
-            <div className="pt-3 border-t border-neutral-800/80">
-              <Button
-                variant="gradient"
-                size="lg"
-                onClick={handleGenerate}
-                isLoading={isGenerating}
-                leftIcon={Sparkles}
-                className="w-full justify-center font-bold text-sm sm:text-base py-3 shadow-md shadow-indigo-950/50 hover:shadow-lg hover:shadow-indigo-950/70 transition-all cursor-pointer"
-              >
-                {isGenerating ? 'Synthesizing...' : `Generate (${currentModelObj.creditCost} Credit)`}
-              </Button>
-            </div>
           </div>
 
-          {/* Model Selection Card */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-cyan-400" />
-                AI Inference Model
-              </label>
-              <span className="text-xs text-neutral-400">Commercial Apache 2.0 Weights</span>
+          {/* Middle Section: Dynamic Inspiration Presets */}
+          <div
+            ref={presetsAreaRef}
+            className="flex-1 min-h-0 flex flex-col justify-start py-2.5 overflow-hidden"
+          >
+            <div
+              ref={presetsHeaderRef}
+              className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 shrink-0 mb-1.5"
+            >
+              Inspiration Presets (Click to Load)
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {AI_MODELS.map((model) => {
-                const isSelected = selectedModel === model.id
-                return (
-                  <div
-                    key={model.id}
-                    onClick={() => handleModelChange(model.id)}
-                    className={cn(
-                      'p-3.5 rounded-xl border text-left cursor-pointer transition-all relative flex flex-col justify-between',
-                      isSelected
-                        ? 'border-cyan-500 bg-cyan-950/30 ring-2 ring-cyan-500/20 text-white'
-                        : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800/60 hover:border-neutral-700 text-neutral-300'
-                    )}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="text-xs font-bold text-white">{model.name}</span>
-                        <span className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded border', model.badgeColor)}>
-                          {model.badge}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-neutral-400 line-clamp-2 mt-1">
-                        {model.description}
-                      </p>
-                    </div>
-
-                    <div className="mt-3 pt-2 border-t border-neutral-800 flex items-center justify-between text-[11px] text-neutral-400">
-                      <span>{model.defaultSteps} steps</span>
-                      <span className="font-semibold text-white">{model.creditCost} credit</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Aspect Ratio Selection */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-                <Square className="w-4 h-4 text-cyan-400" />
-                Aspect Ratio & Canvas Dimensions
-              </label>
-              <span className="text-xs font-mono text-neutral-400">
-                {currentAspectObj.width} × {currentAspectObj.height} px
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-              {ASPECT_RATIOS.map((ratio) => {
-                const isSelected = aspectRatio === ratio.id
-                const IconComponent = ratio.icon
-                return (
-                  <button
-                    key={ratio.id}
-                    type="button"
-                    onClick={() => setAspectRatio(ratio.id)}
-                    className={cn(
-                      'p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5',
-                      isSelected
-                        ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 ring-2 ring-cyan-500/20 shadow-xs'
-                        : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800 text-neutral-300'
-                    )}
-                  >
-                    <IconComponent className={cn('w-5 h-5', isSelected ? 'text-cyan-400' : 'text-neutral-500')} />
-                    <div className="font-bold text-xs">{ratio.id}</div>
-                    <div className="text-[10px] text-neutral-400 leading-tight">{ratio.desc}</div>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Reference Image Upload (Optional Multimodal / Control Guidance) */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-cyan-400" />
-                Reference Image (Optional Image-to-Image / Style Guidance)
-              </label>
-              {referenceImage && (
+            <div className="flex flex-col gap-1.5 overflow-hidden">
+              {PROMPT_INSPIRATIONS.slice(0, visiblePresetsCount).map((preset, idx) => (
                 <button
+                  key={idx}
                   type="button"
-                  onClick={handleClearReference}
-                  className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1 font-medium"
+                  onClick={() => handleApplyInspiration(preset)}
+                  className="text-left text-xs bg-[#080B14] hover:bg-cyan-950/40 text-neutral-300 hover:text-cyan-200 hover:border-cyan-700/60 border border-neutral-800 px-3 py-1.5 rounded-lg transition-all truncate w-full cursor-pointer h-[32px] shrink-0"
+                  title={preset}
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  Remove
+                  💡 {preset}
                 </button>
-              )}
+              ))}
             </div>
-
-            {!referenceImage ? (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-neutral-700 hover:border-cyan-500/60 bg-[#080B14]/60 hover:bg-cyan-950/20 rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleReferenceUpload}
-                  accept="image/png, image/jpeg, image/webp"
-                  className="hidden"
-                />
-                <div className="w-10 h-10 rounded-xl bg-[#0D111C] border border-neutral-700 shadow-xs flex items-center justify-center text-neutral-400 group-hover:text-cyan-400 group-hover:scale-105 transition-all">
-                  <Upload className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-neutral-200">
-                    Click or drag & drop reference image
-                  </p>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">
-                    PNG, JPG, or WebP up to 15MB. Guides composition and color palette.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-4 p-3 bg-[#080B14] rounded-xl border border-neutral-800">
-                <img
-                  src={referenceImage.url}
-                  alt="Reference uploaded"
-                  className="w-16 h-16 object-cover rounded-lg border border-neutral-700"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-white truncate">{referenceImage.name}</p>
-                  <p className="text-[11px] text-neutral-400">{referenceImage.size}</p>
-                  <div className="mt-2 space-y-1">
-                    <div className="flex justify-between text-[11px] text-neutral-300">
-                      <span>Influence Weight</span>
-                      <span className="font-semibold text-cyan-300">{Math.round(referenceStrength * 100)}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0.1"
-                      max="1.0"
-                      step="0.05"
-                      value={referenceStrength}
-                      onChange={(e) => setReferenceStrength(parseFloat(e.target.value))}
-                      className="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Advanced Generation Settings Collapsible */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl border border-neutral-800/90 shadow-sm overflow-hidden text-neutral-100">
+          {/* Bottom Section: Toggle Negative Prompt */}
+          <div className="pt-2 border-t border-neutral-800/80 shrink-0">
             <button
               type="button"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full p-4 px-6 flex items-center justify-between text-left hover:bg-[#080B14]/60 transition-colors"
+              onClick={() => setShowNegative(!showNegative)}
+              className="text-xs font-semibold text-neutral-400 hover:text-white flex items-center gap-1.5 cursor-pointer"
             >
-              <div className="flex items-center gap-2 text-sm font-bold text-neutral-100">
-                <Sliders className="w-4 h-4 text-cyan-400" />
-                Advanced Generation Settings
-                <span className="text-xs font-normal text-neutral-400">(CFG, Seed, Sampler, Steps)</span>
-              </div>
-              {showAdvanced ? (
-                <ChevronUp className="w-4 h-4 text-neutral-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-neutral-400" />
-              )}
+              {showNegative ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              {showNegative ? 'Hide Negative Prompt' : 'Add Negative Prompt (Avoid specific elements)'}
             </button>
 
-            {showAdvanced && (
-              <div className="p-6 pt-2 border-t border-neutral-800 space-y-5 bg-[#080B14]/50">
-                {/* Sliders: CFG & Steps */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {/* Guidance Scale (CFG) */}
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-semibold text-neutral-300">
-                      <span>Guidance Scale (CFG)</span>
-                      <span className="font-mono text-cyan-400">{guidanceScale.toFixed(1)}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="1.0"
-                      max="12.0"
-                      step="0.5"
-                      value={guidanceScale}
-                      onChange={(e) => setGuidanceScale(parseFloat(e.target.value))}
-                      className="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
-                    />
-                    <p className="text-[10px] text-neutral-400">
-                      Higher adherence to prompt vs. generative creativity.
-                    </p>
-                  </div>
-
-                  {/* Inference Steps */}
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-semibold text-neutral-300">
-                      <span>Inference Steps</span>
-                      <span className="font-mono text-cyan-400">{steps} steps</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="2"
-                      max="20"
-                      step="1"
-                      value={steps}
-                      onChange={(e) => setSteps(parseInt(e.target.value))}
-                      className="w-full accent-cyan-400 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
-                    />
-                    <p className="text-[10px] text-neutral-400">
-                      FLUX.2 Klein is distilled for 4 steps. Z-Image Turbo excels at 8.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Seed & Sampler */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-3 border-t border-neutral-800">
-                  {/* Seed Input */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label htmlFor="seed-input" className="text-xs font-semibold text-neutral-300">
-                        RNG Seed
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setIsRandomSeed(!isRandomSeed)}
-                        className="text-[11px] text-cyan-400 hover:text-cyan-300 font-medium"
-                      >
-                        {isRandomSeed ? '✓ Random Seed' : 'Lock Seed'}
-                      </button>
-                    </div>
-                    <div className="relative">
-                      <input
-                        id="seed-input"
-                        type="text"
-                        disabled={isRandomSeed}
-                        value={isRandomSeed ? 'Randomized per job' : seed}
-                        onChange={(e) => setSeed(e.target.value)}
-                        placeholder="e.g. 849201"
-                        className="w-full rounded-xl px-3 py-2 text-xs bg-[#080B14] border border-neutral-700 text-neutral-100 disabled:bg-neutral-900 disabled:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Sampler Selector */}
-                  <div className="space-y-1.5">
-                    <label htmlFor="sampler-select" className="text-xs font-semibold text-neutral-300 block">
-                      Diffusion Sampler
-                    </label>
-                    <select
-                      id="sampler-select"
-                      value={sampler}
-                      onChange={(e) => setSampler(e.target.value)}
-                      className="w-full rounded-xl px-3 py-2 text-xs bg-[#080B14] border border-neutral-700 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer"
-                    >
-                      <option value="euler_ancestral">Euler Ancestral (Fast Flow)</option>
-                      <option value="dpm_2m_karras">DPM++ 2M Karras (High Detail)</option>
-                      <option value="ddim">DDIM Deterministic</option>
-                      <option value="uni_pc">UniPC Multi-Step</option>
-                    </select>
-                  </div>
-                </div>
+            {showNegative && (
+              <div className="mt-2">
+                <textarea
+                  rows={2}
+                  value={negativePrompt}
+                  onChange={(e) => setNegativePrompt(e.target.value)}
+                  placeholder="e.g. blur, out of focus, distorted anatomy, low quality, oversaturated, watermark, extra limbs..."
+                  className="w-full rounded-xl p-2.5 text-xs bg-[#080B14] border border-neutral-700/80 text-neutral-100 placeholder:text-neutral-500 focus:bg-[#0A0E17] focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition-all resize-none"
+                />
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Side: Interactive Preview Canvas & Generated Gallery (5 cols) */}
-        <div className="lg:col-span-5 space-y-5 sm:space-y-6">
-          {/* Active Generation Preview Area */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
-            <div className="flex items-center justify-between">
+        {/* Real-Time Canvas */}
+        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full space-y-3">
+          <div className="flex-1 flex flex-col">
+            <div className="flex items-center justify-between mb-3 shrink-0">
               <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-cyan-400" />
                 Real-Time Canvas
@@ -898,28 +601,28 @@ export function ImageGeneratorPage() {
               )}
             </div>
 
-            {/* Canvas Display */}
+            {/* Canvas Display with aspect-ratio-driven responsive height */}
             <div
               className={cn(
-                'relative w-full rounded-xl overflow-hidden bg-[#080B14] border border-neutral-800 flex items-center justify-center transition-all',
-                aspectRatio === '1:1' && 'aspect-square',
-                aspectRatio === '16:9' && 'aspect-video',
-                aspectRatio === '9:16' && 'aspect-[9/16] max-h-[500px]',
-                aspectRatio === '4:3' && 'aspect-[4/3]',
-                aspectRatio === '21:9' && 'aspect-[21/9]'
+                'relative w-full rounded-xl overflow-hidden bg-[#080B14] border border-neutral-800 flex items-center justify-center transition-all duration-300 my-auto',
+                aspectRatio === '1:1' && 'aspect-square max-h-[380px]',
+                aspectRatio === '16:9' && 'aspect-video max-h-[310px]',
+                aspectRatio === '9:16' && 'aspect-[9/16] max-h-[440px]',
+                aspectRatio === '4:3' && 'aspect-[4/3] max-h-[350px]',
+                aspectRatio === '21:9' && 'aspect-[21/9] max-h-[250px]'
               )}
             >
               {isGenerating ? (
                 /* Real-time generation progress overlay */
-                <div className="absolute inset-0 bg-[#080B14]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center text-white space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center">
-                    <Sparkles className="w-7 h-7 text-cyan-400 animate-spin" />
+                <div className="absolute inset-0 bg-[#080B14]/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center text-white space-y-3">
+                  <div className="w-12 h-12 rounded-xl bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-cyan-400 animate-spin" />
                   </div>
                   <div>
                     <p className="text-sm font-bold tracking-tight">Generating Visual Asset</p>
-                    <p className="text-xs text-neutral-400 mt-1 max-w-xs">{generationStepText}</p>
+                    <p className="text-xs text-neutral-400 mt-0.5 max-w-xs">{generationStepText}</p>
                   </div>
-                  <div className="w-48 bg-neutral-800 rounded-full h-2 overflow-hidden border border-neutral-700">
+                  <div className="w-44 bg-neutral-800 rounded-full h-1.5 overflow-hidden border border-neutral-700">
                     <div
                       className="bg-gradient-to-r from-violet-500 to-cyan-400 h-full transition-all duration-300"
                       style={{ width: `${generationProgress}%` }}
@@ -929,21 +632,21 @@ export function ImageGeneratorPage() {
                 </div>
               ) : generatedResults.length > 0 ? (
                 /* Most recently synthesized image */
-                <div className="group relative w-full h-full flex items-center justify-center">
+                <div className="group relative w-full h-full flex items-center justify-center bg-[#080B14]">
                   <img
                     src={generatedResults[0].image}
                     alt="Synthesized generation"
-                    className="w-full h-full object-cover"
+                    className="max-w-full max-h-full object-contain"
                   />
                   {/* Hover action overlay */}
-                  <div className="absolute inset-0 bg-neutral-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4 text-white">
+                  <div className="absolute inset-0 bg-neutral-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5 text-white">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium bg-neutral-900/80 px-2 py-0.5 rounded border border-neutral-700">
                         {generatedResults[0].model} • {generatedResults[0].aspect}
                       </span>
                       <button
                         onClick={() => setActiveModalItem(generatedResults[0])}
-                        className="p-1.5 bg-neutral-900/80 hover:bg-neutral-800 rounded-lg border border-neutral-700 text-neutral-300 hover:text-white transition-colors"
+                        className="p-1.5 bg-neutral-900/80 hover:bg-neutral-800 rounded-lg border border-neutral-700 text-neutral-300 hover:text-white transition-colors cursor-pointer"
                         title="Expand view"
                       >
                         <Maximize2 className="w-4 h-4" />
@@ -978,9 +681,9 @@ export function ImageGeneratorPage() {
                 </div>
               ) : (
                 /* Default empty state */
-                <div className="text-center p-8 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
-                    <ImageIcon className="w-6 h-6" />
+                <div className="text-center p-6 space-y-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
+                    <ImageIcon className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-neutral-300">Canvas Ready for Generation</p>
@@ -991,67 +694,188 @@ export function ImageGeneratorPage() {
                 </div>
               )}
             </div>
-
-            {/* Quick action buttons below canvas */}
-            {generatedResults.length > 0 && !isGenerating && (
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-xs text-neutral-400">
-                  Seed: <strong className="font-mono text-white">{generatedResults[0].seed}</strong>
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setActiveModalItem(generatedResults[0])}
-                    className="text-xs font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    Inspect Details
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Studio Gallery / Recent Generations */}
-          <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-cyan-400" />
-                  Recent Sample Results
-                </h2>
-                <p className="text-[11px] text-neutral-400 mt-0.5">
-                  Click any thumbnail to preview, re-use prompt, or inspect metadata.
-                </p>
-              </div>
-              <span className="text-xs font-bold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
-                {historyGallery.length}
+          {/* Quick action buttons below canvas */}
+          {generatedResults.length > 0 && !isGenerating ? (
+            <div className="flex items-center justify-between pt-1 shrink-0">
+              <span className="text-xs text-neutral-400">
+                Seed: <strong className="font-mono text-white">{generatedResults[0].seed}</strong>
               </span>
-            </div>
-
-            {/* Gallery Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-              {historyGallery.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setActiveModalItem(item)}
-                  className="group relative aspect-square rounded-xl overflow-hidden border border-neutral-800 bg-[#080B14] cursor-pointer hover:border-cyan-500 hover:shadow-cyan-500/10 transition-all"
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveModalItem(generatedResults[0])}
+                  className="text-xs font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
                 >
-                  <img
-                    src={item.image}
-                    alt={item.prompt}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  {/* Subtle dark gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-end text-white">
-                    <p className="text-[10px] font-medium line-clamp-1 text-neutral-200">{item.prompt}</p>
-                    <span className="text-[9px] text-cyan-300 font-mono mt-0.5">{item.aspect} • {item.model.split(' ')[0]}</span>
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  Inspect Details
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="h-4 shrink-0" />
+          )}
+        </div>
+      </div>
+
+      {/* ROW 2: AI Inference Model (Left) + Aspect Ratio & Canvas Dimensions (Right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:items-stretch items-start">
+        {/* Model Selection Card */}
+        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
+          <div className="flex items-center justify-between mb-3 shrink-0">
+            <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-cyan-400" />
+              AI Inference Model
+            </label>
+            <span className="text-xs text-neutral-400">Commercial Apache 2.0 Weights</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
+            {AI_MODELS.map((model) => {
+              const isSelected = selectedModel === model.id
+              return (
+                <div
+                  key={model.id}
+                  onClick={() => handleModelChange(model.id)}
+                  className={cn(
+                    'h-[148px] sm:h-[152px] p-2.5 sm:p-3 rounded-xl border text-left cursor-pointer transition-all relative flex flex-col justify-between min-w-0',
+                    isSelected
+                      ? 'border-cyan-500 bg-cyan-950/30 ring-2 ring-cyan-500/20 text-white'
+                      : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800/60 hover:border-neutral-700 text-neutral-300'
+                  )}
+                >
+                  <div className="min-w-0">
+                    <div className="font-bold text-xs text-white leading-tight break-words min-w-0">
+                      {model.name}
+                    </div>
+                    <div className="mt-1 shrink-0">
+                      <span className={cn('inline-flex items-center text-[9px] font-semibold px-1.5 py-0.5 rounded border leading-none', model.badgeColor)}>
+                        {model.badge}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-neutral-400 line-clamp-2 mt-1 leading-snug break-words">
+                      {model.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-2 pt-1.5 border-t border-neutral-800/80 flex items-center justify-between text-[10px] text-neutral-400 shrink-0 min-w-0">
+                    <span className="truncate">{model.defaultSteps} steps</span>
+                    <span className="font-semibold text-white shrink-0 ml-1">{model.creditCost} credit</span>
                   </div>
                 </div>
-              ))}
-            </div>
+              )
+            })}
           </div>
         </div>
+
+        {/* Aspect Ratio Selection */}
+        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
+          <div className="flex items-center justify-between mb-3 shrink-0">
+            <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+              <Square className="w-4 h-4 text-cyan-400" />
+              Aspect Ratio & Canvas Dimensions
+            </label>
+            <span className="text-xs font-mono text-neutral-400">
+              {currentAspectObj.width} × {currentAspectObj.height} px
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2">
+            {ASPECT_RATIOS.map((ratio) => {
+              const isSelected = aspectRatio === ratio.id
+              const IconComponent = ratio.icon
+              return (
+                <button
+                  key={ratio.id}
+                  type="button"
+                  onClick={() => setAspectRatio(ratio.id)}
+                  className={cn(
+                    'h-[148px] sm:h-[152px] p-2 sm:p-2.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5 sm:gap-2 cursor-pointer min-w-0',
+                    isSelected
+                      ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 ring-2 ring-cyan-500/20 shadow-xs'
+                      : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800 text-neutral-300'
+                  )}
+                >
+                  <IconComponent className={cn('w-5 h-5 shrink-0', isSelected ? 'text-cyan-400' : 'text-neutral-500')} />
+                  <div className="font-bold text-xs text-white leading-none shrink-0">{ratio.id}</div>
+                  <div className="text-[10px] text-neutral-400 leading-tight text-center break-words px-0.5 line-clamp-2">{ratio.desc}</div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ROW 3: Generate Action Button (Centered, Compact on Desktop, Full-width on Mobile) */}
+      <div className="flex justify-center w-full py-1">
+        <Button
+          variant="gradient"
+          size="md"
+          onClick={handleGenerate}
+          isLoading={isGenerating}
+          leftIcon={Sparkles}
+          className="w-full sm:w-[240px] h-[46px] justify-center font-bold text-sm sm:text-base shadow-xl shadow-indigo-950/40 hover:shadow-indigo-900/60 transition-all cursor-pointer rounded-xl shrink-0"
+        >
+          {isGenerating ? 'Synthesizing...' : `Generate (${currentModelObj.creditCost} Credit)`}
+        </Button>
+      </div>
+
+      {/* ROW 4: Studio Gallery / Recent Generations */}
+      <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-cyan-400" />
+              Recent Generations
+            </h2>
+            <p className="text-[11px] text-neutral-400 mt-0.5">
+              Click any thumbnail to preview, re-use prompt, or inspect metadata.
+            </p>
+          </div>
+          <span className="text-xs font-bold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
+            {historyGallery.length}
+          </span>
+        </div>
+
+        {/* Gallery Grid or Empty State */}
+        {loadingRecent && historyGallery.length === 0 ? (
+          <div className="py-12 flex flex-col items-center justify-center text-center">
+            <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin mb-2" />
+            <p className="text-xs text-neutral-400">Loading recent generations…</p>
+          </div>
+        ) : historyGallery.length === 0 ? (
+          <div className="py-10 px-4 rounded-xl border border-dashed border-neutral-800 bg-[#080B14]/60 flex flex-col items-center justify-center text-center">
+            <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-2.5">
+              <ImageIcon className="w-5 h-5 text-neutral-400" />
+            </div>
+            <p className="text-xs font-semibold text-neutral-200">Your recent generations will appear here</p>
+            <p className="text-[11px] text-neutral-400 mt-1 max-w-xs">
+              Generate an image using the prompt bar above to populate your recent studio gallery.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-3.5">
+            {historyGallery.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setActiveModalItem(item)}
+                className="group relative aspect-square rounded-xl overflow-hidden border border-neutral-800 bg-[#080B14] cursor-pointer hover:border-cyan-500 hover:shadow-cyan-500/10 transition-all flex items-center justify-center p-1"
+              >
+                <img
+                  src={item.image}
+                  alt={item.prompt}
+                  className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                />
+                {/* Subtle dark gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-end text-white">
+                  <p className="text-[10px] font-medium line-clamp-1 text-neutral-200">{item.prompt}</p>
+                  <span className="text-[9px] text-cyan-300 font-mono mt-0.5">{item.aspect || '1:1'} • {(item.model || '').split(' ')[0]}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Detail / Inspection Modal */}

@@ -9,17 +9,12 @@ import {
   Coins,
   ArrowRight,
   FolderKanban,
-  Zap,
-  Clock,
-  Layers,
-  Heart
+  Zap
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
-import { MediaThumb } from '../../components/studio/StudioUI'
 import { useAuth } from '../../hooks/useAuth'
 import { api } from '../../services/api'
-import { formatDate } from '../../utils/format'
 
 export function DashboardOverviewPage() {
   const { user } = useAuth()
@@ -48,8 +43,6 @@ export function DashboardOverviewPage() {
 
   const creditBalance = overview?.stats?.creditBalance ?? user?.creditBalance ?? 0
   const totalProjects = overview?.stats?.totalProjects ?? 0
-  const totalGenerations = overview?.stats?.totalGenerations ?? 0
-  const recentGenerations = overview?.recentGenerations || []
 
   const quickActions = [
     {
@@ -185,58 +178,6 @@ export function DashboardOverviewPage() {
             )
           })}
         </div>
-      </div>
-
-      {/* Recent Generations */}
-      <div className="space-y-3 sm:space-y-3.5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm sm:text-base font-semibold text-neutral-100 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-neutral-400 shrink-0" />
-            <span>Recent Generations</span>
-          </h2>
-          {recentGenerations.length > 0 && (
-            <Link to="/dashboard/generations" className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-medium">
-              View All ({totalGenerations}) <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          )}
-        </div>
-
-        {recentGenerations.length === 0 ? (
-          <div className="py-7 px-4 sm:py-8 sm:px-6 rounded-xl border border-dashed border-neutral-800/90 bg-neutral-900/20 text-center flex flex-col items-center justify-center">
-            <div className="w-10 h-10 rounded-lg bg-neutral-800/70 border border-neutral-700/50 flex items-center justify-center text-neutral-400 mb-2.5">
-              <Sparkles className="w-5 h-5 text-neutral-300" />
-            </div>
-            <h3 className="text-sm sm:text-base font-semibold text-neutral-200">No generations yet</h3>
-            <p className="text-xs text-neutral-400 max-w-sm mt-1 mb-4">
-              When you generate images or videos using the studio tools above, your visual outputs will appear here.
-            </p>
-            <Link to="/dashboard/image-generator">
-              <Button variant="primary" size="sm" rightIcon={ArrowRight}>
-                Generate an Image
-              </Button>
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
-            {recentGenerations.map((g) => (
-              <Link
-                key={g.id}
-                to="/dashboard/generations"
-                className="group relative rounded-xl overflow-hidden border border-neutral-800/90 bg-neutral-900 aspect-square block hover:border-cyan-500/50 transition-all shadow-sm"
-              >
-                <img
-                  src={g.src}
-                  alt={g.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-end">
-                  <p className="text-xs font-semibold text-white truncate">{g.title}</p>
-                  <p className="text-[10px] text-neutral-400 truncate">{g.model}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )

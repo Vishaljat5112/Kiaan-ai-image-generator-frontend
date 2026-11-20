@@ -22,9 +22,23 @@ const SORTS = [
 const PROJECT_MODELS = [
   'FLUX.2 Klein 4B',
   'Z-Image Turbo',
+  'FLUX.1 Schnell',
   'Wan 2.1 Video (Draft 480p)',
   'Wan 2.1 Video (Cinema 720p)'
 ]
+
+const MODEL_LABEL_MAP = {
+  'flux-2-klein-4b': 'FLUX.2 Klein 4B',
+  'z-image-turbo': 'Z-Image Turbo',
+  'flux-1-schnell': 'FLUX.1 Schnell',
+  'wan-2.1-t2v-480p': 'Wan 2.1 Video (Draft 480p)',
+  'wan-2.1-t2v-720p': 'Wan 2.1 Video (Cinema 720p)'
+}
+
+function getModelLabel(model) {
+  if (!model) return 'Unknown'
+  return MODEL_LABEL_MAP[model] || model
+}
 
 export function GenerationsPage() {
   const [items, setItems] = useState([])
@@ -62,7 +76,7 @@ export function GenerationsPage() {
   }, [])
 
   const models = useMemo(() => {
-    const dynamic = items.map((i) => i.model).filter(Boolean)
+    const dynamic = items.map((i) => getModelLabel(i.model)).filter(Boolean)
     return Array.from(new Set([...PROJECT_MODELS, ...dynamic]))
   }, [items])
 
@@ -123,7 +137,11 @@ export function GenerationsPage() {
       const isFav = i.favorite || i.isFavorite
       if (typeFilter === 'favorite' && !isFav) return false
       if ((typeFilter === 'image' || typeFilter === 'video') && i.type !== typeFilter) return false
-      if (modelFilter !== 'all' && i.model !== modelFilter) return false
+      if (modelFilter !== 'all') {
+        const itemModelLabel = getModelLabel(i.model).toLowerCase()
+        const targetModelLabel = modelFilter.toLowerCase()
+        if (i.model !== modelFilter && itemModelLabel !== targetModelLabel) return false
+      }
       if (q && !`${i.title || ''} ${i.prompt || ''} ${i.tool || ''}`.toLowerCase().includes(q)) return false
       return true
     })
@@ -205,9 +223,9 @@ export function GenerationsPage() {
         }
       />
 
-      <Panel className="p-3.5 sm:p-4 space-y-2.5">
+      <Panel className="p-3.5 sm:p-4 space-y-2.5 relative z-30">
         {/* ROW 1: Search bar + "All models" dropdown + "Sort by" dropdown + Icon-only Grid/List buttons */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2.5">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2.5 relative z-30">
           <SearchField
             value={query}
             onChange={setQuery}
@@ -402,7 +420,7 @@ export function GenerationsPage() {
         </div>
 
         {/* ROW 2: Category Dropdown (without 0 count pills) */}
-        <div className="pt-2 border-t border-neutral-800/60 flex items-center justify-between">
+        <div className="pt-2 border-t border-neutral-800/60 flex items-center justify-between relative z-10">
           <div className="relative inline-block" ref={categoryMenuRef}>
             <button
               type="button"
@@ -474,13 +492,13 @@ export function GenerationsPage() {
             : <Button variant="outline" size="sm" onClick={resetFilters} className="text-neutral-300 border-neutral-700 hover:bg-neutral-800">Clear filters</Button>}
         />
       ) : view === 'grid' ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 relative z-0">
           {visible.map((g) => {
             const isFav = g.favorite || g.isFavorite
             return (
               <div key={g.id} className="group bg-[#0D111C]/90 backdrop-blur-md rounded-2xl border border-neutral-800/90 shadow-sm overflow-hidden hover:shadow-lg hover:border-cyan-500/40 transition-all text-white">
-                <button type="button" onClick={() => setActive(g)} className="relative block w-full aspect-square bg-neutral-900 cursor-pointer" aria-label={`Preview ${g.title}`}>
-                  <MediaThumb type={g.type} src={g.src} poster={g.poster} alt={g.title} className="group-hover:scale-105 transition-transform duration-300" />
+                <button type="button" onClick={() => setActive(g)} className="relative flex items-center justify-center w-full aspect-square bg-[#080B14] cursor-pointer overflow-hidden p-1.5" aria-label={`Preview ${g.title}`}>
+                  <MediaThumb type={g.type} src={g.src} poster={g.poster} alt={g.title} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300" />
                   <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-neutral-900/90 text-neutral-200 border border-neutral-700">
                     {g.type === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
                     {g.type === 'video' ? (g.duration || '5.0s') : (g.aspect || '1:1')}
@@ -520,7 +538,7 @@ export function GenerationsPage() {
           })}
         </div>
       ) : (
-        <Panel className="p-0 overflow-x-auto">
+        <Panel className="p-0 overflow-x-auto relative z-0">
           <table className="w-full text-sm">
             <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
               <tr>
@@ -547,7 +565,7 @@ export function GenerationsPage() {
                         </span>
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-xs text-neutral-300 hidden md:table-cell">{g.model}</td>
+                    <td className="px-4 py-3 text-xs text-neutral-300 hidden md:table-cell">{getModelLabel(g.model)}</td>
                     <td className="px-4 py-3 text-xs text-neutral-400 hidden sm:table-cell">{formatDateTime(g.createdAt)}</td>
                     <td className="px-4 py-3 text-xs text-right font-semibold text-white">{g.credits}</td>
                     <td className="px-4 py-3">

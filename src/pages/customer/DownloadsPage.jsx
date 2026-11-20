@@ -165,7 +165,7 @@ export function DownloadsPage() {
         />
       </div>
 
-      <Panel className="p-3.5 sm:p-4">
+      <Panel className="p-3.5 sm:p-4 relative z-30">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
           <SearchField
             value={query}
@@ -326,7 +326,7 @@ export function DownloadsPage() {
           }
         />
       ) : (
-        <Panel className="p-0 overflow-x-auto">
+        <Panel className="p-0 overflow-x-auto relative z-0">
           <table className="w-full text-sm">
             <thead className="bg-[#080B14] text-[11px] uppercase tracking-wide text-neutral-400">
               <tr>

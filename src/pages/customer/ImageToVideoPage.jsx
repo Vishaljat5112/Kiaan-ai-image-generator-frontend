@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Film,
   Sparkles,
@@ -24,12 +24,16 @@ import {
   VolumeX,
   Share2,
   Eye,
-  ArrowRight
+  ArrowRight,
+  RefreshCw,
+  Video
 } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { useAuth } from '../../hooks/useAuth'
+import { api } from '../../services/api'
 import { cn } from '../../utils/cn'
+import { formatDateTime } from '../../utils/format'
 
 // Available Image-to-Video models
 const I2V_MODELS = [
@@ -159,8 +163,70 @@ export function ImageToVideoPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
   const [progressStep, setProgressStep] = useState('')
-  const [currentVideoResult, setCurrentVideoResult] = useState(INITIAL_I2V_GALLERY[0])
-  const [gallery, setGallery] = useState(INITIAL_I2V_GALLERY)
+  const [currentVideoResult, setCurrentVideoResult] = useState(null)
+  const [gallery, setGallery] = useState([])
+  const [loadingRecent, setLoadingRecent] = useState(true)
+
+  // Fetch logged-in user's recent Image-to-Video generations
+  const fetchRecentClips = useCallback(async () => {
+    try {
+      setLoadingRecent(true)
+      const res = await api.get('/assets/generations', {
+        params: { type: 'video', generationType: 'IMAGE_TO_VIDEO', sort: 'newest', limit: 12 }
+      })
+      const rawList = res.data?.data || []
+      const videoItems = rawList
+        .filter((item) => {
+          if (item.deletedAt) return false
+          const isVideo = item.type === 'video' || item.mediaType === 'VIDEO'
+          const isImg2Vid = item.generationType === 'IMAGE_TO_VIDEO' || item.jobType === 'IMAGE_TO_VIDEO' || item.tool === 'Image-to-Video'
+          return isVideo && isImg2Vid
+        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 6)
+        .map((item) => {
+          const rawSrc = item.src || item.storagePath || ''
+          const videoUrl = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
+            ? rawSrc
+            : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
+          const rawThumb = item.poster || item.thumbnailPath || videoUrl
+          const thumbUrl = rawThumb.startsWith('http') || rawThumb.startsWith('data:')
+            ? rawThumb
+            : (rawThumb.startsWith('/') ? rawThumb : `/${rawThumb}`)
+
+          return {
+            id: item.id,
+            title: item.title || item.prompt?.slice(0, 30) || 'Image-to-Video Clip',
+            prompt: item.prompt || '',
+            model: item.model || 'Wan 2.1 I2V',
+            duration: item.duration || '5.0s',
+            resolution: item.dimensions || '1280×720 (16:9)',
+            camera: item.camera || 'Dynamic Trajectory',
+            motionBucket: item.cfg || 75,
+            sourceImage: thumbUrl,
+            videoUrl: videoUrl,
+            thumbnail: thumbUrl,
+            timestamp: formatDateTime(item.createdAt)
+          }
+        })
+      setGallery(videoItems)
+      if (videoItems.length > 0) {
+        setCurrentVideoResult(videoItems[0])
+      } else {
+        setCurrentVideoResult(null)
+      }
+    } catch (err) {
+      console.error('Failed to load recent image-to-video clips:', err)
+      setGallery([])
+      setCurrentVideoResult(null)
+    } finally {
+      setLoadingRecent(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchRecentClips()
+  }, [fetchRecentClips])
 
   // Video Player Controls
   const [isPlaying, setIsPlaying] = useState(false)
@@ -650,7 +716,7 @@ export function ImageToVideoPage() {
                         {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                       </button>
                       <span className="text-xs font-mono text-neutral-300">
-                        {currentVideoResult.duration} • {currentVideoResult.resolution.split(' ')[0]}
+                        {currentVideoResult.duration} • {(currentVideoResult.resolution || '720p').split(' ')[0]}
                       </span>
                     </div>
 
@@ -665,7 +731,19 @@ export function ImageToVideoPage() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) : (
+                <div className="text-center p-8 space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
+                    <Film className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-neutral-300">Motion Playback Ready</p>
+                    <p className="text-[11px] text-neutral-400 max-w-xs mt-0.5">
+                      Upload an image and set a motion trajectory to animate your first video clip.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Video Metadata Summary */}
@@ -699,16 +777,16 @@ export function ImageToVideoPage() {
             )}
           </div>
 
-          {/* Sample Video Gallery */}
+          {/* Recent Generations */}
           <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-cyan-400" />
-                  Recent Image-to-Video Clips
+                  Recent Generations
                 </h2>
                 <p className="text-[11px] text-neutral-400 mt-0.5">
-                  Click any sample to load into playback player
+                  Click any clip to load into the preview player.
                 </p>
               </div>
               <span className="text-xs font-bold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
@@ -716,42 +794,59 @@ export function ImageToVideoPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {gallery.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    setCurrentVideoResult(item)
-                    if (videoPlayerRef.current) {
-                      videoPlayerRef.current.currentTime = 0
-                      videoPlayerRef.current.play().catch(() => {})
-                      setIsPlaying(true)
-                    }
-                  }}
-                  className={cn(
-                    'group relative aspect-video rounded-xl overflow-hidden border cursor-pointer transition-all',
-                    currentVideoResult?.id === item.id
-                      ? 'border-cyan-500 ring-2 ring-cyan-500/30'
-                      : 'border-neutral-800 hover:border-cyan-500/60'
-                  )}
-                >
-                  <img
-                    src={item.thumbnail}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 p-2 flex flex-col justify-between text-white">
-                    <span className="text-[10px] bg-black/60 px-1.5 py-0.5 rounded backdrop-blur-xs self-end">
-                      {item.duration}
-                    </span>
-                    <div>
-                      <p className="text-[11px] font-bold line-clamp-1">{item.title}</p>
-                      <p className="text-[9px] text-neutral-300">{item.camera}</p>
+            {loadingRecent && gallery.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center text-center">
+                <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin mb-2" />
+                <p className="text-xs text-neutral-400">Loading recent video clips…</p>
+              </div>
+            ) : gallery.length === 0 ? (
+              <div className="py-10 px-4 rounded-xl border border-dashed border-neutral-800 bg-[#080B14]/60 flex flex-col items-center justify-center text-center">
+                <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-2.5">
+                  <Film className="w-5 h-5 text-neutral-400" />
+                </div>
+                <p className="text-xs font-semibold text-neutral-200">Your recent video clips will appear here</p>
+                <p className="text-[11px] text-neutral-400 mt-1 max-w-xs">
+                  Animate an image using the controls on the left to populate your recent gallery.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {gallery.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      setCurrentVideoResult(item)
+                      if (videoPlayerRef.current) {
+                        videoPlayerRef.current.currentTime = 0
+                        videoPlayerRef.current.play().catch(() => {})
+                        setIsPlaying(true)
+                      }
+                    }}
+                    className={cn(
+                      'group relative aspect-video rounded-xl overflow-hidden border cursor-pointer transition-all',
+                      currentVideoResult?.id === item.id
+                        ? 'border-cyan-500 ring-2 ring-cyan-500/30'
+                        : 'border-neutral-800 hover:border-cyan-500/60'
+                    )}
+                  >
+                    <img
+                      src={item.thumbnail}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 p-2 flex flex-col justify-between text-white">
+                      <span className="text-[10px] bg-black/60 px-1.5 py-0.5 rounded backdrop-blur-xs self-end">
+                        {item.duration}
+                      </span>
+                      <div>
+                        <p className="text-[11px] font-bold line-clamp-1">{item.title}</p>
+                        <p className="text-[9px] text-neutral-300">{item.camera}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

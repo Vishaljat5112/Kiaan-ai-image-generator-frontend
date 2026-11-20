@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Image as ImageIcon,
   Sparkles,
@@ -24,7 +24,9 @@ import {
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { useAuth } from '../../hooks/useAuth'
+import { api } from '../../services/api'
 import { cn } from '../../utils/cn'
+import { formatDateTime } from '../../utils/format'
 
 const IMG2IMG_MODELS = [
   {
@@ -117,8 +119,66 @@ export function ImageToImagePage() {
   })
 
   // Comparison State
-  const [activeResult, setActiveResult] = useState(SAMPLE_COMPARISONS[0])
-  const [historyList, setHistoryList] = useState(SAMPLE_COMPARISONS)
+  const [activeResult, setActiveResult] = useState(null)
+  const [historyList, setHistoryList] = useState([])
+  const [loadingRecent, setLoadingRecent] = useState(true)
+
+  // Fetch logged-in user's recent Image-to-Image generations
+  const fetchRecentTransformations = useCallback(async () => {
+    try {
+      setLoadingRecent(true)
+      const res = await api.get('/assets/generations', {
+        params: { type: 'image', generationType: 'IMAGE_TO_IMAGE', sort: 'newest', limit: 12 }
+      })
+      const rawList = res.data?.data || []
+      const imageItems = rawList
+        .filter((item) => {
+          if (item.deletedAt) return false
+          const isImage = item.type === 'image' || item.mediaType === 'IMAGE'
+          const isImg2Img = item.generationType === 'IMAGE_TO_IMAGE' || item.jobType === 'IMAGE_TO_IMAGE' || item.tool === 'Image-to-Image'
+          return isImage && isImg2Img
+        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 6)
+        .map((item) => {
+          const rawSrc = item.src || item.storagePath || ''
+          const afterImage = rawSrc.startsWith('http') || rawSrc.startsWith('data:')
+            ? rawSrc
+            : (rawSrc.startsWith('/') ? rawSrc : `/${rawSrc}`)
+          const beforeImage = item.poster || item.thumbnailPath || afterImage
+
+          return {
+            id: item.id,
+            title: item.title || item.prompt?.slice(0, 30) || 'Image-to-Image Transformation',
+            prompt: item.prompt || '',
+            model: item.model || 'FLUX.2 Klein 4B',
+            strength: item.cfg ? Number((item.cfg / 10).toFixed(2)) : 0.75,
+            dimensions: item.dimensions || '1024×1024',
+            seed: item.seed ? String(item.seed) : '482910385',
+            steps: item.steps || 4,
+            timestamp: formatDateTime(item.createdAt),
+            beforeImage: beforeImage,
+            afterImage: afterImage
+          }
+        })
+      setHistoryList(imageItems)
+      if (imageItems.length > 0) {
+        setActiveResult(imageItems[0])
+      } else {
+        setActiveResult(null)
+      }
+    } catch (err) {
+      console.error('Failed to load recent transformations:', err)
+      setHistoryList([])
+      setActiveResult(null)
+    } finally {
+      setLoadingRecent(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchRecentTransformations()
+  }, [fetchRecentTransformations])
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)
@@ -472,7 +532,7 @@ export function ImageToImagePage() {
                   </div>
                   <span className="text-xs font-mono text-cyan-400">{generationProgress}% completed</span>
                 </div>
-              ) : (
+              ) : activeResult ? (
                 <>
                   {/* After Image (Background) */}
                   <img
@@ -521,71 +581,102 @@ export function ImageToImagePage() {
                     title="Drag to compare before and after"
                   />
                 </>
+              ) : (
+                <div className="text-center p-8 space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
+                    <ImageIcon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-neutral-300">Comparison Canvas Ready</p>
+                    <p className="text-[11px] text-neutral-400 max-w-xs mt-0.5">
+                      Upload a reference image and synthesize a transformation to compare before and after.
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
 
             {/* Comparison Details */}
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white">{activeResult.title}</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
-                  Strength: {Math.round(activeResult.strength * 100)}%
-                </span>
+            {activeResult && (
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white">{activeResult.title}</span>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-950/70 text-cyan-300 border border-cyan-800/60">
+                    Strength: {Math.round(activeResult.strength * 100)}%
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-400 line-clamp-2">"{activeResult.prompt}"</p>
+                <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-1 border-t border-neutral-800">
+                  <span>Model: <strong className="text-white">{activeResult.model}</strong></span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModalItem(activeResult)}
+                    className="text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1 cursor-pointer"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    Inspect
+                  </button>
+                </div>
               </div>
-              <p className="text-xs text-neutral-400 line-clamp-2">"{activeResult.prompt}"</p>
-              <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-1 border-t border-neutral-800">
-                <span>Model: <strong className="text-white">{activeResult.model}</strong></span>
-                <button
-                  type="button"
-                  onClick={() => setActiveModalItem(activeResult)}
-                  className="text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  Inspect
-                </button>
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Sample Results History */}
+          {/* Recent Generations */}
           <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm space-y-4 text-neutral-100">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                   <Layers className="w-4 h-4 text-cyan-400" />
-                  Recent Transformations
+                  Recent Generations
                 </h2>
-                <p className="text-[11px] text-neutral-400 mt-0.5">Click any sample to load into the comparison viewer.</p>
+                <p className="text-[11px] text-neutral-400 mt-0.5">Click any thumbnail to load into the comparison viewer.</p>
               </div>
               <span className="text-xs font-bold text-neutral-300 bg-neutral-800 px-2 py-0.5 rounded-full">
                 {historyList.length}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {historyList.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setActiveResult(item)}
-                  className={cn(
-                    'group relative aspect-square rounded-xl overflow-hidden border cursor-pointer transition-all',
-                    activeResult.id === item.id
-                      ? 'border-cyan-500 ring-2 ring-cyan-500/20'
-                      : 'border-neutral-800 hover:border-cyan-500/60'
-                  )}
-                >
-                  <img
-                    src={item.afterImage}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex flex-col justify-end text-white">
-                    <p className="text-[10px] font-medium line-clamp-1">{item.title}</p>
-                    <span className="text-[9px] text-cyan-300">{Math.round(item.strength * 100)}% denoise</span>
-                  </div>
+            {loadingRecent && historyList.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center text-center">
+                <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin mb-2" />
+                <p className="text-xs text-neutral-400">Loading recent transformations…</p>
+              </div>
+            ) : historyList.length === 0 ? (
+              <div className="py-10 px-4 rounded-xl border border-dashed border-neutral-800 bg-[#080B14]/60 flex flex-col items-center justify-center text-center">
+                <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-2.5">
+                  <ImageIcon className="w-5 h-5 text-neutral-400" />
                 </div>
-              ))}
-            </div>
+                <p className="text-xs font-semibold text-neutral-200">Your recent transformations will appear here</p>
+                <p className="text-[11px] text-neutral-400 mt-1 max-w-xs">
+                  Transform an image using the controls on the left to populate your recent gallery.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {historyList.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setActiveResult(item)}
+                    className={cn(
+                      'group relative aspect-square rounded-xl overflow-hidden border cursor-pointer transition-all',
+                      activeResult?.id === item.id
+                        ? 'border-cyan-500 ring-2 ring-cyan-500/20'
+                        : 'border-neutral-800 hover:border-cyan-500/60'
+                    )}
+                  >
+                    <img
+                      src={item.afterImage}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex flex-col justify-end text-white">
+                      <p className="text-[10px] font-medium line-clamp-1">{item.title}</p>
+                      <span className="text-[9px] text-cyan-300">{Math.round(item.strength * 100)}% denoise</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
