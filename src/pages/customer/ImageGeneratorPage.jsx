@@ -22,7 +22,9 @@ import {
   RectangleVertical,
   HelpCircle,
   Clock,
-  Coins
+  Coins,
+  AlertTriangle,
+  X
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
@@ -183,6 +185,7 @@ export function ImageGeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)
   const [generationStepText, setGenerationStepText] = useState('')
+  const [generationError, setGenerationError] = useState(null)
   const [generatedResults, setGeneratedResults] = useState([])
   const [historyGallery, setHistoryGallery] = useState(INITIAL_GALLERY)
 
@@ -252,6 +255,7 @@ export function ImageGeneratorPage() {
 
   // Handle Generate
   const handleGenerate = async () => {
+    setGenerationError(null)
     const finalPrompt = prompt.trim() || PROMPT_INSPIRATIONS[Math.floor(Math.random() * PROMPT_INSPIRATIONS.length)]
     if (!prompt.trim()) {
       setPrompt(finalPrompt)
@@ -356,8 +360,17 @@ export function ImageGeneratorPage() {
               clearInterval(pollInterval)
               setIsGenerating(false)
               setGenerationProgress(0)
+
+              const isFlagged = /flagged|content moderation|safety/i.test(jobData.errorMessage || '')
               setGenerationStepText(`Generation ${jobData.status.toLowerCase()}: ${jobData.errorMessage || 'AI inference error'}`)
-              alert(`Generation failed: ${jobData.errorMessage || 'AI inference error'}. Any reserved credits have been refunded.`)
+
+              setGenerationError({
+                isFlagged,
+                message: jobData.errorMessage || 'AI generation could not complete for this prompt.',
+                suggestion: isFlagged
+                  ? 'Try describing the scene with different keywords, avoiding specific brand names or sensitive descriptors.'
+                  : 'Check your parameters and try again.'
+              })
 
               // Refresh user credit balance after refund
               try {
@@ -392,16 +405,28 @@ export function ImageGeneratorPage() {
       setGenerationStepText('')
 
       if (err.response?.status === 402) {
-        alert('Insufficient credits! Please add credits to your account.')
+        setGenerationError({
+          isFlagged: false,
+          message: 'Insufficient credits! Please add credits to your account.',
+          suggestion: 'Top up your account or switch to a lower credit cost model.'
+        })
         return
       }
       if (err.response?.status === 503) {
         const msg = err.response?.data?.error || 'AI inference service is currently offline. No credits were deducted.'
-        alert(`Service Unavailable: ${msg}`)
+        setGenerationError({
+          isFlagged: false,
+          message: msg,
+          suggestion: 'The GPU inference cluster is temporarily offline. Please retry in a few moments.'
+        })
         return
       }
       const errMsg = err.response?.data?.error || err.response?.data?.message || err.message || 'Generation request failed.'
-      alert(`Generation Error: ${errMsg}`)
+      setGenerationError({
+        isFlagged: /flagged|safety/i.test(errMsg),
+        message: errMsg,
+        suggestion: 'Please verify your prompt description and connection.'
+      })
     }
   }
 
@@ -470,6 +495,39 @@ export function ImageGeneratorPage() {
                 Enhance Prompt
               </button>
             </div>
+
+            {/* Generation Error / Safety Filter Banner */}
+            {generationError && (
+              <div className={`p-4 rounded-xl border text-xs flex items-start gap-3 transition-all ${
+                generationError.isFlagged
+                  ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
+                  : 'bg-rose-950/30 border-rose-500/40 text-rose-200'
+              }`}>
+                <AlertTriangle className={`w-4 h-4 shrink-0 mt-0.5 ${generationError.isFlagged ? 'text-amber-400' : 'text-rose-400'}`} />
+                <div className="flex-1 space-y-1">
+                  <div className="font-semibold text-sm flex items-center gap-2">
+                    {generationError.isFlagged ? 'AI Output Moderation Notice' : 'Generation Error'}
+                  </div>
+                  <p className="leading-relaxed opacity-90">{generationError.message}</p>
+                  {generationError.suggestion && (
+                    <p className="text-[11px] text-amber-300 font-medium pt-1">
+                      💡 <strong>Suggestion:</strong> {generationError.suggestion}
+                    </p>
+                  )}
+                  <p className="text-[11px] text-emerald-400 font-medium pt-0.5">
+                    ✓ Your reserved credits have been fully restored to your account.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setGenerationError(null)}
+                  className="p-1 hover:bg-neutral-800/80 rounded text-neutral-400 hover:text-white transition-colors"
+                  title="Dismiss notice"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
 
             {/* Prompt Textarea */}
             <div className="relative">
