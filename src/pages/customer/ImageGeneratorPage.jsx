@@ -82,6 +82,15 @@ const ASPECT_RATIOS = [
   { id: '21:9', label: '21:9 Ultra-wide', width: 1536, height: 640, icon: RectangleHorizontal, desc: 'Cinematic banner' }
 ]
 
+// Canvas preview dimensions per aspect ratio (Real-Time Canvas is the master height driver)
+const CANVAS_PREVIEW_CONFIG = {
+  '21:9': { previewHeight: 220, containerClass: 'aspect-[21/9] h-[220px] max-w-full' },
+  '16:9': { previewHeight: 280, containerClass: 'aspect-video h-[280px] max-w-full' },
+  '4:3': { previewHeight: 330, containerClass: 'aspect-[4/3] h-[330px] max-w-full' },
+  '1:1': { previewHeight: 370, containerClass: 'aspect-square h-[370px] max-w-full' },
+  '9:16': { previewHeight: 440, containerClass: 'aspect-[9/16] h-[440px] max-w-full' }
+}
+
 export function ImageGeneratorPage() {
   const { user, setUser } = useAuth()
 
@@ -101,49 +110,98 @@ export function ImageGeneratorPage() {
   const [historyGallery, setHistoryGallery] = useState([])
   const [loadingRecent, setLoadingRecent] = useState(true)
 
-  // Dynamic Inspiration Presets Ref & Responsive Visible Count
-  const presetsAreaRef = useRef(null)
+  // Layout references for Master-Follower equal-height synchronization
+  const canvasCardRef = useRef(null)
+  const promptCardRef = useRef(null)
+  const promptTopRef = useRef(null)
+  const promptBottomRef = useRef(null)
   const presetsHeaderRef = useRef(null)
+
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === 'undefined') return true
+    return window.innerWidth >= 1024
+  })
+
+  const [canvasHeight, setCanvasHeight] = useState(() => {
+    return (CANVAS_PREVIEW_CONFIG['1:1']?.previewHeight || 370) + 96
+  })
   const [visiblePresetsCount, setVisiblePresetsCount] = useState(2)
 
-  useEffect(() => {
-    const node = presetsAreaRef.current
-    if (!node || typeof ResizeObserver === 'undefined') return
+  // Calculate dynamic presets fitting into available height follower space
+  const updatePresetsCount = useCallback(() => {
+    if (typeof window === 'undefined') return
 
-    const updateCount = () => {
-      // On narrow/mobile screens, keep preset list compact so cards stack naturally
-      if (window.innerWidth < 1024) {
-        setVisiblePresetsCount((prev) => (prev !== 2 ? 2 : prev))
-        return
-      }
-
-      // On desktop, measure exact available vertical height in the stretched flex container
-      const availableHeight = node.clientHeight
-      const headerHeight = presetsHeaderRef.current ? presetsHeaderRef.current.offsetHeight + 6 : 22
-      const usableHeight = availableHeight - headerHeight
-
-      // Each preset button is h-[32px] (32px) + gap-1.5 (6px) = 38px
-      // For N items: totalNeeded = 38 * N - 6 => N = Math.floor((usableHeight + 6) / 38)
-      const count = Math.max(1, Math.min(PROMPT_INSPIRATIONS.length, Math.floor((usableHeight + 6) / 38)))
-      setVisiblePresetsCount((prev) => (prev !== count ? count : prev))
+    // On narrow/mobile screens, keep preset list compact so cards stack naturally
+    if (window.innerWidth < 1024) {
+      setVisiblePresetsCount((prev) => (prev !== 2 ? 2 : prev))
+      return
     }
 
-    // Run initial calculation
-    updateCount()
+    const currentCanvasHeight = canvasCardRef.current?.clientHeight || canvasHeight
+    if (!currentCanvasHeight) return
 
-    // Observe size changes without infinite loop (min-h-0 container doesn't expand on child insertion)
+    const topHeight = promptTopRef.current ? promptTopRef.current.offsetHeight : 124
+    const bottomHeight = promptBottomRef.current ? promptBottomRef.current.offsetHeight : 28
+    const headerHeight = presetsHeaderRef.current ? presetsHeaderRef.current.offsetHeight + 6 : 24
+    const cardPadding = 48
+    const safetyBuffer = 12
+
+    const usableHeight = currentCanvasHeight - topHeight - bottomHeight - headerHeight - cardPadding - safetyBuffer
+
+    // Each preset button is h-[32px] (32px) + gap-1.5 (6px) = 38px
+    // For N items: totalNeeded = 38 * N - 6 => N = Math.floor((usableHeight + 6) / 38)
+    const count = Math.max(1, Math.min(PROMPT_INSPIRATIONS.length, Math.floor((usableHeight + 6) / 38)))
+    setVisiblePresetsCount((prev) => (prev !== count ? count : prev))
+  }, [canvasHeight, showNegative, generationError])
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024
+      setIsDesktop(desktop)
+      if (!desktop) {
+        setVisiblePresetsCount(2)
+      } else {
+        updatePresetsCount()
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    const canvasNode = canvasCardRef.current
+    if (!canvasNode || typeof ResizeObserver === 'undefined') {
+      return () => window.removeEventListener('resize', handleResize)
+    }
+
     const observer = new ResizeObserver(() => {
-      updateCount()
+      const fullHeight = canvasNode.clientHeight
+      if (fullHeight > 0) {
+        setCanvasHeight(fullHeight)
+      }
+      updatePresetsCount()
     })
-    observer.observe(node)
 
-    window.addEventListener('resize', updateCount)
+    observer.observe(canvasNode)
+
+    if (canvasNode.clientHeight > 0) {
+      setCanvasHeight(canvasNode.clientHeight)
+    }
+    updatePresetsCount()
 
     return () => {
       observer.disconnect()
-      window.removeEventListener('resize', updateCount)
+      window.removeEventListener('resize', handleResize)
     }
-  }, [showNegative, generationError, aspectRatio])
+  }, [updatePresetsCount, aspectRatio, generatedResults.length, isGenerating])
+
+  const handleSelectAspectRatio = (ratioId) => {
+    setAspectRatio(ratioId)
+    if (window.innerWidth >= 1024) {
+      const estimatedHeight =
+        (CANVAS_PREVIEW_CONFIG[ratioId]?.previewHeight || 370) +
+        (generatedResults.length > 0 && !isGenerating ? 122 : 96)
+      setCanvasHeight(estimatedHeight)
+    }
+  }
 
   // Fetch logged-in user's recent generations from authenticated assets API
   const fetchRecentGenerations = useCallback(async () => {
@@ -458,12 +516,16 @@ export function ImageGeneratorPage() {
         </div>
       </div>
 
-      {/* ROW 1: Prompt Description (Left) + Real-Time Canvas (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:items-stretch items-start">
-        {/* Main Prompt Card */}
-        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
+      {/* ROW 1: Prompt Description (Follower) + Real-Time Canvas (Master Height Driver) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:items-start items-start">
+        {/* Main Prompt Card (Follower: matches Canvas height exactly) */}
+        <div
+          ref={promptCardRef}
+          style={{ height: isDesktop && canvasHeight ? `${canvasHeight}px` : undefined }}
+          className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 min-h-0 overflow-hidden"
+        >
           {/* Top Section */}
-          <div className="space-y-3 shrink-0">
+          <div ref={promptTopRef} className="space-y-3 shrink-0">
             <div className="flex items-center justify-between">
               <label htmlFor="prompt-input" className="text-sm font-bold text-neutral-100 flex items-center gap-2">
                 <Wand2 className="w-4 h-4 text-cyan-400" />
@@ -534,10 +596,7 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Middle Section: Dynamic Inspiration Presets */}
-          <div
-            ref={presetsAreaRef}
-            className="flex-1 min-h-0 flex flex-col justify-start py-2.5 overflow-hidden"
-          >
+          <div className="flex-1 min-h-0 flex flex-col justify-start py-2 overflow-hidden">
             <div
               ref={presetsHeaderRef}
               className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 shrink-0 mb-1.5"
@@ -561,7 +620,7 @@ export function ImageGeneratorPage() {
           </div>
 
           {/* Bottom Section: Toggle Negative Prompt */}
-          <div className="pt-2 border-t border-neutral-800/80 shrink-0">
+          <div ref={promptBottomRef} className="pt-2 border-t border-neutral-800/80 shrink-0">
             <button
               type="button"
               onClick={() => setShowNegative(!showNegative)}
@@ -585,119 +644,116 @@ export function ImageGeneratorPage() {
           </div>
         </div>
 
-        {/* Real-Time Canvas */}
-        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full space-y-3">
-          <div className="flex-1 flex flex-col">
-            <div className="flex items-center justify-between mb-3 shrink-0">
-              <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-cyan-400" />
-                Real-Time Canvas
-              </h2>
-              {isGenerating && (
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/70 px-2.5 py-0.5 rounded-full border border-cyan-800/60 animate-pulse">
-                  <RefreshCw className="w-3 h-3 animate-spin text-cyan-400" />
-                  Generating...
-                </span>
-              )}
-            </div>
+        {/* Real-Time Canvas (Master Height Driver) */}
+        <div
+          ref={canvasCardRef}
+          className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 overflow-hidden"
+        >
+          <div className="flex items-center justify-between mb-3 shrink-0">
+            <h2 className="text-sm font-bold text-neutral-100 flex items-center gap-2">
+              <Layers className="w-4 h-4 text-cyan-400" />
+              Real-Time Canvas
+            </h2>
+            {isGenerating && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/70 px-2.5 py-0.5 rounded-full border border-cyan-800/60 animate-pulse">
+                <RefreshCw className="w-3 h-3 animate-spin text-cyan-400" />
+                Generating...
+              </span>
+            )}
+          </div>
 
-            {/* Canvas Display with aspect-ratio-driven responsive height */}
-            <div
-              className={cn(
-                'relative w-full rounded-xl overflow-hidden bg-[#080B14] border border-neutral-800 flex items-center justify-center transition-all duration-300 my-auto',
-                aspectRatio === '1:1' && 'aspect-square max-h-[380px]',
-                aspectRatio === '16:9' && 'aspect-video max-h-[310px]',
-                aspectRatio === '9:16' && 'aspect-[9/16] max-h-[440px]',
-                aspectRatio === '4:3' && 'aspect-[4/3] max-h-[350px]',
-                aspectRatio === '21:9' && 'aspect-[21/9] max-h-[250px]'
-              )}
-            >
-              {isGenerating ? (
-                /* Real-time generation progress overlay */
-                <div className="absolute inset-0 bg-[#080B14]/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center text-white space-y-3">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-cyan-400 animate-spin" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold tracking-tight">Generating Visual Asset</p>
-                    <p className="text-xs text-neutral-400 mt-0.5 max-w-xs">{generationStepText}</p>
-                  </div>
-                  <div className="w-44 bg-neutral-800 rounded-full h-1.5 overflow-hidden border border-neutral-700">
-                    <div
-                      className="bg-gradient-to-r from-violet-500 to-cyan-400 h-full transition-all duration-300"
-                      style={{ width: `${generationProgress}%` }}
-                    />
-                  </div>
-                  <span className="text-xs font-mono text-cyan-400">{generationProgress}% completed</span>
+          {/* Canvas Display with aspect-ratio-driven responsive height */}
+          <div
+            className={cn(
+              'relative w-full rounded-xl overflow-hidden bg-[#080B14] border border-neutral-800 flex items-center justify-center transition-all duration-300 mx-auto my-auto',
+              CANVAS_PREVIEW_CONFIG[aspectRatio]?.containerClass || 'aspect-square h-[370px] max-w-full'
+            )}
+          >
+            {isGenerating ? (
+              /* Real-time generation progress overlay */
+              <div className="absolute inset-0 bg-[#080B14]/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center text-white space-y-3">
+                <div className="w-12 h-12 rounded-xl bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-cyan-400 animate-spin" />
                 </div>
-              ) : generatedResults.length > 0 ? (
-                /* Most recently synthesized image */
-                <div className="group relative w-full h-full flex items-center justify-center bg-[#080B14]">
-                  <img
-                    src={generatedResults[0].image}
-                    alt="Synthesized generation"
-                    className="max-w-full max-h-full object-contain"
+                <div>
+                  <p className="text-sm font-bold tracking-tight">Generating Visual Asset</p>
+                  <p className="text-xs text-neutral-400 mt-0.5 max-w-xs">{generationStepText}</p>
+                </div>
+                <div className="w-44 bg-neutral-800 rounded-full h-1.5 overflow-hidden border border-neutral-700">
+                  <div
+                    className="bg-gradient-to-r from-violet-500 to-cyan-400 h-full transition-all duration-300"
+                    style={{ width: `${generationProgress}%` }}
                   />
-                  {/* Hover action overlay */}
-                  <div className="absolute inset-0 bg-neutral-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5 text-white">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium bg-neutral-900/80 px-2 py-0.5 rounded border border-neutral-700">
-                        {generatedResults[0].model} • {generatedResults[0].aspect}
-                      </span>
-                      <button
-                        onClick={() => setActiveModalItem(generatedResults[0])}
-                        className="p-1.5 bg-neutral-900/80 hover:bg-neutral-800 rounded-lg border border-neutral-700 text-neutral-300 hover:text-white transition-colors cursor-pointer"
-                        title="Expand view"
-                      >
-                        <Maximize2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                </div>
+                <span className="text-xs font-mono text-cyan-400">{generationProgress}% completed</span>
+              </div>
+            ) : generatedResults.length > 0 ? (
+              /* Most recently synthesized image */
+              <div className="group relative w-full h-full flex items-center justify-center bg-[#080B14]">
+                <img
+                  src={generatedResults[0].image}
+                  alt="Synthesized generation"
+                  className="max-w-full max-h-full object-contain"
+                />
+                {/* Hover action overlay */}
+                <div className="absolute inset-0 bg-neutral-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3.5 text-white">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium bg-neutral-900/80 px-2 py-0.5 rounded border border-neutral-700">
+                      {generatedResults[0].model} • {generatedResults[0].aspect}
+                    </span>
+                    <button
+                      onClick={() => setActiveModalItem(generatedResults[0])}
+                      className="p-1.5 bg-neutral-900/80 hover:bg-neutral-800 rounded-lg border border-neutral-700 text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                      title="Expand view"
+                    >
+                      <Maximize2 className="w-4 h-4" />
+                    </button>
+                  </div>
 
-                    <div className="space-y-2">
-                      <p className="text-xs text-neutral-200 line-clamp-2">
-                        "{generatedResults[0].prompt}"
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => handleCopyPrompt(generatedResults[0].prompt)}
-                          leftIcon={copiedNotification ? Check : Copy}
-                          className="text-xs bg-neutral-900/90 text-white border-neutral-700 py-1"
-                        >
-                          {copiedNotification ? 'Copied' : 'Copy Prompt'}
-                        </Button>
-                        <a
-                          href={generatedResults[0].image}
-                          download="kiaan-generated.jpg"
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white transition-colors"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          Download
-                        </a>
-                      </div>
+                  <div className="space-y-2">
+                    <p className="text-xs text-neutral-200 line-clamp-2">
+                      "{generatedResults[0].prompt}"
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleCopyPrompt(generatedResults[0].prompt)}
+                        leftIcon={copiedNotification ? Check : Copy}
+                        className="text-xs bg-neutral-900/90 text-white border-neutral-700 py-1"
+                      >
+                        {copiedNotification ? 'Copied' : 'Copy Prompt'}
+                      </Button>
+                      <a
+                        href={generatedResults[0].image}
+                        download="kiaan-generated.jpg"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white transition-colors"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        Download
+                      </a>
                     </div>
                   </div>
                 </div>
-              ) : (
-                /* Default empty state */
-                <div className="text-center p-6 space-y-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
-                    <ImageIcon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-neutral-300">Canvas Ready for Generation</p>
-                    <p className="text-[11px] text-neutral-400 max-w-xs mt-0.5">
-                      Enter your prompt on the left and click Generate to produce your first asset.
-                    </p>
-                  </div>
+              </div>
+            ) : (
+              /* Default empty state */
+              <div className="text-center p-6 space-y-2.5">
+                <div className="w-10 h-10 rounded-xl bg-neutral-800/80 flex items-center justify-center text-neutral-400 mx-auto border border-neutral-700/60">
+                  <ImageIcon className="w-5 h-5" />
                 </div>
-              )}
-            </div>
+                <div>
+                  <p className="text-xs font-semibold text-neutral-300">Canvas Ready for Generation</p>
+                  <p className="text-[11px] text-neutral-400 max-w-xs mt-0.5">
+                    Enter your prompt on the left and click Generate to produce your first asset.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Quick action buttons below canvas */}
-          {generatedResults.length > 0 && !isGenerating ? (
+          {generatedResults.length > 0 && !isGenerating && (
             <div className="flex items-center justify-between pt-1 shrink-0">
               <span className="text-xs text-neutral-400">
                 Seed: <strong className="font-mono text-white">{generatedResults[0].seed}</strong>
@@ -713,8 +769,6 @@ export function ImageGeneratorPage() {
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="h-4 shrink-0" />
           )}
         </div>
       </div>
@@ -722,13 +776,13 @@ export function ImageGeneratorPage() {
       {/* ROW 2: AI Inference Model (Left) + Aspect Ratio & Canvas Dimensions (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:items-stretch items-start">
         {/* Model Selection Card */}
-        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
-          <div className="flex items-center justify-between mb-3 shrink-0">
-            <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-cyan-400" />
+        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
+          <div className="flex items-center justify-between mb-2 sm:mb-2.5 shrink-0">
+            <label className="text-xs sm:text-sm font-bold text-neutral-100 flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
               AI Inference Model
             </label>
-            <span className="text-xs text-neutral-400">Commercial Apache 2.0 Weights</span>
+            <span className="text-[11px] sm:text-xs text-neutral-400">Commercial Apache 2.0 Weights</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
@@ -739,7 +793,7 @@ export function ImageGeneratorPage() {
                   key={model.id}
                   onClick={() => handleModelChange(model.id)}
                   className={cn(
-                    'h-[148px] sm:h-[152px] p-2.5 sm:p-3 rounded-xl border text-left cursor-pointer transition-all relative flex flex-col justify-between min-w-0',
+                    'h-[108px] sm:h-[112px] p-2 sm:p-2.5 rounded-xl border text-left cursor-pointer transition-all relative flex flex-col justify-between min-w-0',
                     isSelected
                       ? 'border-cyan-500 bg-cyan-950/30 ring-2 ring-cyan-500/20 text-white'
                       : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800/60 hover:border-neutral-700 text-neutral-300'
@@ -754,12 +808,9 @@ export function ImageGeneratorPage() {
                         {model.badge}
                       </span>
                     </div>
-                    <p className="text-[10px] text-neutral-400 line-clamp-2 mt-1 leading-snug break-words">
-                      {model.description}
-                    </p>
                   </div>
 
-                  <div className="mt-2 pt-1.5 border-t border-neutral-800/80 flex items-center justify-between text-[10px] text-neutral-400 shrink-0 min-w-0">
+                  <div className="pt-1.5 border-t border-neutral-800/80 flex items-center justify-between text-[10px] text-neutral-400 shrink-0 min-w-0">
                     <span className="truncate">{model.defaultSteps} steps</span>
                     <span className="font-semibold text-white shrink-0 ml-1">{model.creditCost} credit</span>
                   </div>
@@ -770,13 +821,13 @@ export function ImageGeneratorPage() {
         </div>
 
         {/* Aspect Ratio Selection */}
-        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
-          <div className="flex items-center justify-between mb-3 shrink-0">
-            <label className="text-sm font-bold text-neutral-100 flex items-center gap-2">
-              <Square className="w-4 h-4 text-cyan-400" />
+        <div className="bg-[#0D111C]/90 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-neutral-800/90 shadow-sm flex flex-col justify-between text-neutral-100 lg:h-full">
+          <div className="flex items-center justify-between mb-2 sm:mb-2.5 shrink-0">
+            <label className="text-xs sm:text-sm font-bold text-neutral-100 flex items-center gap-1.5">
+              <Square className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
               Aspect Ratio & Canvas Dimensions
             </label>
-            <span className="text-xs font-mono text-neutral-400">
+            <span className="text-[11px] sm:text-xs font-mono text-neutral-400">
               {currentAspectObj.width} × {currentAspectObj.height} px
             </span>
           </div>
@@ -789,17 +840,17 @@ export function ImageGeneratorPage() {
                 <button
                   key={ratio.id}
                   type="button"
-                  onClick={() => setAspectRatio(ratio.id)}
+                  onClick={() => handleSelectAspectRatio(ratio.id)}
                   className={cn(
-                    'h-[148px] sm:h-[152px] p-2 sm:p-2.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5 sm:gap-2 cursor-pointer min-w-0',
+                    'h-[108px] sm:h-[112px] p-1.5 sm:p-2 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer min-w-0',
                     isSelected
                       ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 ring-2 ring-cyan-500/20 shadow-xs'
                       : 'border-neutral-800 bg-[#080B14] hover:bg-neutral-800 text-neutral-300'
                   )}
                 >
-                  <IconComponent className={cn('w-5 h-5 shrink-0', isSelected ? 'text-cyan-400' : 'text-neutral-500')} />
+                  <IconComponent className={cn('w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0', isSelected ? 'text-cyan-400' : 'text-neutral-500')} />
                   <div className="font-bold text-xs text-white leading-none shrink-0">{ratio.id}</div>
-                  <div className="text-[10px] text-neutral-400 leading-tight text-center break-words px-0.5 line-clamp-2">{ratio.desc}</div>
+                  <div className="text-[9px] sm:text-[10px] text-neutral-400 leading-tight text-center break-words px-0.5 line-clamp-2">{ratio.desc}</div>
                 </button>
               )
             })}
